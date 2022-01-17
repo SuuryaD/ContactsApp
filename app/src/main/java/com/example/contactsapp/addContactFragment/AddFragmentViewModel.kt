@@ -26,16 +26,17 @@ class AddFragmentViewModel(val dataSource: ContactDetailsDao) : ViewModel() {
 
 
     fun onSave(name: String, phoneNumber1: String, phoneNumber2: String, email: String ){
-        val temp = ContactDetail(0L, name, email, listOf(phoneNumber1, phoneNumber2))
+        val temp = ContactWithPhone(ContactDetails(name = name, email = email),
+            listOf(ContactPhoneNumber(phoneNumber = phoneNumber1), ContactPhoneNumber(phoneNumber = phoneNumber2)))
         CoroutineScope(Dispatchers.Main).launch{
             save(temp)
             _navigateToContacts.value = true
         }
     }
 
-    private suspend fun save(contactDetail: ContactDetail){
+    private suspend fun save(contactWithPhone: ContactWithPhone){
         withContext(Dispatchers.IO){
-            dataSource.insert(contactDetail)
+            dataSource.insert(contactWithPhone)
         }
     }
 

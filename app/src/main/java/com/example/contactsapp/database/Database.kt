@@ -3,7 +3,6 @@ package com.example.contactsapp.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.contactsapp.model.ContactDetail
 
 
 @Entity(tableName = "contact_details")
@@ -12,25 +11,26 @@ data class ContactDetails(
     @PrimaryKey(autoGenerate = true)
     val contactId: Long = 0L,
 
-    val name: String,
+    var name: String,
 
-    val email: String
+    var email: String
 )
 
 @Entity(tableName = "phone",
     foreignKeys = [ForeignKey(entity = ContactDetails::class,
     parentColumns = ["contactId"],
     childColumns = ["contactId"],
-    onDelete = ForeignKey.CASCADE)]
+    onDelete = ForeignKey.CASCADE,
+    onUpdate = ForeignKey.CASCADE)]
 )
 data class ContactPhoneNumber(
 
     @PrimaryKey(autoGenerate = true)
-    val phoneId: Long = 0L,
+    var phoneId: Long = 0L,
 
-    val contactId: Long,
+    var contactId: Long = 0L,
 
-    val phoneNumber: String
+    var phoneNumber: String
 )
 
 
@@ -39,9 +39,10 @@ data class ContactWithPhone(
     @Embedded
     val contactDetails: ContactDetails,
 
-    @Relation(entity = ContactPhoneNumber::class, parentColumn = "contactId", entityColumn = "contactId", projection = ["phoneNumber"])
-    val phoneNumbers: List<String>
+    @Relation(entity = ContactPhoneNumber::class, parentColumn = "contactId", entityColumn = "contactId")
+    val phoneNumbers: List<ContactPhoneNumber>
 )
+
 
 @Dao
 interface ContactDetailsDao{
@@ -51,13 +52,14 @@ interface ContactDetailsDao{
     fun getAll() : LiveData<List<ContactWithPhone>>
 
 
+
     @Transaction
-    suspend fun insert(contactDetail: ContactDetail){
+    suspend fun insert(contactWithPhone: ContactWithPhone){
 
-        val id = insertContact(ContactDetails(name = contactDetail.name, email = contactDetail.email))
+        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
 
-        for(i in contactDetail.phone){
-            insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i))
+        for(i in contactWithPhone.phoneNumbers){
+            insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
         }
     }
 
@@ -67,6 +69,20 @@ interface ContactDetailsDao{
     @Insert
     suspend fun insertPhone(contactPhoneNumber: ContactPhoneNumber)
 
+    @Transaction
+    suspend fun updateContact(contactWithPhone: ContactWithPhone){
+        updateContactDetails(contactWithPhone.contactDetails)
+
+        for(i in contactWithPhone.phoneNumbers){
+            updateContactPhoneNumber(i)
+        }
+    }
+
+    @Update
+    suspend fun updateContactDetails(contactDetails: ContactDetails)
+
+    @Update
+    suspend fun updateContactPhoneNumber(contactPhoneNumber: ContactPhoneNumber)
 
     @Query("Delete from contact_details where contactId=:id")
     suspend fun deleteContact(id: Long)
@@ -79,7 +95,7 @@ interface ContactDetailsDao{
 
 }
 
-@Database(entities = [ContactDetails::class, ContactPhoneNumber::class], version = 2, exportSchema = false)
+@Database(entities = [ContactDetails::class, ContactPhoneNumber::class], version = 3, exportSchema = false)
 abstract class ContactDatabase: RoomDatabase(){
 
     abstract val contactDetailsDao: ContactDetailsDao
@@ -110,7 +126,7 @@ abstract class ContactDatabase: RoomDatabase(){
 
 }
 
-
-fun ContactWithPhone.asModel() : ContactDetail{
-    return ContactDetail( this.contactDetails.contactId, this.contactDetails.name, this.contactDetails.email, this.phoneNumbers)
-}
+//
+//fun ContactWithPhone.asModel() : ContactDetail{
+//    return ContactDetail( this.contactDetails.contactId, this.contactDetails.name, this.contactDetails.email, this.phoneNumbers)
+//}

@@ -3,7 +3,7 @@ package com.example.contactsapp.contactDetailFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.contactsapp.database.ContactDetailsDao
-import com.example.contactsapp.database.asModel
+import com.example.contactsapp.database.ContactWithPhone
 import com.example.contactsapp.model.ContactDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,8 +12,7 @@ import kotlinx.coroutines.withContext
 
 class ContactDetailViewModel(val dataSource: ContactDetailsDao, val contactId: Long) : ViewModel() {
 
-    var currentContact = MutableLiveData<ContactDetail>()
-
+    var currentContact = MutableLiveData<ContactWithPhone>()
 
     private fun getCurrentContact(contactId: Long){
         CoroutineScope(Dispatchers.Main).launch {
@@ -21,9 +20,9 @@ class ContactDetailViewModel(val dataSource: ContactDetailsDao, val contactId: L
         }
     }
 
-    private suspend fun getCurrentContactFromDb(contactId: Long) : ContactDetail{
+    private suspend fun getCurrentContactFromDb(contactId: Long) : ContactWithPhone{
         return withContext(Dispatchers.IO){
-            dataSource.getContactById(contactId).asModel()
+            dataSource.getContactById(contactId)
         }
     }
 

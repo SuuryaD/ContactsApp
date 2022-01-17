@@ -40,11 +40,9 @@ class ContactsListFragment : Fragment() {
         res.observe(this.viewLifecycleOwner, Observer {
             Log.i("MainActivity", it.toString())
         })
-
-
-        val adapter = ContactsAdapter(ContactListener { contactDetail ->
-            this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactDetail.contactId))
-            Log.i("MainActivity", contactDetail.toString())
+        
+        val adapter = ContactsAdapter2(ContactListener {
+            contactWithPhone -> this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactWithPhone.contactDetails.contactId))
         })
 
         binding.contactList.adapter = adapter

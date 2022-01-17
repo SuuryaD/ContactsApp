@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="clickListener"
             type="com.example.contactsapp.contactsFragment.ContactListener" />
         <variable
-            name="contactDetail"
-            type="com.example.contactsapp.model.ContactDetail" />
+            name="contactWithPhone"
+            type="com.example.contactsapp.database.ContactWithPhone" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> clickListener.onClick(contactDetail)}">
+        android:onClick="@{() -> clickListener.onClick(contactWithPhone)}">
 
         <TextView
             android:id="@+id/textView"
@@ -23,13 +24,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@{contactDetail.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.508" />
+            app:layout_constraintVertical_bias="0.508"
+            android:text="@{contactWithPhone.contactDetails.name}"/>
 
         <ImageView
             android:id="@+id/imageView"
