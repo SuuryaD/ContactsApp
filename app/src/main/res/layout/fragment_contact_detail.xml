@@ -14,6 +14,9 @@
         android:layout_height="match_parent"
         tools:context=".contactDetailFragment.ContactDetailFragment">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -22,60 +25,46 @@
                 android:id="@+id/displayName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="68dp"
                 android:text="@{viewModel.currentContact.contactDetails.name}"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.458"
+                app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.101" />
-
-            <TextView
-                android:id="@+id/displayPhoneNumber1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.currentContact.phoneNumbers.get(0).phoneNumber}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.458"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/displayName"
-                app:layout_constraintVertical_bias="0.091" />
-
-            <TextView
-                android:id="@+id/displayPhoneNumber2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.458"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/displayPhoneNumber1"
-                app:layout_constraintVertical_bias="0.146" />
+                tools:text="name" />
 
             <TextView
                 android:id="@+id/displayEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="104dp"
                 android:text="@{viewModel.currentContact.contactDetails.email}"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.458"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/displayPhoneNumber2"
-                app:layout_constraintVertical_bias="0.132" />
+                app:layout_constraintTop_toBottomOf="@+id/parentLinearLayout"
+                tools:text="Email" />
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
                 android:text="Edit"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.447"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/displayEmail"
-                app:layout_constraintVertical_bias="0.513" />
+                app:layout_constraintTop_toBottomOf="@+id/displayEmail" />
+
+            <LinearLayout
+                android:id="@+id/parentLinearLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="92dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/displayName" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </FrameLayout>
 </layout>

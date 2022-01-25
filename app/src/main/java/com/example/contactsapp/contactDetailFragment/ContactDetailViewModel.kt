@@ -14,6 +14,8 @@ class ContactDetailViewModel(val dataSource: ContactDetailsDao, val contactId: L
 
     var currentContact = MutableLiveData<ContactWithPhone>()
 
+    val navigateToContactsListFragment = MutableLiveData<Boolean>(false)
+
     private fun getCurrentContact(contactId: Long){
         CoroutineScope(Dispatchers.Main).launch {
             currentContact.value = getCurrentContactFromDb(contactId)
@@ -24,6 +26,17 @@ class ContactDetailViewModel(val dataSource: ContactDetailsDao, val contactId: L
         return withContext(Dispatchers.IO){
             dataSource.getContactById(contactId)
         }
+    }
+
+    fun deleteCurrentContact() {
+        CoroutineScope(Dispatchers.IO).launch {
+            dataSource.deleteContact(currentContact.value?.contactDetails?.contactId!!)
+        }
+        navigateToContactsListFragment.value = true
+    }
+
+    fun doneNavigateToContactsListFragment(){
+        navigateToContactsListFragment.value = false
     }
 
     init {

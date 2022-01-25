@@ -1,5 +1,6 @@
 package com.example.contactsapp.editContactFragment
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.contactsapp.database.*
@@ -31,17 +32,40 @@ class EditContactViewModel(val dataSource: ContactDetailsDao, val contactId: Lon
         getCurrentContact(contactId)
     }
 
-    fun onSaveButtonClicked(name: String, phoneNumber1: String, phoneNumber2: String, email: String){
+    fun onSaveButtonClicked(name: String, email: String, phoneNumbers: List<String>){
 
-        var temp = ContactWithPhone(ContactDetails(currentContact.value?.contactDetails?.contactId ?: 0L, name, email),
-            listOf(
-                ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(0)?.phoneId ?: 0L, currentContact.value?.contactDetails?.contactId ?: 0L, phoneNumber1),
-                ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(1)?.phoneId ?: 0L, currentContact.value?.contactDetails?.contactId ?: 0L, phoneNumber2)
-            ))
+
+        val ls = ArrayList<ContactPhoneNumber>()
+
+       phoneNumbers.forEach {
+           ls.add(ContactPhoneNumber(phoneNumber = it))
+       }
+
+        var i = 0
+
+//        for(i in 0..currentContact.value?.phoneNumbers.orEmpty().size){
+//            ls.add(ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(i)?.phoneId!!, currentContact.value?.contactDetails?.contactId!!, ))
+//        }
+
+        while(i < currentContact.value?.phoneNumbers.orEmpty().size && i < phoneNumbers.size ){
+            ls.add(ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(i)?.phoneId!!, currentContact.value?.contactDetails?.contactId!!,phoneNumbers.get(i)))
+            i++
+        }
+        Log.i("EditContactViewModel", "$i - ${phoneNumbers.size}")
+
+        while(i < phoneNumbers.size){
+            ls.add(ContactPhoneNumber(phoneNumber = phoneNumbers[i]))
+            i++
+        }
+
+        Log.i("OnSaveButtonClicked", ls.toString())
+
+        val temp = ContactWithPhone(ContactDetails(contactId = currentContact.value?.contactDetails?.contactId ?: 0L, name = name, email = email), listOf())
 
         CoroutineScope(Dispatchers.IO).launch {
-            dataSource.updateContact(temp)
+            dataSource.updateContact2(temp)
         }
+
     }
 
 }

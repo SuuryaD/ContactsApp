@@ -35,35 +35,33 @@ class ContactsListFragment : Fragment() {
         binding.contactsListViewModel = viewModel
         binding.setLifecycleOwner(this.viewLifecycleOwner)
 
-        val res = dataSource.getAll()
-        Log.i("MainActivity", "test: $res")
-        res.observe(this.viewLifecycleOwner, Observer {
-            Log.i("MainActivity", it.toString())
-        })
-        
+        activity?.title = "Contacts App"
+
         val adapter = ContactsAdapter2(ContactListener {
             contactWithPhone -> this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactWithPhone.contactDetails.contactId))
         })
 
         binding.contactList.adapter = adapter
 
+//        binding.floatingActionButton.setOnClickListener {
+//            this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToAddFragment(0L))
+//        }
 
-        viewModel.contacts.observe(viewLifecycleOwner, Observer {
+        viewModel.contacts2.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
+                Log.i("ContactsListFragment", " Transformed contacts $it.toString()")
             }
+            Log.i("ContactsListFragment", " Transformed contacts  null $it.toString()")
         })
 
         viewModel.navigateToAddContact.observe(this.viewLifecycleOwner, Observer { 
             if(it){
-                this.findNavController().navigate(R.id.action_contactsFragment_to_addFragment)
+                this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToAddFragment(0L))
                 viewModel.doneNavigateToAddContact()
             }
         })
-        
         return binding.root
     }
-
-
 
 }

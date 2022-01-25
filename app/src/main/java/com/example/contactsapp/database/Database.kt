@@ -48,7 +48,7 @@ data class ContactWithPhone(
 interface ContactDetailsDao{
 
     @Transaction
-    @Query("Select * from contact_details")
+    @Query("Select * from contact_details order by name asc")
     fun getAll() : LiveData<List<ContactWithPhone>>
 
 
@@ -69,6 +69,9 @@ interface ContactDetailsDao{
     @Insert
     suspend fun insertPhone(contactPhoneNumber: ContactPhoneNumber)
 
+    @Insert
+    suspend fun insertPhoneNumbers(contactPhoneNumber : List<ContactPhoneNumber>)
+
     @Transaction
     suspend fun updateContact(contactWithPhone: ContactWithPhone){
         updateContactDetails(contactWithPhone.contactDetails)
@@ -77,6 +80,18 @@ interface ContactDetailsDao{
             updateContactPhoneNumber(i)
         }
     }
+
+    @Transaction
+    suspend fun updateContact2(contactWithPhone: ContactWithPhone){
+
+        deleteContact(contactWithPhone.contactDetails.contactId)
+
+        insert(contactWithPhone)
+    }
+
+    @Delete
+    suspend fun deletePhoneNumber(contactPhoneNumber: List<ContactPhoneNumber>)
+
 
     @Update
     suspend fun updateContactDetails(contactDetails: ContactDetails)
@@ -95,7 +110,7 @@ interface ContactDetailsDao{
 
 }
 
-@Database(entities = [ContactDetails::class, ContactPhoneNumber::class], version = 3, exportSchema = false)
+@Database(entities = [ContactDetails::class, ContactPhoneNumber::class], version = 5, exportSchema = false)
 abstract class ContactDatabase: RoomDatabase(){
 
     abstract val contactDetailsDao: ContactDetailsDao

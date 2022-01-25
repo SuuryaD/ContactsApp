@@ -2,18 +2,40 @@ package com.example.contactsapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.example.contactsapp.database.ContactDatabase
 import com.example.contactsapp.model.ContactDetail
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val navController = this.findNavController(R.id.nav_host_fragment)
+        val navView: BottomNavigationView = findViewById(R.id.bottomNavView)
+        navView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.contactsFragment || destination.id == R.id.blankFragment){
+                navView.visibility = View.VISIBLE
+            }
+            else
+                navView.visibility = View.INVISIBLE
+        }
+
 //
 //        val temp = ContactDetail("surya", "surya@email", listOf("123456789", "987654321"))
 //        val temp2 = ContactDetail("dhanush", "dhanush@email", listOf("1111111111", "2222222222"))
