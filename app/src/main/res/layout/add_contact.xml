@@ -24,7 +24,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName5"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName5"/>
 
         <Button
             android:id="@+id/button3"

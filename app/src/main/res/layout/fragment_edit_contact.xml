@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.contactsapp.editContactFragment.EditContactViewModel" />
+            type="com.example.contactsapp.ui.editContactFragment.EditContactViewModel" />
     </data>
 
     <ScrollView

@@ -2,20 +2,10 @@ package com.example.contactsapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.example.contactsapp.database.ContactDatabase
-import com.example.contactsapp.model.ContactDetail
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 

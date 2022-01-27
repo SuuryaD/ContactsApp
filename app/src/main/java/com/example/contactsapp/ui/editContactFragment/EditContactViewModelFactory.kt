@@ -1,8 +1,8 @@
-package com.example.contactsapp.editContactFragment
+package com.example.contactsapp.ui.editContactFragment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.contactsapp.database.ContactDetailsDao
+import com.example.contactsapp.data.database.ContactDetailsDao
 import java.lang.IllegalArgumentException
 
 class EditContactViewModelFactory(val dataSource: ContactDetailsDao,

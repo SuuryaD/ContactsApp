@@ -1,10 +1,9 @@
-package com.example.contactsapp.editContactFragment
+package com.example.contactsapp.ui.editContactFragment
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.contactsapp.database.*
-import com.example.contactsapp.model.ContactDetail
+import com.example.contactsapp.data.database.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

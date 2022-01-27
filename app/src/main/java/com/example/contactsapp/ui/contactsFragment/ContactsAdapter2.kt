@@ -1,11 +1,11 @@
-package com.example.contactsapp.contactsFragment
+package com.example.contactsapp.ui.contactsFragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.contactsapp.database.ContactWithPhone
+import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.AlphabetHeaderBinding
 import com.example.contactsapp.databinding.RowItemBinding
 

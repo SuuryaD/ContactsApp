@@ -6,13 +6,13 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.contactsapp.contactDetailFragment.ContactDetailViewModel" />
+            type="com.example.contactsapp.ui.contactDetailFragment.ContactDetailViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".contactDetailFragment.ContactDetailFragment">
+        tools:context=".ui.contactDetailFragment.ContactDetailFragment">
 
         <ScrollView
             android:layout_width="match_parent"

@@ -1,12 +1,4 @@
-package com.example.contactsapp.contactsFragment
-
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.example.contactsapp.databinding.RowItemBinding
-import com.example.contactsapp.model.ContactDetail
+package com.example.contactsapp.ui.contactsFragment
 
 
 //class ContactsAdapter(val clickListener: ContactListener) : ListAdapter<ContactDetail, ContactsAdapter.ViewHolder>(ContactCallBack()) {

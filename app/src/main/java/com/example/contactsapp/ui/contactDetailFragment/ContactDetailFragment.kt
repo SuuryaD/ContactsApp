@@ -1,25 +1,28 @@
-package com.example.contactsapp.contactDetailFragment
+package com.example.contactsapp.ui.contactDetailFragment
 
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.contactsapp.R
-import com.example.contactsapp.database.ContactDatabase
+import com.example.contactsapp.data.database.ContactDatabase
 import com.example.contactsapp.databinding.FragmentContactDetailBinding
 import com.example.contactsapp.databinding.PhoneRowBinding
+import com.example.contactsapp.di.ServiceLocator
 
 
 class ContactDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentContactDetailBinding
-    private lateinit var viewModel : ContactDetailViewModel
 
+    private val viewModel by viewModels<ContactDetailViewModel> { ContactDetailViewModelFactory(ServiceLocator.provideContactsDataSource(requireContext()))  }
+    private val args: ContactDetailFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,17 +31,19 @@ class ContactDetailFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_contact_detail, container, false)
 
-        val dataSource = ContactDatabase.getInstance(this.requireContext()).contactDetailsDao
-        val args :ContactDetailFragmentArgs by navArgs()
         val contactId = args.contactId
 
+        viewModel.start(args.contactId)
         activity?.title = "Contact Detail"
-        viewModel = ViewModelProvider(this,ContactDetailViewModelFactory(dataSource,contactId)).get(ContactDetailViewModel::class.java)
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
-        viewModel.currentContact.observe(this.viewLifecycleOwner, Observer {
+        viewModel.currentContact.observe(viewLifecycleOwner, Observer {
             it?.let {
+
+                binding.parentLinearLayout.removeAllViews()
+
                 Log.i("ContactDetailFragment", it.toString())
                 it.phoneNumbers.forEach {
                     addView(it.phoneNumber)
@@ -65,7 +70,7 @@ class ContactDetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
        return when(item.itemId){
             R.id.edit_contact -> {
-                this.findNavController().navigate(ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(viewModel.contactId))
+                this.findNavController().navigate(ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(args.contactId))
                 true
             }
             R.id.delete_contact ->  {
@@ -75,7 +80,6 @@ class ContactDetailFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
 
-//        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,9 +89,39 @@ class ContactDetailFragment : Fragment() {
 
     private fun addView(phoneNumber: String){
         val v = PhoneRowBinding.inflate(layoutInflater)
-//        val layoutInflater = layoutInflater.inflate(R.layout.phone_row, null)
         v.textView2.text = phoneNumber
         binding.parentLinearLayout.addView(v.root, binding.parentLinearLayout.childCount)
     }
 
+
+
+
+    // Testing
+
+
+    override fun onPause() {
+        super.onPause()
+        Log.i("ContactDetailFragment", "On Pause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("ContactDetailFragment", "On Stop called")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.i("ContactDetailFragment", "On DestroyView called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("ContactDetailFragment", "On Destroy called")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+//        viewModel.destroyContact()
+        Log.i("ContactDetailFragment", "On Detach called")
+    }
 }

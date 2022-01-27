@@ -1,4 +1,4 @@
-package com.example.contactsapp.editContactFragment
+package com.example.contactsapp.ui.editContactFragment
 
 import android.os.Bundle
 import android.text.Editable
@@ -14,16 +14,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.contactsapp.R
-import com.example.contactsapp.contactDetailFragment.ContactDetailFragmentArgs
-import com.example.contactsapp.contactDetailFragment.ContactDetailViewModel
-import com.example.contactsapp.contactDetailFragment.ContactDetailViewModelFactory
-import com.example.contactsapp.database.ContactDatabase
+import com.example.contactsapp.ui.contactDetailFragment.ContactDetailFragmentArgs
+import com.example.contactsapp.data.database.ContactDatabase
 import com.example.contactsapp.databinding.EditPhoneRowBinding
 import com.example.contactsapp.databinding.FragmentEditContactBinding
 
 class EditContactFragment : Fragment() {
 
     private lateinit var binding: FragmentEditContactBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,16 +44,15 @@ class EditContactFragment : Fragment() {
 
         viewModel.currentContact.observe(viewLifecycleOwner, Observer {
 
-
             for(i in it.phoneNumbers){
                 addView(i.phoneNumber)
             }
         })
 
-        binding.editSaveButton.setOnClickListener {
-            viewModel.onSaveButtonClicked(binding.editTextTextPersonName.text.toString(), binding.editTextTextEmailAddress2.text.toString(), onSave())
-            this.findNavController().navigate(EditContactFragmentDirections.actionEditContactFragmentToContactDetailFragment(viewModel.contactId))
-        }
+//        binding.editSaveButton.setOnClickListener {
+//            viewModel.onSaveButtonClicked(binding.editTextTextPersonName.text.toString(), binding.editTextTextEmailAddress2.text.toString(), onSave())
+//            this.findNavController().navigate(EditContactFragmentDirections.actionEditContactFragmentToContactDetailFragment(viewModel.contactId))
+//        }
 
 
 //        viewModel.currentContact.observe(this.viewLifecycleOwner, Observer {

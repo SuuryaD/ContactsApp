@@ -1,4 +1,4 @@
-package com.example.contactsapp.callHistory
+package com.example.contactsapp.ui.callHistory
 
 import androidx.lifecycle.ViewModel
 
