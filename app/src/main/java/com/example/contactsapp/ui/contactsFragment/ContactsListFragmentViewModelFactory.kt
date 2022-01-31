@@ -2,8 +2,7 @@ package com.example.contactsapp.ui.contactsFragment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.contactsapp.data.database.ContactDetailsDao
-import com.example.contactsapp.data.database.ContactsDataSource
+import com.example.contactsapp.data.ContactsDataSource
 
 class ContactsListFragmentViewModelFactory(val datasource: ContactsDataSource) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

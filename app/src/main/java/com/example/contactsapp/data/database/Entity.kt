@@ -9,9 +9,11 @@ data class ContactDetails(
     @PrimaryKey(autoGenerate = true)
     val contactId: Long = 0L,
 
-    var name: String,
+    val name: String,
 
-    var email: String
+    val email: String
+
+
 )
 
 @Entity(tableName = "phone",
@@ -24,11 +26,11 @@ data class ContactDetails(
 data class ContactPhoneNumber(
 
     @PrimaryKey(autoGenerate = true)
-    var phoneId: Long = 0L,
+    val phoneId: Long = 0L,
 
-    var contactId: Long = 0L,
+    val contactId: Long = 0L,
 
-    var phoneNumber: String
+    val phoneNumber: String
 )
 
 data class ContactWithPhone(

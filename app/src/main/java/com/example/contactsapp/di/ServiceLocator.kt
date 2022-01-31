@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.example.contactsapp.data.database.ContactDatabase
 import com.example.contactsapp.data.database.ContactDetailsDao
-import com.example.contactsapp.data.database.ContactsDataSource
-import com.example.contactsapp.data.database.ContactsLocalDataSource
+import com.example.contactsapp.data.ContactsDataSource
+import com.example.contactsapp.data.ContactsLocalDataSource
 
 object ServiceLocator {
 
@@ -13,13 +13,13 @@ object ServiceLocator {
 
     private var contactsDataSource: ContactsDataSource? = null
 
-    fun provideContactsDataSource(context: Context) : ContactsDataSource{
+    fun provideContactsDataSource(context: Context) : ContactsDataSource {
         return contactsDataSource ?: synchronized(this){
             return contactsDataSource ?: createContactsLocalDataSource(context)
         }
     }
 
-    private fun createContactsLocalDataSource(context: Context) : ContactsDataSource{
+    private fun createContactsLocalDataSource(context: Context) : ContactsDataSource {
         val newSrc = ContactsLocalDataSource(createContactsDatabase(context))
         contactsDataSource = newSrc
         return newSrc
@@ -31,6 +31,7 @@ object ServiceLocator {
     }
 
     private fun createDatabase(context: Context) : ContactDatabase{
+
         val res = Room.databaseBuilder(
             context.applicationContext,
         ContactDatabase::class.java,

@@ -1,5 +1,6 @@
 package com.example.contactsapp.ui.addContactFragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -7,6 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -20,6 +24,8 @@ import com.example.contactsapp.data.database.ContactDatabase
 import com.example.contactsapp.databinding.AddContactBinding
 import com.example.contactsapp.databinding.EditPhoneRowBinding
 import com.example.contactsapp.di.ServiceLocator
+import com.example.contactsapp.util.EventObserver
+import com.google.android.material.snackbar.Snackbar
 
 class AddFragment : Fragment() {
 
@@ -28,6 +34,15 @@ class AddFragment : Fragment() {
     private val viewModel: AddFragmentViewModel by viewModels { AddFragmentViewModelFactory(
         ServiceLocator.provideContactsDataSource(requireContext())) }
 
+    private lateinit var getImageLauncher: ActivityResultLauncher<String>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        getImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
+            binding.userImage.setImageURI(it)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,14 +51,21 @@ class AddFragment : Fragment() {
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.add_contact, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.start(args.contactId)
-        activity?.title = "Add/Edit Contacts"
+        activity?.title = "Add Contact"
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel.currentContact.observe(viewLifecycleOwner, Observer {
             it?.let {
-                binding.editTextTextPersonName5.text = Editable.Factory.getInstance().newEditable(it.contactDetails.name)
-                binding.editTextTextEmailAddress.text = Editable.Factory.getInstance().newEditable(it.contactDetails.email)
                 it.phoneNumbers.forEach {
                     addView(it.phoneNumber)
                 }
@@ -51,27 +73,28 @@ class AddFragment : Fragment() {
             addView()
         })
 
-        binding.button3.setOnClickListener {
-            viewModel.onSave(binding.editTextTextPersonName5.text.toString(), binding.editTextTextEmailAddress.text.toString(), onSave())
-//            this.findNavController().navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(args.contactId))
-        }
-
-
-        viewModel.navigateToContacts.observe(this.viewLifecycleOwner, Observer {
+        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver{
             if(it){
-                this.findNavController().navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
-                viewModel.doneNavigation()
+                this.findNavController().navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(args.contactId))
             }
         })
 
-        viewModel.navigateToContactDetail.observe(this.viewLifecycleOwner){
-            if(it){
-                this.findNavController().navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(args.contactId))
-                viewModel.doneNavigationToDetail()
-            }
+        viewModel.navigateToContacts.observe(viewLifecycleOwner, EventObserver{
+            this.findNavController().navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
+        })
+
+        binding.button3.setOnClickListener {
+            viewModel.onSave(onSave())
         }
 
-        return binding.root
+        binding.userImage.setOnClickListener {
+            getImageLauncher.launch("image/*")
+        }
+
+        viewModel.snackBarEvent.observe(viewLifecycleOwner, EventObserver{
+            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+        })
+
     }
 
     private fun addView(phoneNumber: String? = null){

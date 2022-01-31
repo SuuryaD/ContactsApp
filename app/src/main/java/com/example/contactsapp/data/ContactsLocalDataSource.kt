@@ -1,27 +1,42 @@
-package com.example.contactsapp.data.database
+package com.example.contactsapp.data
 
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.map
+import com.example.contactsapp.data.database.ContactDetailsDao
+import com.example.contactsapp.data.database.ContactPhoneNumber
+import com.example.contactsapp.data.database.ContactWithPhone
+import com.example.contactsapp.data.Result.Success
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ContactsLocalDataSource(
     private val contactsDao: ContactDetailsDao
 ) : ContactsDataSource {
-    override fun observeAllContacts(): LiveData<List<ContactWithPhone>> {
-        return contactsDao.getAll()
-    }
 
-    override fun observeContactById(contactId: Long): LiveData<ContactWithPhone> {
-        return contactsDao.observeContactById(contactId)
-    }
 
-    override suspend fun getContactById(contactId: Long): ContactWithPhone {
-        return withContext(Dispatchers.IO){
-            contactsDao.getContactById(contactId)
+    override fun observeAllContacts(): LiveData<Result<List<ContactWithPhone>>>{
+        return contactsDao.getAll().map {
+            Success(it)
         }
     }
+
+    override fun observeContactById(contactId: Long): LiveData<Result<ContactWithPhone>> {
+        return contactsDao.observeContactById(contactId).map {
+            Success(it)
+        }
+    }
+
+    override suspend fun getContactById(contactId: Long): Result<ContactWithPhone> {
+        return withContext(Dispatchers.IO) {
+
+            return@withContext try {
+                Success(contactsDao.getContactById(contactId))
+            } catch (e: Exception) {
+                Result.Error(e)
+            }
+        }
+    }
+
 
     override suspend fun insert(contactWithPhone: ContactWithPhone) {
         withContext(Dispatchers.IO){

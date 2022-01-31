@@ -1,26 +1,33 @@
 package com.example.contactsapp.ui.contactDetailFragment
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
-import com.example.contactsapp.data.database.ContactDetailsDao
+import androidx.lifecycle.*
 import com.example.contactsapp.data.database.ContactWithPhone
-import com.example.contactsapp.data.database.ContactsDataSource
+import com.example.contactsapp.data.ContactsDataSource
+import com.example.contactsapp.data.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ContactDetailViewModel(val dataSource: ContactsDataSource) : ViewModel() {
 
     private val _contactId = MutableLiveData<Long>()
 
     private val _currentContact = _contactId.switchMap {
-        dataSource.observeContactById(it)
+        dataSource.observeContactById(it).map { computeResult(it) }
     }
-    val currentContact: LiveData<ContactWithPhone> = _currentContact
+
+    private fun computeResult(it: Result<ContactWithPhone>) : ContactWithPhone?{
+        return if(it is Result.Success){
+            it.data
+        }else{
+            null
+        }
+    }
+
+    val currentContact: LiveData<ContactWithPhone?> = _currentContact
 
 
     val navigateToContactsListFragment = MutableLiveData<Boolean>(false)
@@ -46,5 +53,7 @@ class ContactDetailViewModel(val dataSource: ContactsDataSource) : ViewModel() {
     fun doneNavigateToContactsListFragment(){
         navigateToContactsListFragment.value = false
     }
+
+
 
 }

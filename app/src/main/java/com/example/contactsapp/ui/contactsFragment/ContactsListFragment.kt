@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.contactsapp.R
 import com.example.contactsapp.databinding.FragmentContactsListBinding
 import com.example.contactsapp.di.ServiceLocator
+import com.example.contactsapp.util.EventObserver
 
 class ContactsListFragment : Fragment() {
 
@@ -36,23 +37,26 @@ class ContactsListFragment : Fragment() {
             contactWithPhone -> this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactWithPhone.contactDetails.contactId))
         })
 
-        binding.contactList.adapter = adapter
-
         viewModel.contacts.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
-                Log.i("ContactsListFragment", " Transformed contacts $it.toString()")
             }
-            Log.i("ContactsListFragment", " Transformed contacts  null $it.toString()")
         })
 
-        viewModel.navigateToAddContact.observe(this.viewLifecycleOwner, Observer { 
-            if(it){
-                this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToAddFragment(0L))
-                viewModel.doneNavigateToAddContact()
-            }
-        })
+        binding.contactList.adapter = adapter
+
         return binding.root
     }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.navigateToAddContact.observe(this.viewLifecycleOwner, EventObserver {
+                this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToAddFragment(0L))
+
+        })
+    }
+
 
 }

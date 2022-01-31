@@ -1,11 +1,19 @@
 package com.example.contactsapp.ui.addContactFragment
 
+import android.text.Editable
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
+import android.view.LayoutInflater
+import android.widget.EditText
+import android.widget.LinearLayout
+import androidx.core.widget.doAfterTextChanged
+import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.lifecycle.*
+import com.example.contactsapp.data.ContactsDataSource
+import com.example.contactsapp.data.Result
 import com.example.contactsapp.data.database.*
+import com.example.contactsapp.databinding.EditPhoneRowBinding
+import com.example.contactsapp.util.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,50 +23,76 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
     private val _contactId: MutableLiveData<Long> = MutableLiveData<Long>()
 
-    val currentContact = _contactId.switchMap {
-       dataSource.observeContactById(it)
+    val currentContact = _contactId.switchMap { contactId ->
+        dataSource.observeContactById(contactId).map{ computeResult(it) }
     }
+
+    private fun computeResult(data: Result<ContactWithPhone>) : ContactWithPhone?{
+
+        return if(data is Result.Success ) {
+            data.data
+        }else {
+            null
+        }
+    }
+
+    val name = currentContact.map {
+        it?.contactDetails?.name ?: ""
+    } as MutableLiveData<String>
+
+    val email = currentContact.map{
+        it?.contactDetails?.email ?: ""
+    } as MutableLiveData<String>
+
 
     fun start(contactId: Long){
         _contactId.value = contactId
     }
 
-    private val _navigateToContacts = MutableLiveData<Boolean>()
-    val navigateToContacts: LiveData<Boolean>
-    get() = _navigateToContacts
-
-    private val _navigateToContactDetail = MutableLiveData<Boolean>()
-    val navigateToContactDetail: LiveData<Boolean>
-            get() = _navigateToContactDetail
-
-    init {
-        _navigateToContacts.value = false
-    }
+    private val _snackBarEvent = MutableLiveData<Event<String>>()
+    val snackBarEvent: LiveData<Event<String>>
+        get() = _snackBarEvent
 
 
-    fun onSave(name: String, email: String, phoneNumbers: List<String> ){
+    private val _navigateToContactDetail = MutableLiveData<Event<Boolean>>()
+    val navigateToContactDetail : LiveData<Event<Boolean>>
+        get() = _navigateToContactDetail
 
+    private val _navigateToContacts = MutableLiveData<Event<Unit>>()
+    val navigateToContacts: LiveData<Event<Unit>>
+        get() = _navigateToContacts
+
+
+    fun onSave(phoneNumbers: List<String> ){
+
+        val name = name.value
+        val email = email.value
+
+        if(name == null || name.isEmpty()){
+            _snackBarEvent.value = Event("Name cannot be empty")
+            return
+        }
 
         if(_contactId.value == 0L){
-            addContact(name,email, phoneNumbers)
-            _navigateToContacts.value = true
+            addContact(phoneNumbers)
+            _navigateToContacts.value = Event(Unit)
 
         }else{
-
-            updateContact(name, email, phoneNumbers)
-            _navigateToContactDetail.value = true
+            updateContact(phoneNumbers)
+            _navigateToContactDetail.value = Event(true)
         }
-//        _navigateToContacts.value = true
+
     }
 
-    private fun addContact(name: String, email: String, phoneNumbers: List<String>){
+    private fun addContact( phoneNumbers: List<String>){
+
         val ls = ArrayList<ContactPhoneNumber>()
 
         for(i in phoneNumbers){
             ls.add(ContactPhoneNumber(phoneNumber = i))
         }
 
-        val temp = ContactWithPhone(ContactDetails(name = name, email = email), ls)
+        val temp = ContactWithPhone(ContactDetails(name = name.value ?: "", email = email.value ?: ""), ls)
 
         CoroutineScope(Dispatchers.IO).launch {
             dataSource.insert(temp)
@@ -67,7 +101,7 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
     }
 
 
-    private fun updateContact(name: String, email: String, phoneNumbers: List<String>){
+    private fun updateContact(phoneNumbers: List<String>){
 
         val ls = ArrayList<ContactPhoneNumber>()
         var i = 0
@@ -94,7 +128,7 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
         Log.i("AddFragmentViewModel", "Old: ${ls.toString()}, New: ${newPhoneNumbers.toString()}, Delete: ${deleteList.toString()}")
 
-        val temp = ContactWithPhone(ContactDetails(contactId= _contactId.value!!, name = name, email = email), ls)
+        val temp = ContactWithPhone(ContactDetails(contactId= _contactId.value!!, name = name.value ?: "temp", email = email.value ?: "temp@email"), ls)
 
         CoroutineScope(Dispatchers.IO).launch {
             dataSource.updateContact(temp)
@@ -102,21 +136,46 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
             dataSource.deletePhoneNumbers(deleteList)
         }
 
-
     }
 
-    private suspend fun save(contactWithPhone: ContactWithPhone){
-        withContext(Dispatchers.IO){
-            dataSource.insert(contactWithPhone)
-        }
-    }
-
-    fun doneNavigation() {
-        _navigateToContacts.value = false
-    }
-
-    fun doneNavigationToDetail() {
-        _navigateToContactDetail.value = false
-    }
 
 }
+//
+//@BindingAdapter("text2")
+//fun customText(editText: EditText, text: String){
+//    editText.text = Editable.Factory.getInstance().newEditable(text)
+//}
+//
+//@InverseBindingAdapter(attribute = "text2")
+//fun getText(editText: EditText) : String{
+//    return editText.text.toString()
+//}
+//
+//@BindingAdapter("dynamicList")
+//fun dynamicList(linearLayout: LinearLayout, ls : MutableLiveData<ArrayList<MutableLiveData<String>>>){
+//
+//    Log.i("AddFragmentViewModel", "dynamicList: ${ls.value?.size}")
+//    ls.value?.let {
+//        for(i in it){
+//            addView(linearLayout,i)
+//        }
+//        addView(linearLayout)
+//    }
+//
+//}
+//
+//fun addView(linearLayout: LinearLayout, phoneNumber: MutableLiveData<String>? = null){
+//    val v = EditPhoneRowBinding.inflate(LayoutInflater.from(linearLayout.context))
+//    if(phoneNumber != null)
+//        v.editTextPhone.text = Editable.Factory.getInstance().newEditable(phoneNumber.value.toString())
+//    val cnt = linearLayout.childCount
+//    v.editTextPhone.doAfterTextChanged {
+//        if(it.toString().isNotEmpty() && linearLayout.childCount == cnt + 1){
+//            addView(linearLayout)
+//        }
+//        if(linearLayout.childCount > 1 && it.toString().isEmpty() && linearLayout.childCount == cnt + 2){
+//            linearLayout.removeViewAt(linearLayout.childCount - 1)
+//        }
+//    }
+//    linearLayout.addView(v.root, linearLayout.childCount)
+//}

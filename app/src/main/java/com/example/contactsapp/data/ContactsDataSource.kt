@@ -1,14 +1,16 @@
-package com.example.contactsapp.data.database
+package com.example.contactsapp.data
 
 import androidx.lifecycle.LiveData
+import com.example.contactsapp.data.database.ContactPhoneNumber
+import com.example.contactsapp.data.database.ContactWithPhone
 
 interface ContactsDataSource {
 
-    fun observeAllContacts() : LiveData<List<ContactWithPhone>>
+    fun observeAllContacts() : LiveData<Result<List<ContactWithPhone>>>
 
-    fun observeContactById(contactId: Long) : LiveData<ContactWithPhone>
+    fun observeContactById(contactId: Long) : LiveData<Result<ContactWithPhone>>
 
-    suspend fun getContactById(contactId: Long): ContactWithPhone
+    suspend fun getContactById(contactId: Long): Result<ContactWithPhone>
 
     suspend fun insert(contactWithPhone: ContactWithPhone)
 
