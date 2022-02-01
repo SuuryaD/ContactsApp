@@ -97,12 +97,12 @@
         <ImageView
             android:id="@+id/user_image"
             android:layout_width="160dp"
-            android:layout_height="157dp"
+            android:layout_height="160dp"
             android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            ImageUri="@{String.valueOf(viewModel.userImage)}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

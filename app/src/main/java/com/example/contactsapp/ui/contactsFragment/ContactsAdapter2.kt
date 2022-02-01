@@ -1,24 +1,39 @@
 package com.example.contactsapp.ui.contactsFragment
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.AlphabetHeaderBinding
 import com.example.contactsapp.databinding.RowItemBinding
 
-class ContactsAdapter2(val clickListener: ContactListener) : ListAdapter<ContactWithPhone, RecyclerView.ViewHolder>(ContactPhoneCallBack()) {
+class ContactsAdapter2(val clickListener: ContactListener) :
+    ListAdapter<ContactWithPhone, RecyclerView.ViewHolder>(ContactPhoneCallBack()) {
 
 
     val VIEW_TYPE_ONE = 1
     val VIEW_TYPE_TWO = 2
-    class ViewHolder1(val binding: RowItemBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(item: ContactWithPhone, clickListener: ContactListener){
+    class ViewHolder1(val binding: RowItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: ContactWithPhone, clickListener: ContactListener) {
             binding.contactWithPhone = item
             binding.clickListener = clickListener
+            Glide.with(binding.root.context)
+                .load(Uri.parse(item.contactDetails.user_image))
+                .fitCenter()
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .error(R.drawable.ic_baseline_account_circle_24)
+                .into(binding.imageView8)
+//            binding.shapeableImageView.setImageURI(Uri.parse(item.contactDetails.user_image))
             binding.executePendingBindings()
         }
 
@@ -31,13 +46,13 @@ class ContactsAdapter2(val clickListener: ContactListener) : ListAdapter<Contact
         }
     }
 
-    class ViewHolder2(val binding: AlphabetHeaderBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(item: ContactWithPhone){
+    class ViewHolder2(val binding: AlphabetHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: ContactWithPhone) {
             binding.textView3.text = item.contactDetails.name
         }
 
         companion object {
-            fun from(parent: ViewGroup): ViewHolder2{
+            fun from(parent: ViewGroup): ViewHolder2 {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = AlphabetHeaderBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder2(binding)
@@ -47,7 +62,7 @@ class ContactsAdapter2(val clickListener: ContactListener) : ListAdapter<Contact
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(getItem(position).contactDetails.contactId){
+        return when (getItem(position).contactDetails.contactId) {
             0L -> VIEW_TYPE_ONE
             else -> VIEW_TYPE_TWO
         }
@@ -62,24 +77,22 @@ class ContactsAdapter2(val clickListener: ContactListener) : ListAdapter<Contact
 //    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if(viewType == VIEW_TYPE_ONE){
+        if (viewType == VIEW_TYPE_ONE) {
             return ViewHolder2.from(parent)
-        }
-        else
+        } else
             return ViewHolder1.from(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if(getItemViewType(position) == VIEW_TYPE_ONE){
+        if (getItemViewType(position) == VIEW_TYPE_ONE) {
             (holder as ViewHolder2).bind(getItem(position))
-        }
-        else {
+        } else {
             (holder as ViewHolder1).bind(getItem(position), clickListener)
         }
     }
 }
 
-class ContactPhoneCallBack : DiffUtil.ItemCallback<ContactWithPhone>(){
+class ContactPhoneCallBack : DiffUtil.ItemCallback<ContactWithPhone>() {
     override fun areItemsTheSame(oldItem: ContactWithPhone, newItem: ContactWithPhone): Boolean {
         return oldItem.contactDetails.contactId == newItem.contactDetails.contactId
     }
@@ -90,6 +103,6 @@ class ContactPhoneCallBack : DiffUtil.ItemCallback<ContactWithPhone>(){
 
 }
 
-class ContactListener(val onClickListener: (contactWithPhone: ContactWithPhone) -> Unit){
+class ContactListener(val onClickListener: (contactWithPhone: ContactWithPhone) -> Unit) {
     fun onClick(contactWithPhone: ContactWithPhone) = onClickListener(contactWithPhone)
 }

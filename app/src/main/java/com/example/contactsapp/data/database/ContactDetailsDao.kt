@@ -16,7 +16,8 @@ interface ContactDetailsDao{
     @Transaction
     suspend fun insert(contactWithPhone: ContactWithPhone){
 
-        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
+//        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
+        val id = insertContact(contactWithPhone.contactDetails)
 
         for(i in contactWithPhone.phoneNumbers){
             insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))

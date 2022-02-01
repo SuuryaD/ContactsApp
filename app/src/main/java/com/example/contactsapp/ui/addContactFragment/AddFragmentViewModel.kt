@@ -1,5 +1,6 @@
 package com.example.contactsapp.ui.addContactFragment
 
+import android.net.Uri
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,8 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
     private val _contactId: MutableLiveData<Long> = MutableLiveData<Long>()
 
+//    var user_image: Uri? = null
+
     val currentContact = _contactId.switchMap { contactId ->
         dataSource.observeContactById(contactId).map{ computeResult(it) }
     }
@@ -35,6 +38,15 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
             null
         }
     }
+
+    fun setImageUri(uri: Uri){
+//        user_image = uri
+        userImage.value = uri.toString()
+    }
+
+    val userImage = currentContact.map {
+        it?.contactDetails?.user_image ?: ""
+    } as MutableLiveData<String>
 
     val name = currentContact.map {
         it?.contactDetails?.name ?: ""
@@ -54,8 +66,8 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
         get() = _snackBarEvent
 
 
-    private val _navigateToContactDetail = MutableLiveData<Event<Boolean>>()
-    val navigateToContactDetail : LiveData<Event<Boolean>>
+    private val _navigateToContactDetail = MutableLiveData<Event<Unit>>()
+    val navigateToContactDetail : LiveData<Event<Unit>>
         get() = _navigateToContactDetail
 
     private val _navigateToContacts = MutableLiveData<Event<Unit>>()
@@ -79,7 +91,7 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
         }else{
             updateContact(phoneNumbers)
-            _navigateToContactDetail.value = Event(true)
+            _navigateToContactDetail.value = Event(Unit)
         }
 
     }
@@ -92,7 +104,7 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
             ls.add(ContactPhoneNumber(phoneNumber = i))
         }
 
-        val temp = ContactWithPhone(ContactDetails(name = name.value ?: "", email = email.value ?: ""), ls)
+        val temp = ContactWithPhone(ContactDetails(name = name.value ?: "", email = email.value ?: "", user_image = userImage.value), ls)
 
         CoroutineScope(Dispatchers.IO).launch {
             dataSource.insert(temp)
@@ -110,7 +122,6 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
             ls.add(ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(i)?.phoneId!!, currentContact.value?.contactDetails?.contactId!!,phoneNumbers.get(i)))
             i++
         }
-        Log.i("AddFragmentViewModel", "$i - ${phoneNumbers.size}")
 
         val deleteList = ArrayList<ContactPhoneNumber>()
 
@@ -126,9 +137,11 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
             i++
         }
 
-        Log.i("AddFragmentViewModel", "Old: ${ls.toString()}, New: ${newPhoneNumbers.toString()}, Delete: ${deleteList.toString()}")
-
-        val temp = ContactWithPhone(ContactDetails(contactId= _contactId.value!!, name = name.value ?: "temp", email = email.value ?: "temp@email"), ls)
+        val temp = ContactWithPhone(
+            ContactDetails(contactId= _contactId.value!!,
+                name = name.value!!, email = email.value!!,
+                user_image = userImage.value),
+            ls)
 
         CoroutineScope(Dispatchers.IO).launch {
             dataSource.updateContact(temp)

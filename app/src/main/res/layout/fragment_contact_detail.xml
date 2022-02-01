@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.example.contactsapp.ui.contactDetailFragment.ContactDetailViewModel" />
@@ -26,12 +27,12 @@
                 android:layout_width="343dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="68dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
                 android:text="@{viewModel.currentContact.contactDetails.name}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView7"
                 tools:text="name" />
 
             <TextView
@@ -39,7 +40,7 @@
                 android:layout_width="334dp"
                 android:layout_height="23dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="104dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
                 android:text="@{viewModel.currentContact.contactDetails.email}"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +63,7 @@
                 android:id="@+id/parentLinearLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="92dp"
+                android:layout_marginTop="32dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -73,9 +74,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="68dp"
+                android:layout_marginTop="32dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView7"
                 app:srcCompat="@drawable/ic_baseline_person_24" />
 
             <ImageView
@@ -83,10 +84,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="104dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/parentLinearLayout"
-                app:srcCompat="@drawable/ic_baseline_email_24" />
+                app:layout_constraintTop_toTopOf="@+id/displayEmail"
+                app:srcCompat="@drawable/ic_baseline_email_24"
+                android:visibility="@{viewModel.currentContact.contactDetails.email.length() == 0 ? View.GONE : View.VISIBLE}"/>
+
+            <ImageView
+                android:id="@+id/imageView7"
+                ImageUri="@{String.valueOf(viewModel.currentContact.contactDetails.user_image)}"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginTop="28dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </FrameLayout>

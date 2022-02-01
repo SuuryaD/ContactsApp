@@ -7,6 +7,7 @@ import androidx.lifecycle.*
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.data.ContactsDataSource
 import com.example.contactsapp.data.Result
+import com.example.contactsapp.util.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,8 +31,12 @@ class ContactDetailViewModel(val dataSource: ContactsDataSource) : ViewModel() {
     val currentContact: LiveData<ContactWithPhone?> = _currentContact
 
 
-    val navigateToContactsListFragment = MutableLiveData<Boolean>(false)
+//    val navigateToContactsListFragment = MutableLiveData<Boolean>(false)
 
+
+    private val _navigateToContactsListFragment = MutableLiveData<Event<Unit>>()
+    val navigateToContactsListFragment: LiveData<Event<Unit>>
+        get() = _navigateToContactsListFragment
 
     fun start(contactId: Long){
 
@@ -47,12 +52,12 @@ class ContactDetailViewModel(val dataSource: ContactsDataSource) : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             dataSource.deleteContact(currentContact.value?.contactDetails?.contactId!!)
         }
-        navigateToContactsListFragment.value = true
+        _navigateToContactsListFragment.value = Event(Unit)
     }
 
-    fun doneNavigateToContactsListFragment(){
-        navigateToContactsListFragment.value = false
-    }
+//    fun doneNavigateToContactsListFragment(){
+//        navigateToContactsListFragment.value = false
+//    }
 
 
 

@@ -27,21 +27,22 @@
             android:text="@{contactWithPhone.contactDetails.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/shapeableImageView"
+            app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.508" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/shapeableImageView"
+        <ImageView
+            android:id="@+id/imageView8"
             android:layout_width="51dp"
-            android:layout_height="44dp"
+            android:layout_height="43dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-            app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+            tools:src="@drawable/ic_baseline_account_circle_24"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

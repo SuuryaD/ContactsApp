@@ -1,5 +1,6 @@
 package com.example.contactsapp.data.database
 
+import android.net.Uri
 import androidx.room.*
 
 
@@ -11,8 +12,9 @@ data class ContactDetails(
 
     val name: String,
 
-    val email: String
+    val email: String,
 
+    val user_image: String?
 
 )
 

@@ -22,12 +22,12 @@ class ContactsListFragmentViewModel(datasource: ContactsDataSource) : ViewModel(
             if(it.isEmpty())
                 return@map ls
             ls.add(
-                ContactWithPhone(ContactDetails(name = it[0].contactDetails.name.substring(0,1).uppercase(), email = ""),
+                ContactWithPhone(ContactDetails(name = it[0].contactDetails.name.substring(0,1).uppercase(), email = "", user_image = null),
                 listOf(ContactPhoneNumber(phoneNumber = ""))))
             ls.add(it[0])
             for(i in 1 until it.size){
                 if(it[i -1].contactDetails.name.substring(0,1) != it[i].contactDetails.name.substring(0,1)){
-                    ls.add(ContactWithPhone(ContactDetails(name = it[i].contactDetails.name.substring(0,1).uppercase(), email = ""),
+                    ls.add(ContactWithPhone(ContactDetails(name = it[i].contactDetails.name.substring(0,1).uppercase(), email = "", user_image = null),
                         listOf(ContactPhoneNumber(phoneNumber = ""))))
                     ls.add(it[i])
                 }

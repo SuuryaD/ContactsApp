@@ -1,6 +1,8 @@
 package com.example.contactsapp.ui.addContactFragment
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -34,14 +36,30 @@ class AddFragment : Fragment() {
     private val viewModel: AddFragmentViewModel by viewModels { AddFragmentViewModelFactory(
         ServiceLocator.provideContactsDataSource(requireContext())) }
 
-    private lateinit var getImageLauncher: ActivityResultLauncher<String>
+    private lateinit var getImageLauncher: ActivityResultLauncher<Intent>
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
-            binding.userImage.setImageURI(it)
+        getImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            it?.let {
+                if(it.resultCode == Activity.RESULT_OK){
+
+                    if(it.data?.data != null){
+
+                        val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        activity?.contentResolver?.takePersistableUriPermission(it.data?.data!!, flags)
+
+//                        binding.userImage.setImageURI(it.data?.data)
+                        viewModel.setImageUri(it.data?.data!!)
+                    }
+
+                }
+            }
         }
+
     }
 
     override fun onCreateView(
@@ -66,6 +84,8 @@ class AddFragment : Fragment() {
 
         viewModel.currentContact.observe(viewLifecycleOwner, Observer {
             it?.let {
+//                viewModel.setImageUri(Uri.parse(it.contactDetails.user_image))
+//                binding.userImage.setImageURI(Uri.parse(it.contactDetails.user_image))
                 it.phoneNumbers.forEach {
                     addView(it.phoneNumber)
                 }
@@ -74,9 +94,7 @@ class AddFragment : Fragment() {
         })
 
         viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver{
-            if(it){
                 this.findNavController().navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(args.contactId))
-            }
         })
 
         viewModel.navigateToContacts.observe(viewLifecycleOwner, EventObserver{
@@ -88,7 +106,12 @@ class AddFragment : Fragment() {
         }
 
         binding.userImage.setOnClickListener {
-            getImageLauncher.launch("image/*")
+            val i = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            i.addCategory(Intent.CATEGORY_OPENABLE)
+            i.type = "image/*"
+            i.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            i.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            getImageLauncher.launch(Intent.createChooser(i,"Select a photo"))
         }
 
         viewModel.snackBarEvent.observe(viewLifecycleOwner, EventObserver{
