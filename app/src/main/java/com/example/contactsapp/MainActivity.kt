@@ -3,7 +3,10 @@ package com.example.contactsapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -16,6 +19,8 @@ class MainActivity : AppCompatActivity() {
 
         val navController = this.findNavController(R.id.nav_host_fragment)
         val navView: BottomNavigationView = findViewById(R.id.bottomNavView)
+//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val appbar = AppBarConfiguration(navController.graph)
         navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -26,30 +31,16 @@ class MainActivity : AppCompatActivity() {
                 navView.visibility = View.INVISIBLE
         }
 
-//
-//        val temp = ContactDetail("surya", "surya@email", listOf("123456789", "987654321"))
-//        val temp2 = ContactDetail("dhanush", "dhanush@email", listOf("1111111111", "2222222222"))
-//
-//        val application = requireNotNull(this).application
-//        val db = ContactDatabase.getInstance(application).contactDetailsDao
-//
-//        val res = db.getAll()
-//        res.observe(this, Observer {
-//            Log.i("MainActivity", it.toString())
-//        })
-//        CoroutineScope(Dispatchers.IO).launch {
-//            db.insert(temp)
-////            Log.i("MainActivity", db.getAll().toString())
-////            db.deleteContact(1)
-////            Log.i("MainActivity", db.getAll().toString())
-////            db.deleteContact(2)
-////            Log.i("MainActivity", db.getAll().toString())
-////            db.deleteContact(3)
-////            Log.i("MainActivity", db.getAll().toString())
-////            Log.i("MainActivity", db.getphoneNumber(3).toString())
-////            Log.i("MainActivity", db.getphoneNumber(5).toString())
-//
-//        }
-        
+//        setSupportActionBar(toolbar)
+
+
+        NavigationUI.setupActionBarWithNavController(this, navController)
+
+
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
@@ -22,11 +23,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactDatabase
 import com.example.contactsapp.databinding.FragmentContactDetailBinding
 import com.example.contactsapp.databinding.PhoneRowBinding
 import com.example.contactsapp.di.ServiceLocator
+import com.example.contactsapp.ui.addContactFragment.AddFragment
+import com.example.contactsapp.ui.addContactFragment.AddFragmentViewModel
 import com.example.contactsapp.util.EventObserver
 import com.google.android.material.snackbar.Snackbar
 import java.util.jar.Manifest
@@ -56,6 +60,8 @@ class ContactDetailFragment : Fragment() {
                     Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
                 }
             }
+
+//        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onCreateView(
@@ -156,8 +162,23 @@ class ContactDetailFragment : Fragment() {
 }
 
 @BindingAdapter("ImageUri")
-fun setImageUri(imgView: ImageView, uri: String) {
+fun setImageUri(imgView: ImageView, uri: String?) {
 
+        val u = Uri.parse(uri)
+
+        Glide.with(imgView.context)
+            .load(u)
+            .fitCenter()
+            .circleCrop()
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .error(R.drawable.ic_baseline_account_circle_24)
+            .into(imgView)
+
+}
+
+@BindingAdapter("ImageUri2")
+fun setImageUri2(imgView: ImageView, uri: String){
 
     val u = Uri.parse(uri)
 
@@ -165,8 +186,8 @@ fun setImageUri(imgView: ImageView, uri: String) {
         .load(u)
         .fitCenter()
         .circleCrop()
-        .error(R.drawable.ic_baseline_account_circle_24)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
+        .error(R.drawable.ic_baseline_add_a_photo_24)
         .into(imgView)
-
-
 }

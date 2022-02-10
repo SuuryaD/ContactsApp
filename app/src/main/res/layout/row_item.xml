@@ -41,6 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            ImageUri="@{String.valueOf(contactWithPhone.contactDetails.user_image)}"
             tools:src="@drawable/ic_baseline_account_circle_24"/>
 
 

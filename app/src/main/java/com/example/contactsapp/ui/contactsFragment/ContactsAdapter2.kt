@@ -25,14 +25,14 @@ class ContactsAdapter2(val clickListener: ContactListener) :
         fun bind(item: ContactWithPhone, clickListener: ContactListener) {
             binding.contactWithPhone = item
             binding.clickListener = clickListener
-            Glide.with(binding.root.context)
-                .load(Uri.parse(item.contactDetails.user_image))
-                .fitCenter()
-                .circleCrop()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .error(R.drawable.ic_baseline_account_circle_24)
-                .into(binding.imageView8)
+//            Glide.with(binding.root.context)
+//                .load(Uri.parse(item.contactDetails.user_image))
+//                .fitCenter()
+//                .circleCrop()
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .skipMemoryCache(true)
+//                .error(R.drawable.ic_baseline_account_circle_24)
+//                .into(binding.imageView8)
 //            binding.shapeableImageView.setImageURI(Uri.parse(item.contactDetails.user_image))
             binding.executePendingBindings()
         }

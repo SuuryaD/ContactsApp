@@ -1,24 +1,15 @@
 package com.example.contactsapp.ui.addContactFragment
 
 import android.net.Uri
-import android.text.Editable
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.EditText
-import android.widget.LinearLayout
-import androidx.core.widget.doAfterTextChanged
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingAdapter
+import android.util.Patterns
 import androidx.lifecycle.*
 import com.example.contactsapp.data.ContactsDataSource
 import com.example.contactsapp.data.Result
 import com.example.contactsapp.data.database.*
-import com.example.contactsapp.databinding.EditPhoneRowBinding
 import com.example.contactsapp.util.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewModel() {
 
@@ -65,6 +56,10 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
     val snackBarEvent: LiveData<Event<String>>
         get() = _snackBarEvent
 
+    private val _invalidEmailSnackBar = MutableLiveData<Event<String>>()
+    val invalidEmailSnackBar : LiveData<Event<String>>
+        get() = _invalidEmailSnackBar
+
 
     private val _navigateToContactDetail = MutableLiveData<Event<Unit>>()
     val navigateToContactDetail : LiveData<Event<Unit>>
@@ -82,6 +77,11 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
         if(name == null || name.isEmpty()){
             _snackBarEvent.value = Event("Name cannot be empty")
+            return
+        }
+
+        if(email != null && !email.matches(Patterns.EMAIL_ADDRESS.toRegex())){
+            _invalidEmailSnackBar.value = Event("Enter a valid Email")
             return
         }
 
