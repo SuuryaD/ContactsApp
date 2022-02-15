@@ -18,7 +18,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="32dp">
 
 
         <LinearLayout
@@ -88,14 +89,16 @@
 
         <ImageView
             android:id="@+id/user_image"
+            ImageUri2="@{String.valueOf(viewModel.userImage)}"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            ImageUri2="@{String.valueOf(viewModel.userImage)}"
-            tools:src="@drawable/ic_baseline_account_circle_24"/>
+            tools:src="@drawable/ic_baseline_account_circle_24"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ContactDetailViewModel(val dataSource: ContactsDataSource) : ViewModel() {
+class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewModel() {
 
     private val _contactId = MutableLiveData<Long>()
 

@@ -14,7 +14,7 @@ interface ContactDetailsDao{
     fun observeContactById(contactId: Long): LiveData<ContactWithPhone>
 
     @Transaction
-    suspend fun insert(contactWithPhone: ContactWithPhone){
+    suspend fun insert(contactWithPhone: ContactWithPhone) : Long{
 
 //        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
         val id = insertContact(contactWithPhone.contactDetails)
@@ -22,6 +22,7 @@ interface ContactDetailsDao{
         for(i in contactWithPhone.phoneNumbers){
             insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
         }
+        return id
     }
 
     @Insert
@@ -43,11 +44,12 @@ interface ContactDetailsDao{
     }
 
     @Transaction
-    suspend fun updateContact2(contactWithPhone: ContactWithPhone){
+    suspend fun updateContact2(oldContactWithPhone: ContactWithPhone, new: ContactWithPhone) : Long{
 
-        deleteContact(contactWithPhone.contactDetails.contactId)
+        deleteContact(oldContactWithPhone.contactDetails.contactId)
 
-        insert(contactWithPhone)
+
+        return insert(new)
     }
 
     @Delete

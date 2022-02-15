@@ -12,9 +12,11 @@ import android.text.Editable
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
@@ -68,7 +70,6 @@ class AddFragment : Fragment() {
                             )
                             viewModel.setImageUri(it.data?.data!!)
                         }
-
                     }
                 }
             }
@@ -84,16 +85,20 @@ class AddFragment : Fragment() {
         activity?.onBackPressedDispatcher?.addCallback(this) {
             Log.i("AddFragment", "On back call back")
 
-            askUser {
+            if(viewModel.isValuesChanged(onSave())){
+                askUser {
+                    isEnabled = false
+                    activity?.onBackPressed()
+                }
+            }
+            else{
                 isEnabled = false
                 activity?.onBackPressed()
             }
+
         }
 
     }
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -106,7 +111,16 @@ class AddFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.start(args.contactId)
-        activity?.title = "Add Contact"
+
+        (activity as AppCompatActivity).supportActionBar?.let {
+            if(args.contactId == 0L)
+                it.title = "Add Contact"
+            else
+                it.title = "Edit Contact"
+
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setHomeAsUpIndicator(R.drawable.ic_baseline_close_24)
+        }
 
         setHasOptionsMenu(true)
 
@@ -127,15 +141,22 @@ class AddFragment : Fragment() {
             addView()
         })
 
-        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver {
+//        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver {
+//            this.findNavController()
+//                .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(args.contactId))
+//        })
+
+        viewModel.navigateToContactDetail2.observe(viewLifecycleOwner, EventObserver{
+            Toast.makeText(this.context, "Contact Updated", Toast.LENGTH_SHORT).show()
             this.findNavController()
-                .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(args.contactId))
+                .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(it))
         })
 
-        viewModel.navigateToContacts.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController()
-                .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
-        })
+//        viewModel.navigateToContacts.observe(viewLifecycleOwner, EventObserver {
+//            Toast.makeText(this.context, "Contact Added", Toast.LENGTH_SHORT).show()
+//            this.findNavController()
+//                .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
+//        })
 
         binding.userImage.setOnClickListener {
 
@@ -194,9 +215,16 @@ class AddFragment : Fragment() {
                 true
             }
             android.R.id.home -> {
-                askUser {
-                    this.findNavController()
-                        .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
+                if(viewModel.isValuesChanged(onSave())){
+                    askUser {
+//                        this.findNavController()
+//                            .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
+                        this.findNavController().navigateUp()
+                    }
+                }else{
+//                    this.findNavController()
+//                        .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
+                    this.findNavController().navigateUp()
                 }
                 true
             }

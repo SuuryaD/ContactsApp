@@ -19,8 +19,6 @@ class MainActivity : AppCompatActivity() {
 
         val navController = this.findNavController(R.id.nav_host_fragment)
         val navView: BottomNavigationView = findViewById(R.id.bottomNavView)
-//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        val appbar = AppBarConfiguration(navController.graph)
         navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->

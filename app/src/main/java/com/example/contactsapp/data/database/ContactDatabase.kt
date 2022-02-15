@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ContactDetails::class, ContactPhoneNumber::class], version = 6, exportSchema = false)
+@Database(entities = [ContactDetails::class, ContactPhoneNumber::class], version = 7, exportSchema = false)
 abstract class ContactDatabase: RoomDatabase(){
 
     abstract val contactDetailsDao: ContactDetailsDao

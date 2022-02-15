@@ -1,6 +1,9 @@
 package com.example.contactsapp.ui.contactDetailFragment
 
+import android.app.AlertDialog
 import android.content.ContentResolver
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,6 +16,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
+import androidx.core.content.FileProvider.getUriForFile
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
@@ -26,13 +31,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactDatabase
+import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.FragmentContactDetailBinding
 import com.example.contactsapp.databinding.PhoneRowBinding
 import com.example.contactsapp.di.ServiceLocator
 import com.example.contactsapp.ui.addContactFragment.AddFragment
 import com.example.contactsapp.ui.addContactFragment.AddFragmentViewModel
 import com.example.contactsapp.util.EventObserver
+import com.example.contactsapp.util.createVcfFile
 import com.google.android.material.snackbar.Snackbar
+import java.io.File
+import java.io.FileWriter
 import java.util.jar.Manifest
 
 
@@ -61,7 +70,6 @@ class ContactDetailFragment : Fragment() {
                 }
             }
 
-//        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onCreateView(
@@ -73,7 +81,7 @@ class ContactDetailFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_contact_detail, container, false)
 
         viewModel.start(args.contactId)
-        activity?.title = "Contact Detail"
+        (activity as AppCompatActivity).supportActionBar?.title = "Contact Detail"
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
@@ -86,10 +94,24 @@ class ContactDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.button.setOnClickListener {
-            this.findNavController().navigate(
-                ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(args.contactId)
-            )
+//        binding.button.setOnClickListener {
+//            this.findNavController().navigate(
+//                ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(args.contactId)
+//            )
+//        }
+
+//        binding.displayEmail.setOnClickListener{
+//            val i = Intent(Intent.ACTION_SENDTO)
+//            i.data = Uri.parse("mailto:${binding.displayEmail.text}")
+//            startActivity(i)
+//        }
+
+        binding.emailLayout.setOnClickListener {
+
+            Log.i("ContactDetailFragment", "Email layout click listener")
+            val i = Intent(Intent.ACTION_SENDTO)
+            i.data = Uri.parse("mailto:${binding.displayEmail.text}")
+            startActivity(i)
         }
 
         viewModel.navigateToContactsListFragment.observe(this.viewLifecycleOwner, EventObserver {
@@ -106,6 +128,7 @@ class ContactDetailFragment : Fragment() {
                 }
             }
         })
+
     }
 
 
@@ -118,7 +141,13 @@ class ContactDetailFragment : Fragment() {
                 true
             }
             R.id.delete_contact -> {
-                viewModel.deleteCurrentContact()
+//                viewModel.deleteCurrentContact()
+                deleteContact()
+                true
+
+            }
+            R.id.share_contact -> {
+                shareContact(viewModel.currentContact.value!!)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -131,11 +160,24 @@ class ContactDetailFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    private fun deleteContact(){
+        val builder = AlertDialog.Builder(context)
+
+        builder.setTitle("Delete Contact")
+        builder.setNegativeButton("Delete") { dialogInterface: DialogInterface, _: Int ->
+            dialogInterface.dismiss()
+            viewModel.deleteCurrentContact()
+        }
+        builder.setPositiveButton("Cancel") { dialogInterface: DialogInterface, _: Int ->
+            dialogInterface.dismiss()
+        }
+        builder.create().show()
+    }
 
     private fun makeCall(phoneNumber: String) {
+
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")
-
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -148,6 +190,7 @@ class ContactDetailFragment : Fragment() {
                 android.Manifest.permission.CALL_PHONE
             )
         }
+
     }
 
     private fun addView(phoneNumber: String) {
@@ -156,7 +199,28 @@ class ContactDetailFragment : Fragment() {
         v.root.setOnClickListener {
             makeCall(phoneNumber)
         }
+        v.imageView9.setOnClickListener {
+            sendMessage(phoneNumber)
+        }
         binding.parentLinearLayout.addView(v.root, binding.parentLinearLayout.childCount)
+    }
+
+    private fun sendMessage(phoneNumber: String){
+        val i = Intent(Intent.ACTION_SENDTO)
+        i.data = Uri.parse("smsto:$phoneNumber")
+        startActivity(i)
+    }
+
+
+    private fun shareContact(contactWithPhone: ContactWithPhone){
+
+        val f = createVcfFile(contactWithPhone, context!!)
+        val i = Intent()
+        i.action = Intent.ACTION_SEND
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        i.type = "text/x-vcard"
+        i.putExtra(Intent.EXTRA_STREAM, getUriForFile(context!!,"com.example.android.fileprovider", f ))
+        startActivity(Intent.createChooser(i, "Contact"))
     }
 
 }

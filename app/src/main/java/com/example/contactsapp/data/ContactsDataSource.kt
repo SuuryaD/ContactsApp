@@ -12,11 +12,13 @@ interface ContactsDataSource {
 
     suspend fun getContactById(contactId: Long): Result<ContactWithPhone>
 
-    suspend fun insert(contactWithPhone: ContactWithPhone)
+    suspend fun insert(contactWithPhone: ContactWithPhone) : Long
 
     suspend fun insertPhoneNumbers(phoneNumbers: List<ContactPhoneNumber>)
 
     suspend fun updateContact(contactWithPhone: ContactWithPhone)
+
+    suspend fun updateContact2(contactWithPhone: ContactWithPhone, new: ContactWithPhone): Long
 
     suspend fun deletePhoneNumbers(phoneNumbers: List<ContactPhoneNumber>)
 

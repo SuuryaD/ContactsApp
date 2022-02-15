@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,7 +32,7 @@ class ContactsListFragment : Fragment() {
         binding.contactsListViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
-        activity?.title = "Contacts App"
+        (activity as AppCompatActivity).supportActionBar?.title = "Contacts"
 
         val adapter = ContactsAdapter2(ContactListener {
             contactWithPhone -> this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactWithPhone.contactDetails.contactId))
@@ -50,13 +51,14 @@ class ContactsListFragment : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.navigateToAddContact.observe(this.viewLifecycleOwner, EventObserver {
                 this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToAddFragment(0L))
 
         })
-    }
 
+    }
 
 }

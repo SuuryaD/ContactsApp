@@ -38,8 +38,8 @@ class ContactsLocalDataSource(
     }
 
 
-    override suspend fun insert(contactWithPhone: ContactWithPhone) {
-        withContext(Dispatchers.IO){
+    override suspend fun insert(contactWithPhone: ContactWithPhone) : Long{
+        return withContext(Dispatchers.IO){
             contactsDao.insert(contactWithPhone)
         }
     }
@@ -53,6 +53,12 @@ class ContactsLocalDataSource(
     override suspend fun updateContact(contactWithPhone: ContactWithPhone) {
         withContext(Dispatchers.IO){
             contactsDao.updateContact(contactWithPhone)
+        }
+    }
+
+    override suspend fun updateContact2(contactWithPhone: ContactWithPhone, new: ContactWithPhone) : Long {
+        return withContext(Dispatchers.IO){
+           return@withContext contactsDao.updateContact2(contactWithPhone, new)
         }
     }
 
@@ -73,4 +79,6 @@ class ContactsLocalDataSource(
             contactsDao.nukeDb()
         }
     }
+
+
 }

@@ -61,9 +61,9 @@ class EditContactViewModel(val dataSource: ContactDetailsDao, val contactId: Lon
 
         val temp = ContactWithPhone(ContactDetails(contactId = currentContact.value?.contactDetails?.contactId ?: 0L, name = name, email = email, user_image = null), listOf())
 
-        CoroutineScope(Dispatchers.IO).launch {
-            dataSource.updateContact2(temp)
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            dataSource.updateContact2(temp)
+//        }
 
     }
 
