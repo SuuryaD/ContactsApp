@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/contactsFragment"
         android:name="com.example.contactsapp.ui.contactsFragment.ContactsListFragment"
-        android:label="ContactsFragment" >
+        android:label="Contacts">
         <action
             android:id="@+id/action_contactsFragment_to_addFragment"
             app:destination="@id/addFragment" />
@@ -16,8 +16,14 @@
             android:id="@+id/action_contactsFragment_to_contactDetailFragment"
             app:destination="@id/contactDetailFragment" />
         <action
-            android:id="@+id/action_contactsFragment_to_blankFragment"
-            app:destination="@id/blankFragment" />
+            android:id="@+id/action_contactsFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_contactsFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_contactsFragment_to_callHistoryFragment"
+            app:destination="@id/callHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
@@ -40,7 +46,7 @@
     <fragment
         android:id="@+id/contactDetailFragment"
         android:name="com.example.contactsapp.ui.contactDetailFragment.ContactDetailFragment"
-        android:label="ContactDetailFragment" >
+        android:label="Contact">
         <argument
             android:name="contactId"
             app:argType="long" />
@@ -61,8 +67,22 @@
             app:argType="long" />
     </fragment>
     <fragment
-        android:id="@+id/blankFragment"
-        android:name="com.example.contactsapp.ui.callHistory.BlankFragment"
-        android:label="blank_fragment"
-        tools:layout="@layout/blank_fragment" />
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.contactsapp.ui.favoritesFragment.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/favorites_fragment">
+        <action
+            android:id="@+id/action_favoritesFragment_to_contactDetailFragment"
+            app:destination="@id/contactDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.contactsapp.ui.searchFragment.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/callHistoryFragment"
+        android:name="com.example.contactsapp.ui.callHistory.CallHistoryFragment"
+        android:label="fragment_call_history"
+        tools:layout="@layout/fragment_call_history" />
 </navigation>

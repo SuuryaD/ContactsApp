@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="contactWithPhone"
+            type="com.example.contactsapp.data.database.ContactWithPhone" />
+
+        <variable
+            name="clickListener"
+            type="com.example.contactsapp.ui.favoritesFragment.FavoritesListener" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_margin="2dp"
+            app:cardElevation="15dp"
+            android:onClick="@{() -> clickListener.onClick(contactWithPhone)}">
+
+            <!--Card Image-->
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_account_circle_24"
+                android:scaleType="fitXY"/>
+
+            <!--            <FrameLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:padding="5dp">-->
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|bottom"
+                android:paddingStart="8dp">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|bottom"
+                    android:layout_margin="5dp"
+                    android:text="@{contactWithPhone.contactDetails.name}"
+                    android:textColor="@android:color/white" />
+
+            </FrameLayout>
+            <!--                <FrameLayout-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_gravity="end"-->
+            <!--                    android:background="@drawable/transparent_card"-->
+            <!--                    android:clickable="true"-->
+            <!--                    android:focusable="true">-->
+
+            <FrameLayout
+                android:id="@+id/btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:layout_margin="5dp"
+                android:background="@drawable/ic_baseline_more_vert_24"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <!--                </FrameLayout>-->
+
+
+            <!--            </FrameLayout>-->
+
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
+</layout>

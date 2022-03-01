@@ -12,12 +12,15 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.FileProvider.getUriForFile
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
@@ -69,7 +72,6 @@ class ContactDetailFragment : Fragment() {
                     Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
                 }
             }
-
     }
 
     override fun onCreateView(
@@ -81,7 +83,7 @@ class ContactDetailFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_contact_detail, container, false)
 
         viewModel.start(args.contactId)
-        (activity as AppCompatActivity).supportActionBar?.title = "Contact Detail"
+//        (activity as AppCompatActivity).supportActionBar?.title = "Contact Detail"
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
@@ -127,7 +129,14 @@ class ContactDetailFragment : Fragment() {
                     addView(it.phoneNumber)
                 }
             }
+
+            activity?.invalidateOptionsMenu()
         })
+
+        viewModel.displayFavouriteChangeToast.observe(viewLifecycleOwner, EventObserver{
+            Toast.makeText(this.context, it, Toast.LENGTH_SHORT).show()
+        })
+
 
     }
 
@@ -150,13 +159,38 @@ class ContactDetailFragment : Fragment() {
                 shareContact(viewModel.currentContact.value!!)
                 true
             }
+            R.id.star_contact -> {
+                viewModel.changeFavourite()
+                activity?.invalidateOptionsMenu()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+
+        if(viewModel.currentContact.value?.contactDetails?.favorite == false || viewModel.currentContact.value?.contactDetails?.favorite == null){
+            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_border_24)
+        }
+        else{
+            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_24)
+
+        }
+
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.contact_detail_menu, menu)
+
+        if(viewModel.currentContact.value?.contactDetails?.favorite == false || viewModel.currentContact.value?.contactDetails?.favorite == null){
+            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_border_24)
+        }
+        else{
+            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_24)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -221,6 +255,7 @@ class ContactDetailFragment : Fragment() {
         i.type = "text/x-vcard"
         i.putExtra(Intent.EXTRA_STREAM, getUriForFile(context!!,"com.example.android.fileprovider", f ))
         startActivity(Intent.createChooser(i, "Contact"))
+
     }
 
 }

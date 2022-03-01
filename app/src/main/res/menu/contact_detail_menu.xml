@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
+    <item
+        android:id="@+id/star_contact"
+        android:title="Favorite"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/edit_contact"
         android:title="Edit"

@@ -62,6 +62,7 @@ dependencies {
     kapt("androidx.lifecycle:lifecycle-compiler:2.4.0")
 
 
+    implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
 
 
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")

@@ -6,6 +6,8 @@ import com.example.contactsapp.data.database.ContactDetailsDao
 import com.example.contactsapp.data.database.ContactPhoneNumber
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.data.Result.Success
+import com.example.contactsapp.domain.model.CallHistory
+import com.example.contactsapp.domain.model.CallHistoryApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -62,6 +64,16 @@ class ContactsLocalDataSource(
         }
     }
 
+    override suspend fun updateFavourite(boolean: Boolean, contactId: Long) : Int {
+       return withContext(Dispatchers.IO){
+            contactsDao.updateFavourite(boolean, contactId)
+        }
+    }
+
+    override fun getAllFavoriteContacts(): LiveData<List<ContactWithPhone>> {
+        return contactsDao.getAllFavoriteContacts()
+    }
+
     override suspend fun deletePhoneNumbers(phoneNumbers: List<ContactPhoneNumber>) {
         withContext(Dispatchers.IO){
             contactsDao.deletePhoneNumbers(phoneNumbers)
@@ -75,9 +87,19 @@ class ContactsLocalDataSource(
     }
 
     override suspend fun nukeDb() {
+
         withContext(Dispatchers.IO){
             contactsDao.nukeDb()
         }
+
+    }
+
+    override suspend fun getContactNames(ls: List<CallHistoryApi>) : List<CallHistory>{
+
+        return withContext(Dispatchers.IO){
+            contactsDao.getContactDetailsForCallHistory(ls)
+        }
+
     }
 
 

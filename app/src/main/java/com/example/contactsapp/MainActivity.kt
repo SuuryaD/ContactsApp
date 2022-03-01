@@ -17,23 +17,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         val navController = this.findNavController(R.id.nav_host_fragment)
         val navView: BottomNavigationView = findViewById(R.id.bottomNavView)
         navView.setupWithNavController(navController)
 
+        val appBar = AppBarConfiguration
+            .Builder(
+                R.id.contactsFragment,
+                R.id.callHistoryFragment,
+                R.id.favoritesFragment
+            )
+            .build()
+
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.id == R.id.contactsFragment || destination.id == R.id.blankFragment){
+            if(destination.id == R.id.contactsFragment || destination.id == R.id.callHistoryFragment || destination.id == R.id.favoritesFragment){
                 navView.visibility = View.VISIBLE
             }
             else
                 navView.visibility = View.INVISIBLE
         }
 
-//        setSupportActionBar(toolbar)
-
-
-        NavigationUI.setupActionBarWithNavController(this, navController)
-
+        NavigationUI.setupActionBarWithNavController(this, navController, appBar)
 
     }
 

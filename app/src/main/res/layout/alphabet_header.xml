@@ -12,7 +12,7 @@
         app:cardBackgroundColor="#FFDBDB"
         app:cardCornerRadius="6dp"
         app:cardElevation="10dp"
-        app:contentPadding="10dp"
+        app:contentPadding="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

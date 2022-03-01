@@ -1,7 +1,10 @@
 package com.example.contactsapp.data.database
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.contactsapp.domain.model.CallHistory
+import com.example.contactsapp.domain.model.CallHistoryApi
 
 @Dao
 interface ContactDetailsDao{
@@ -51,6 +54,40 @@ interface ContactDetailsDao{
 
         return insert(new)
     }
+
+    suspend fun getContactDetailsForCallHistory(ls: List<CallHistoryApi>) : List<CallHistory>{
+
+        val ls2 = ArrayList<CallHistory>()
+        for(i in ls){
+
+            val id: Long? = getContactId(i.number)
+
+            if(id != null){
+                val contact = getContactById(id)
+                val temp = CallHistory(contact.contactDetails.contactId, contact.contactDetails.name, contact.contactDetails.user_image,
+                i)
+                ls2.add(temp)
+
+            }
+            else{
+                val temp = CallHistory(0L, i.number, "", i)
+                ls2.add(temp)
+            }
+        }
+        return ls2
+    }
+
+    @Query("SELECT contactId From phone WHERE phoneNumber=:phoneNumber LIMIT 1 ")
+    suspend fun getContactId(phoneNumber: String) : Long
+
+
+    @Transaction
+    @Query("SELECT * FROM contact_details WHERE favorite=1")
+    fun getAllFavoriteContacts() : LiveData<List<ContactWithPhone>>
+
+
+    @Query("UPDATE contact_details SET favorite=:boo WHERE contactId=:contactId")
+    suspend fun updateFavourite(boo: Boolean, contactId: Long) : Int
 
     @Delete
     suspend fun deletePhoneNumbers(contactPhoneNumber: List<ContactPhoneNumber>)

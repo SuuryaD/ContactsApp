@@ -6,25 +6,42 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.amulyakhare.textdrawable.TextDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.AlphabetHeaderBinding
 import com.example.contactsapp.databinding.RowItemBinding
+import com.google.android.material.internal.TextDrawableHelper
 
-class ContactsAdapter2(val clickListener: ContactListener) :
+class ContactsAdapter2(private val clickListener: ContactListener) :
     ListAdapter<ContactWithPhone, RecyclerView.ViewHolder>(ContactPhoneCallBack()) {
 
 
-    val VIEW_TYPE_ONE = 1
-    val VIEW_TYPE_TWO = 2
+    private val VIEW_TYPE_ONE = 1
+    private val VIEW_TYPE_TWO = 2
 
     class ViewHolder1(val binding: RowItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ContactWithPhone, clickListener: ContactListener) {
             binding.contactWithPhone = item
             binding.clickListener = clickListener
+
+
+            val v = TextDrawable.builder()
+                .buildRound(item.contactDetails.name[0].toString().uppercase(), R.color.purple_200)
+
+            Glide.with(binding.root.context)
+                .load(Uri.parse(item.contactDetails.user_image))
+                .fitCenter()
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .error(v)
+                .into(binding.imageView8)
+
+
 //            Glide.with(binding.root.context)
 //                .load(Uri.parse(item.contactDetails.user_image))
 //                .fitCenter()
@@ -33,7 +50,8 @@ class ContactsAdapter2(val clickListener: ContactListener) :
 //                .skipMemoryCache(true)
 //                .error(R.drawable.ic_baseline_account_circle_24)
 //                .into(binding.imageView8)
-//            binding.shapeableImageView.setImageURI(Uri.parse(item.contactDetails.user_image))
+
+
             binding.executePendingBindings()
         }
 
@@ -77,10 +95,10 @@ class ContactsAdapter2(val clickListener: ContactListener) :
 //    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == VIEW_TYPE_ONE) {
-            return ViewHolder2.from(parent)
+        return if (viewType == VIEW_TYPE_ONE) {
+            ViewHolder2.from(parent)
         } else
-            return ViewHolder1.from(parent)
+            ViewHolder1.from(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

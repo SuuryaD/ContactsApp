@@ -179,7 +179,8 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
         val temp = ContactWithPhone(
             ContactDetails(contactId= _contactId.value!!,
                 name = name.value!!, email = email.value!!,
-                user_image = userImage.value),
+                user_image = userImage.value,
+                favorite = currentContact.value?.contactDetails?.favorite!!),
             ls)
 
         val ls2 = ArrayList<ContactPhoneNumber>()
@@ -189,17 +190,17 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
 
         val temp2 = ContactWithPhone(
-            ContactDetails(name = name.value!!, email = email.value!!, user_image = userImage.value!!), ls2
+            ContactDetails(name = name.value!!, email = email.value!!, user_image = userImage.value!!, favorite = currentContact.value?.contactDetails?.favorite!!), ls2
         )
 
         CoroutineScope(Dispatchers.Main).launch {
-//            dataSource.updateContact(temp)
-//            dataSource.insertPhoneNumbers(newPhoneNumbers)
-//            dataSource.deletePhoneNumbers(deleteList)
+            dataSource.updateContact(temp)
+            dataSource.insertPhoneNumbers(newPhoneNumbers)
+            dataSource.deletePhoneNumbers(deleteList)
 
 //             val id = dataSource.updateContact2(currentContact.value!!, temp2)
-            val id = updateContactDb(temp2)
-            navigateToContactDetail2.value = Event(id)
+//            val id = updateContactDb(temp2)
+            navigateToContactDetail2.value = Event(_contactId.value!!)
         }
 
 

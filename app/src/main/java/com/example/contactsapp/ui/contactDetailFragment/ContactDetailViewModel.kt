@@ -38,6 +38,11 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
     val navigateToContactsListFragment: LiveData<Event<Unit>>
         get() = _navigateToContactsListFragment
 
+
+    private val _displayFavouriteChangeToast = MutableLiveData<Event<String>>()
+    val displayFavouriteChangeToast: LiveData<Event<String>>
+        get() = _displayFavouriteChangeToast
+
     fun start(contactId: Long){
 
         if(_contactId.value != contactId){
@@ -55,9 +60,27 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
         _navigateToContactsListFragment.value = Event(Unit)
     }
 
-//    fun doneNavigateToContactsListFragment(){
-//        navigateToContactsListFragment.value = false
-//    }
+    fun changeFavourite() {
+
+        currentContact.value?.contactDetails?.favorite?.let {
+
+            CoroutineScope(Dispatchers.Main).launch {
+                val before = it
+                val v = dataSource.updateFavourite(!it, _contactId.value!!)
+                if(v == 1){
+                    if(before)
+                        _displayFavouriteChangeToast.value = Event("Removed from favourites")
+                    else
+                        _displayFavouriteChangeToast.value = Event("Added to Favourites Successfully")
+                }
+                else
+                    _displayFavouriteChangeToast.value = Event("Something Went Wrong, Try again!")
+            }
+        }
+
+
+    }
+
 
 
 

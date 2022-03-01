@@ -33,16 +33,15 @@
 
         <ImageView
             android:id="@+id/imageView8"
-            android:layout_width="51dp"
-            android:layout_height="43dp"
+            android:layout_width="56dp"
+            android:layout_height="48dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            ImageUri="@{String.valueOf(contactWithPhone.contactDetails.user_image)}"
-            tools:src="@drawable/ic_baseline_account_circle_24"/>
+            tools:src="@drawable/ic_baseline_account_circle_24" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
