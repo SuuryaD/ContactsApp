@@ -11,23 +11,33 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.contactsapp.R
+import com.example.contactsapp.databinding.AlphabetHeaderBinding
+import com.example.contactsapp.databinding.CallHistoryHeaderBinding
 import com.example.contactsapp.databinding.CallHistoryRowItemBinding
+import com.example.contactsapp.domain.model.AlphabetHeaderType
 import com.example.contactsapp.domain.model.CallHistory
+import com.example.contactsapp.domain.model.RecyclerViewViewType
 import com.example.contactsapp.util.getTimeAgo
 
 class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
-    ListAdapter<CallHistory, CallHistoryAdapter.ViewHolder>(CallHistoryDiffUtil()) {
+    ListAdapter<RecyclerViewViewType, RecyclerView.ViewHolder>(CallHistoryDiffUtil()) {
 
+    override fun getItemViewType(position: Int): Int {
+        return when(getItem(position)){
+            is CallHistory -> 1
+            else -> 2
+        }
+    }
 
-    class ViewHolder(val binding: CallHistoryRowItemBinding) :
+    class ViewHolder1(val binding: CallHistoryRowItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CallHistory, clickListener: CallHistoryClickListener) {
 
-            Log.i(
-                "CallHistoryAdapter",
-                "Name: ${item.name} Time: ${getTimeAgo(item.callHistoryApi.date)} "
-            )
+//            Log.i(
+//                "CallHistoryAdapter",
+//                "Name: ${item.name} Time: ${getTimeAgo(item.callHistoryApi.date)} "
+//            )
 
             binding.textView4.text = item.name
             binding.textView6.text = getTimeAgo(item.callHistoryApi.date)
@@ -59,37 +69,65 @@ class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
         }
 
         companion object {
-            fun from(parent: ViewGroup): ViewHolder {
+            fun from(parent: ViewGroup): ViewHolder1 {
                 val inflater = LayoutInflater.from(parent.context)
                 val binding = CallHistoryRowItemBinding.inflate(inflater, parent, false)
-                return ViewHolder(binding)
+                return ViewHolder1(binding)
+            }
+        }
+    }
+
+    class ViewHolder2(val binding: CallHistoryHeaderBinding) : RecyclerView.ViewHolder(binding.root){
+
+        fun bind(item: AlphabetHeaderType){
+            binding.textView5.text = item.title
+        }
+        companion object{
+            fun from(parent: ViewGroup) : ViewHolder2{
+                val inflater = LayoutInflater.from(parent.context)
+                val binding = CallHistoryHeaderBinding.inflate(inflater, parent, false)
+                return ViewHolder2(binding)
             }
         }
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.i("CallHistoryAdapter", "On create called")
-        return ViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+//        Log.i("CallHistoryAdapter", "On create called")
+
+        return if(viewType == 1)
+            ViewHolder1.from(parent)
+            else
+                ViewHolder2.from(parent)
+//        return ViewHolder1.from(parent)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.i("CallHistoryAdapter", "On bind called")
-        holder.bind(getItem(position), clickListener)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (getItemViewType(position) == 1) {
+            (holder as ViewHolder1).bind(getItem(position) as CallHistory, clickListener)
+        } else {
+            (holder as ViewHolder2).bind(getItem(position) as AlphabetHeaderType)
+        }
     }
 
 }
 
 
-class CallHistoryDiffUtil : DiffUtil.ItemCallback<CallHistory>() {
-
-    override fun areItemsTheSame(oldItem: CallHistory, newItem: CallHistory): Boolean {
-        return oldItem.contactId == newItem.contactId
-    }
-
-    override fun areContentsTheSame(oldItem: CallHistory, newItem: CallHistory): Boolean {
+class CallHistoryDiffUtil : DiffUtil.ItemCallback<RecyclerViewViewType>() {
+    override fun areItemsTheSame(
+        oldItem: RecyclerViewViewType,
+        newItem: RecyclerViewViewType
+    ): Boolean {
         return oldItem == newItem
     }
+
+    override fun areContentsTheSame(
+        oldItem: RecyclerViewViewType,
+        newItem: RecyclerViewViewType
+    ): Boolean {
+        return oldItem.equals(newItem)
+    }
+
 
 }
 

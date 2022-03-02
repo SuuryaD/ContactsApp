@@ -3,6 +3,7 @@ package com.example.contactsapp.ui.callHistory
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.ContentObserver
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -69,6 +70,16 @@ class CallHistoryFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_call_history, container, false)
 
 
+        val cres = this.context?.contentResolver
+        cres?.registerContentObserver(CallLog.Calls.CONTENT_URI, false, object : ContentObserver(null) {
+            override fun onChange(selfChange: Boolean) {
+                Log.i("CallHistoryFragment", "On change called")
+                super.onChange(selfChange)
+                showCallHistory()
+            }
+
+        })
+
         binding.lifecycleOwner = viewLifecycleOwner
         val adapter = CallHistoryAdapter(CallHistoryClickListener {
             makeCall(it.callHistoryApi.number)
@@ -107,21 +118,25 @@ class CallHistoryFragment : Fragment() {
     @SuppressLint("Range")
     private fun showCallHistory() {
 
+
         Log.i("CallHistoryFragment", "call history called")
         val cursor = this.context?.contentResolver?.query(CallLog.Calls.CONTENT_URI, null, null,null , CallLog.Calls.DATE + " DESC")
 
         val ls = ArrayList<CallHistoryApi>()
-        while(cursor?.moveToNext() == true){
+        while(cursor != null && cursor.moveToNext()){
 
             val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
             val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
             val duration = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION))
             val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
+            val id = cursor.getString(cursor.getColumnIndex(CallLog.Calls._ID))
             ls.add(
                 CallHistoryApi(
-                    number, date, duration, type
+                    id, number, date, duration, type
             ))
         }
+
+        Log.i("CallHistoryFragment", ls.toString())
         viewModel.getCallHistory(ls)
     }
 
@@ -131,10 +146,6 @@ class CallHistoryFragment : Fragment() {
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")
         startActivity(intent)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            showCallHistory()
-        }
-
     }
 
 }
