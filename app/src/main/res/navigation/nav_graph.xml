@@ -42,6 +42,10 @@
             app:destination="@id/contactDetailFragment"
             app:popUpTo="@id/contactsFragment"
             app:popUpToInclusive="false" />
+        <argument
+            android:name="phoneNumber"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/contactDetailFragment"
@@ -57,14 +61,6 @@
         <action
             android:id="@+id/action_contactDetailFragment_to_addFragment"
             app:destination="@id/addFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/editContactFragment"
-        android:name="com.example.contactsapp.ui.editContactFragment.EditContactFragment"
-        android:label="EditContactFragment" >
-        <argument
-            android:name="contactId"
-            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -83,6 +79,38 @@
     <fragment
         android:id="@+id/callHistoryFragment"
         android:name="com.example.contactsapp.ui.callHistory.CallHistoryFragment"
-        android:label="fragment_call_history"
-        tools:layout="@layout/fragment_call_history" />
+        android:label="Call History"
+        tools:layout="@layout/fragment_call_history">
+        <action
+            android:id="@+id/action_callHistoryFragment_to_callHistoryDetailFragment"
+            app:destination="@id/callHistoryDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/callHistoryDetailFragment"
+        android:name="com.example.contactsapp.ui.callHistoryDetailFragment.CallHistoryDetailFragment"
+        android:label="Call Details"
+        tools:layout="@layout/fragment_call_history_detail">
+        <argument
+            android:name="CallHistory"
+            app:argType="com.example.contactsapp.domain.model.CallHistory" />
+        <action
+            android:id="@+id/action_callHistoryDetailFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+        <action
+            android:id="@+id/action_callHistoryDetailFragment_to_addToFragment"
+            app:destination="@id/addToFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addToFragment"
+        android:name="com.example.contactsapp.ui.addToFragment.AddToFragment"
+        android:label="AddToFragment" >
+        <argument
+            android:name="phoneNumber"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_addToFragment_to_addFragment"
+            app:destination="@id/addFragment"
+            app:popUpTo="@id/callHistoryDetailFragment" />
+    </fragment>
 </navigation>

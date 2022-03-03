@@ -19,11 +19,14 @@ import com.example.contactsapp.domain.model.CallHistory
 import com.example.contactsapp.domain.model.RecyclerViewViewType
 import com.example.contactsapp.util.getTimeAgo
 
-class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
+class CallHistoryAdapter(
+    val viewModel: CallHistoryViewModel,
+    val clickListener: CallHistoryClickListener
+) :
     ListAdapter<RecyclerViewViewType, RecyclerView.ViewHolder>(CallHistoryDiffUtil()) {
 
     override fun getItemViewType(position: Int): Int {
-        return when(getItem(position)){
+        return when (getItem(position)) {
             is CallHistory -> 1
             else -> 2
         }
@@ -32,7 +35,11 @@ class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
     class ViewHolder1(val binding: CallHistoryRowItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: CallHistory, clickListener: CallHistoryClickListener) {
+        fun bind(
+            item: CallHistory,
+            clickListener: CallHistoryClickListener,
+            viewModel: CallHistoryViewModel
+        ) {
 
 //            Log.i(
 //                "CallHistoryAdapter",
@@ -40,21 +47,27 @@ class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
 //            )
 
             binding.textView4.text = item.name
-            binding.textView6.text = getTimeAgo(item.callHistoryApi.date)
+            binding.textView6.text = getTimeAgo(item.callHistoryApi.first().date)
 
-            binding.imageView11.setImageResource(when(item.callHistoryApi.type){
-                1 -> R.drawable.ic_baseline_call_received_24
-                2 -> R.drawable.ic_baseline_call_made_24
-                3 -> R.drawable.ic_baseline_call_missed_24
-                else -> R.drawable.ic_baseline_block_24
-            })
+            binding.imageView11.setImageResource(
+                when (item.callHistoryApi.first().type) {
+                    1 -> R.drawable.ic_baseline_call_received_24
+                    2 -> R.drawable.ic_baseline_call_made_24
+                    3 -> R.drawable.ic_baseline_call_missed_24
+                    else -> R.drawable.ic_baseline_block_24
+                }
+            )
 
             binding.root.setOnClickListener {
                 clickListener.onClick(item)
             }
 
+            binding.imageView12.setOnClickListener {
+                viewModel.navigateToCallHistory(item)
+            }
+
             val v = TextDrawable.builder()
-                .buildRound(item.name[0].uppercase(), R.color.purple_200)
+                .buildRound(item.name.get(0).uppercase(), R.color.purple_200)
 
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.userImage))
@@ -68,6 +81,7 @@ class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
             binding.executePendingBindings()
         }
 
+
         companion object {
             fun from(parent: ViewGroup): ViewHolder1 {
                 val inflater = LayoutInflater.from(parent.context)
@@ -77,13 +91,16 @@ class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
         }
     }
 
-    class ViewHolder2(val binding: CallHistoryHeaderBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(item: AlphabetHeaderType){
+    class ViewHolder2(val binding: CallHistoryHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: AlphabetHeaderType) {
             binding.textView5.text = item.title
         }
-        companion object{
-            fun from(parent: ViewGroup) : ViewHolder2{
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder2 {
                 val inflater = LayoutInflater.from(parent.context)
                 val binding = CallHistoryHeaderBinding.inflate(inflater, parent, false)
                 return ViewHolder2(binding)
@@ -95,16 +112,16 @@ class CallHistoryAdapter(val clickListener: CallHistoryClickListener) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 //        Log.i("CallHistoryAdapter", "On create called")
 
-        return if(viewType == 1)
+        return if (viewType == 1)
             ViewHolder1.from(parent)
-            else
-                ViewHolder2.from(parent)
+        else
+            ViewHolder2.from(parent)
 //        return ViewHolder1.from(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == 1) {
-            (holder as ViewHolder1).bind(getItem(position) as CallHistory, clickListener)
+            (holder as ViewHolder1).bind(getItem(position) as CallHistory, clickListener, viewModel)
         } else {
             (holder as ViewHolder2).bind(getItem(position) as AlphabetHeaderType)
         }

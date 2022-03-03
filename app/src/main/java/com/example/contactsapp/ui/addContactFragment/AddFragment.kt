@@ -138,6 +138,8 @@ class AddFragment : Fragment() {
                     addView(it.phoneNumber)
                 }
             }
+            if(args.phoneNumber != null)
+                addView(args.phoneNumber)
             addView()
         })
 
@@ -148,8 +150,13 @@ class AddFragment : Fragment() {
 
         viewModel.navigateToContactDetail2.observe(viewLifecycleOwner, EventObserver{
             Toast.makeText(this.context, "Contact Updated", Toast.LENGTH_SHORT).show()
-            this.findNavController()
-                .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(it))
+            if(args.phoneNumber != null){
+                this.findNavController().navigateUp()
+            }
+            else{
+                this.findNavController()
+                    .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(it))
+            }
         })
 
 //        viewModel.navigateToContacts.observe(viewLifecycleOwner, EventObserver {

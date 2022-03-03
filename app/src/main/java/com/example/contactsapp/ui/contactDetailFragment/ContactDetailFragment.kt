@@ -145,7 +145,7 @@ class ContactDetailFragment : Fragment() {
         return when (item.itemId) {
             R.id.edit_contact -> {
                 this.findNavController().navigate(
-                    ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(args.contactId)
+                    ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(args.contactId, null)
                 )
                 true
             }

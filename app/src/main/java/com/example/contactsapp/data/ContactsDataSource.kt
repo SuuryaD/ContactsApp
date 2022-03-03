@@ -5,6 +5,7 @@ import com.example.contactsapp.data.database.ContactPhoneNumber
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.domain.model.CallHistory
 import com.example.contactsapp.domain.model.CallHistoryApi
+import com.example.contactsapp.ui.callHistoryDetailFragment.CallHistoryDetailFragmentDirections
 
 interface ContactsDataSource {
 
@@ -22,7 +23,7 @@ interface ContactsDataSource {
 
     suspend fun updateContact2(contactWithPhone: ContactWithPhone, new: ContactWithPhone): Long
 
-    suspend fun getContactNames(ls: List<CallHistoryApi>): List<CallHistory>
+    suspend fun getContactNames(ls: List<List<CallHistoryApi>>): List<CallHistory>
 
     suspend fun updateFavourite(boolean: Boolean, contactId: Long): Int
 
@@ -31,6 +32,8 @@ interface ContactsDataSource {
     suspend fun deletePhoneNumbers(phoneNumbers: List<ContactPhoneNumber>)
 
     suspend fun deleteContact(contactId: Long)
+
+    fun getContactFromPhone(callHistory: CallHistory): LiveData<CallHistory>
 
     suspend fun nukeDb()
 

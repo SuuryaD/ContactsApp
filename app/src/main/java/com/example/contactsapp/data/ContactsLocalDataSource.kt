@@ -1,7 +1,7 @@
 package com.example.contactsapp.data
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
+import android.os.Build
+import androidx.lifecycle.*
 import com.example.contactsapp.data.database.ContactDetailsDao
 import com.example.contactsapp.data.database.ContactPhoneNumber
 import com.example.contactsapp.data.database.ContactWithPhone
@@ -29,14 +29,15 @@ class ContactsLocalDataSource(
     }
 
     override suspend fun getContactById(contactId: Long): Result<ContactWithPhone> {
-        return withContext(Dispatchers.IO) {
 
+        return withContext(Dispatchers.IO) {
             return@withContext try {
                 Success(contactsDao.getContactById(contactId))
             } catch (e: Exception) {
                 Result.Error(e)
             }
         }
+
     }
 
 
@@ -86,6 +87,21 @@ class ContactsLocalDataSource(
         }
     }
 
+    override fun getContactFromPhone(callHistory: CallHistory): LiveData<CallHistory> {
+
+            val contact = contactsDao.getContactFromPhone(callHistory.number)
+
+            val x: LiveData<CallHistory> = Transformations.map(contact) {
+                it?.let {
+                     return@map CallHistory(it.contactDetails.contactId, it.contactDetails.name, it.contactDetails.user_image, callHistory.number, callHistory.callHistoryApi)
+                }
+                callHistory
+            }
+
+            return x
+
+    }
+
     override suspend fun nukeDb() {
 
         withContext(Dispatchers.IO){
@@ -94,7 +110,7 @@ class ContactsLocalDataSource(
 
     }
 
-    override suspend fun getContactNames(ls: List<CallHistoryApi>) : List<CallHistory>{
+    override suspend fun getContactNames(ls: List<List<CallHistoryApi>>) : List<CallHistory>{
 
         return withContext(Dispatchers.IO){
             contactsDao.getContactDetailsForCallHistory(ls)

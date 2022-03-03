@@ -1,10 +1,7 @@
-package com.example.contactsapp.ui.contactsFragment
+package com.example.contactsapp.ui.addToFragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -14,17 +11,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
+import com.example.contactsapp.databinding.FragmentAddToContactBinding
 import com.example.contactsapp.databinding.FragmentContactsListBinding
 import com.example.contactsapp.di.ServiceLocator
+import com.example.contactsapp.ui.contactsFragment.*
 import com.example.contactsapp.util.EventObserver
 
-class ContactsListFragment : Fragment() {
+class AddToFragment: Fragment() {
 
-    private lateinit var binding: FragmentContactsListBinding
-    private val viewModel: ContactsListFragmentViewModel by viewModels { ContactsListFragmentViewModelFactory(ServiceLocator.provideContactsDataSource(requireContext())) }
+
+    private lateinit var binding: FragmentAddToContactBinding
+    private val viewModel: ContactsListFragmentViewModel by viewModels { ContactsListFragmentViewModelFactory(
+        ServiceLocator.provideContactsDataSource(requireContext())) }
     private lateinit var adapter: ContactsAdapter2
 
-//    private val args: ContactsListFragmentArgs by navArgs()
+    private val args: AddToFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,17 +33,15 @@ class ContactsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts_list, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add_to_contact, container, false)
 
         binding.contactsListViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
 
         adapter = ContactsAdapter2(ContactListener {
-                contactWithPhone -> this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactWithPhone.contactDetails.contactId))
+            this.findNavController().navigate(AddToFragmentDirections.actionAddToFragmentToAddFragment(it.contactDetails.contactId, args.phoneNumber))
         })
-
-
 
         viewModel.contacts.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -101,7 +100,7 @@ class ContactsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.navigateToAddContact.observe(this.viewLifecycleOwner, EventObserver {
-                this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToAddFragment(0L, null))
+            this.findNavController().navigate(AddToFragmentDirections.actionAddToFragmentToAddFragment(0L, args.phoneNumber))
         })
 
     }

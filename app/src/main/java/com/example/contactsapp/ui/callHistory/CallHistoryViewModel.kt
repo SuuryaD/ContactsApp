@@ -11,6 +11,7 @@ import com.example.contactsapp.domain.model.AlphabetHeaderType
 import com.example.contactsapp.domain.model.CallHistory
 import com.example.contactsapp.domain.model.CallHistoryApi
 import com.example.contactsapp.domain.model.RecyclerViewViewType
+import com.example.contactsapp.util.Event
 import kotlinx.coroutines.*
 
 class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewModel() {
@@ -21,6 +22,10 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
         get() = _data
 
 
+    private val _navigateToCallHistoryDetail = MutableLiveData<Event<CallHistory>>()
+    val navigateToCallHistoryDetail: LiveData<Event<CallHistory>>
+        get() = _navigateToCallHistoryDetail
+
     fun getCallHistory(ls: List<CallHistoryApi>){
 
         var ls3 = ArrayList<RecyclerViewViewType>()
@@ -30,25 +35,25 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
         CoroutineScope(Dispatchers.Main).launch{
 
-            ls2.addAll(dataSource.getContactNames(ls))
-
-            val ls4 = ArrayList<CallHistory>()
-
-            if(ls2.isNotEmpty()){
-                ls4.add(ls2[0])
-//                temp.add(arrayListOf(ls2[0].callHistoryApi))
-            }
-
-            for(i in 1 until ls2.size){
-
-                if(ls2.get(i).callHistoryApi.number != ls2.get(i - 1).callHistoryApi.number){
-                    ls4.add(ls2[i])
-//                    temp.add(arrayListOf(ls2[i].callHistoryApi))
-                }
-//                else{
-//                    temp.last().add(ls2[i].callHistoryApi)
+//            ls2.addAll(dataSource.getContactNames(ls))
+//
+//            val ls4 = ArrayList<CallHistory>()
+//
+//            if(ls2.isNotEmpty()){
+//                ls4.add(ls2[0])
+////                temp.add(arrayListOf(ls2[0].callHistoryApi))
+//            }
+//
+//            for(i in 1 until ls2.size){
+//
+//                if(ls2.get(i).callHistoryApi.number != ls2.get(i - 1).callHistoryApi.number){
+//                    ls4.add(ls2[i])
+////                    temp.add(arrayListOf(ls2[i].callHistoryApi))
 //                }
-            }
+////                else{
+////                    temp.last().add(ls2[i].callHistoryApi)
+////                }
+//            }
 
             if(ls.isNotEmpty()){
                 temp.add(arrayListOf(ls[0]))
@@ -56,7 +61,7 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
             for(i in 1 until ls.size){
 
-                if(ls[i].number != ls[i].number){
+                if(ls[i].number != ls[i - 1].number){
                     temp.add(arrayListOf(ls[i]))
                 }
                 else{
@@ -64,16 +69,17 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
                 }
             }
 
+            val ls4 = dataSource.getContactNames(temp)
             Log.i("CallHistoryViewModel", temp.toString())
 
-            if(ls4.isNotEmpty() && DateUtils.isToday(ls4[0].callHistoryApi.date)){
+            if(ls4.isNotEmpty() && DateUtils.isToday(ls4[0].callHistoryApi.first().date)){
                 ls3.add(AlphabetHeaderType("Today"))
             }
 
             var add = true
             for(i in ls4){
 
-                if(!DateUtils.isToday(i.callHistoryApi.date) && add){
+                if(!DateUtils.isToday(i.callHistoryApi.first().date) && add){
 
                     ls3.add(AlphabetHeaderType("Older"))
                     add = false
@@ -88,5 +94,10 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
         }
 
     }
+
+    fun navigateToCallHistory(callHistory: CallHistory){
+        _navigateToCallHistoryDetail.value = Event(callHistory)
+    }
+
 
 }

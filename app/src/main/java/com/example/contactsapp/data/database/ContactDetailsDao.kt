@@ -7,47 +7,47 @@ import com.example.contactsapp.domain.model.CallHistory
 import com.example.contactsapp.domain.model.CallHistoryApi
 
 @Dao
-interface ContactDetailsDao{
+interface ContactDetailsDao {
 
     @Transaction
     @Query("Select * from contact_details order by name asc")
-    fun getAll() : LiveData<List<ContactWithPhone>>
+    fun getAll(): LiveData<List<ContactWithPhone>>
 
     @Query("Select * from contact_details where contactId=:contactId")
     fun observeContactById(contactId: Long): LiveData<ContactWithPhone>
 
     @Transaction
-    suspend fun insert(contactWithPhone: ContactWithPhone) : Long{
+    suspend fun insert(contactWithPhone: ContactWithPhone): Long {
 
 //        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
         val id = insertContact(contactWithPhone.contactDetails)
 
-        for(i in contactWithPhone.phoneNumbers){
+        for (i in contactWithPhone.phoneNumbers) {
             insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
         }
         return id
     }
 
     @Insert
-    suspend fun insertContact(contactDetails: ContactDetails) : Long
+    suspend fun insertContact(contactDetails: ContactDetails): Long
 
     @Insert
     suspend fun insertPhone(contactPhoneNumber: ContactPhoneNumber)
 
     @Insert
-    suspend fun insertPhoneNumbers(contactPhoneNumber : List<ContactPhoneNumber>)
+    suspend fun insertPhoneNumbers(contactPhoneNumber: List<ContactPhoneNumber>)
 
     @Transaction
-    suspend fun updateContact(contactWithPhone: ContactWithPhone){
+    suspend fun updateContact(contactWithPhone: ContactWithPhone) {
         updateContactDetails(contactWithPhone.contactDetails)
 
-        for(i in contactWithPhone.phoneNumbers){
+        for (i in contactWithPhone.phoneNumbers) {
             updateContactPhoneNumber(i)
         }
     }
 
     @Transaction
-    suspend fun updateContact2(oldContactWithPhone: ContactWithPhone, new: ContactWithPhone) : Long{
+    suspend fun updateContact2(oldContactWithPhone: ContactWithPhone, new: ContactWithPhone): Long {
 
         deleteContact(oldContactWithPhone.contactDetails.contactId)
 
@@ -55,39 +55,52 @@ interface ContactDetailsDao{
         return insert(new)
     }
 
-    suspend fun getContactDetailsForCallHistory(ls: List<CallHistoryApi>) : List<CallHistory>{
+    suspend fun getContactDetailsForCallHistory(ls: List<List<CallHistoryApi>>): List<CallHistory> {
 
         val ls2 = ArrayList<CallHistory>()
-        for(i in ls){
+        for (i in ls) {
 
-            val id: Long? = getContactId(i.number)
+            if (i.isEmpty()) {
+                continue
+            }
 
-            if(id != null){
+            val id: Long? = getContactId(i[0].number)
+
+            if (id != null) {
                 val contact = getContactById(id)
-                val temp = CallHistory(contact.contactDetails.contactId, contact.contactDetails.name, contact.contactDetails.user_image,
-                i)
+                val temp = CallHistory(
+                    contact.contactDetails.contactId,
+                    contact.contactDetails.name,
+                    contact.contactDetails.user_image,
+                    i[0].number,
+                    i
+                )
                 ls2.add(temp)
 
-            }
-            else{
-                val temp = CallHistory(0L, i.number, "", i)
+            } else {
+                val temp = CallHistory(0L, i[0].number, "", i[0].number, i)
                 ls2.add(temp)
             }
         }
+        Log.i("ContactDetailsDao", ls2.toString())
         return ls2
     }
 
     @Query("SELECT contactId From phone WHERE phoneNumber=:phoneNumber LIMIT 1 ")
-    suspend fun getContactId(phoneNumber: String) : Long
+    suspend fun getContactId(phoneNumber: String): Long
+
+
+    @Query("SELECT * FROM contact_details WHERE contactId = ( SELECT contactId FROM phone WHERE phoneNumber=:phoneNumber LIMIT 1)")
+    fun getContactFromPhone(phoneNumber: String): LiveData<ContactWithPhone>
 
 
     @Transaction
     @Query("SELECT * FROM contact_details WHERE favorite=1")
-    fun getAllFavoriteContacts() : LiveData<List<ContactWithPhone>>
+    fun getAllFavoriteContacts(): LiveData<List<ContactWithPhone>>
 
 
     @Query("UPDATE contact_details SET favorite=:boo WHERE contactId=:contactId")
-    suspend fun updateFavourite(boo: Boolean, contactId: Long) : Int
+    suspend fun updateFavourite(boo: Boolean, contactId: Long): Int
 
     @Delete
     suspend fun deletePhoneNumbers(contactPhoneNumber: List<ContactPhoneNumber>)
