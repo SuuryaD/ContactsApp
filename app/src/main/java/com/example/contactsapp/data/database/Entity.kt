@@ -16,7 +16,7 @@ data class ContactDetails(
 
     val favorite: Boolean = false,
 
-    val user_image: String?
+    val user_image: String = ""
 
 )
 

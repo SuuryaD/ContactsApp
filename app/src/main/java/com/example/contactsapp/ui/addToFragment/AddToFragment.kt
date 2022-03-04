@@ -58,7 +58,7 @@ class AddToFragment: Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
-        inflater.inflate(R.menu.contact_list_menu, menu)
+        inflater.inflate(R.menu.add_to_fragment_menu, menu)
 
         val searchItem : MenuItem = menu.findItem(R.id.actionSearch)
 

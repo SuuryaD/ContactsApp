@@ -32,6 +32,7 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
             val v = TextDrawable.builder()
                 .buildRound(item.contactDetails.name[0].toString().uppercase(), R.color.purple_200)
 
+
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.contactDetails.user_image))
                 .fitCenter()
@@ -40,17 +41,6 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
                 .skipMemoryCache(true)
                 .error(v)
                 .into(binding.imageView8)
-
-
-//            Glide.with(binding.root.context)
-//                .load(Uri.parse(item.contactDetails.user_image))
-//                .fitCenter()
-//                .circleCrop()
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .skipMemoryCache(true)
-//                .error(R.drawable.ic_baseline_account_circle_24)
-//                .into(binding.imageView8)
-
 
             binding.executePendingBindings()
         }
@@ -86,13 +76,6 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
         }
     }
 
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Rec {
-//        if(viewType == VIEW_TYPE_ONE){
-//            return ViewHolder2.from(parent)
-//        }
-//        else
-//            return ViewHolder.from(parent)
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ONE) {

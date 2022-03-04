@@ -9,5 +9,10 @@
         android:title="Search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
+    <item
+        android:id="@+id/import_contact"
+        android:title="Import contacts"
+        app:showAsAction="never" />
+
 
 </menu>

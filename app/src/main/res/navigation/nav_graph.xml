@@ -17,10 +17,9 @@
             app:destination="@id/contactDetailFragment" />
         <action
             android:id="@+id/action_contactsFragment_to_favoritesFragment"
-            app:destination="@id/favoritesFragment" />
-        <action
-            android:id="@+id/action_contactsFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/favoritesFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
         <action
             android:id="@+id/action_contactsFragment_to_callHistoryFragment"
             app:destination="@id/callHistoryFragment" />
@@ -69,13 +68,10 @@
         tools:layout="@layout/favorites_fragment">
         <action
             android:id="@+id/action_favoritesFragment_to_contactDetailFragment"
-            app:destination="@id/contactDetailFragment" />
+            app:destination="@id/contactDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.contactsapp.ui.searchFragment.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/callHistoryFragment"
         android:name="com.example.contactsapp.ui.callHistory.CallHistoryFragment"

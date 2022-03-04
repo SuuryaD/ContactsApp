@@ -10,7 +10,7 @@ import com.example.contactsapp.domain.model.CallHistoryApi
 interface ContactDetailsDao {
 
     @Transaction
-    @Query("Select * from contact_details order by name asc")
+    @Query("Select * from contact_details order by name collate nocase asc")
     fun getAll(): LiveData<List<ContactWithPhone>>
 
     @Query("Select * from contact_details where contactId=:contactId")

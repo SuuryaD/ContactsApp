@@ -50,12 +50,10 @@ class CallHistoryFragment : Fragment() {
         requestPermission =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
-//                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-                    Log.i("CallHistoryFragment", "permission Granted")
+                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
                     showCallHistory()
                 } else {
-//                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-                    Log.i("CallHistoryFragment", "permission Denied")
+                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
                 }
             }
 
@@ -63,30 +61,12 @@ class CallHistoryFragment : Fragment() {
     }
 
     @SuppressLint("Range")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_call_history, container, false)
-
-        val cres = this.context?.contentResolver
-        cres?.registerContentObserver(CallLog.Calls.CONTENT_URI, false, object : ContentObserver(null) {
-            override fun onChange(selfChange: Boolean) {
-                Log.i("CallHistoryFragment", "On change called")
-                super.onChange(selfChange)
-                showCallHistory()
-            }
-
-        })
-
-        binding.lifecycleOwner = viewLifecycleOwner
-        val adapter = CallHistoryAdapter(viewModel, CallHistoryClickListener {
-            makeCall(it.number)
-        })
-
-        binding.callHistoryList.adapter = adapter
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -102,6 +82,41 @@ class CallHistoryFragment : Fragment() {
             )
         }
 
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        super.onViewCreated(view, savedInstanceState)
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.READ_CALL_LOG
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+
+            val cres = this.context?.contentResolver
+            cres?.registerContentObserver(
+                CallLog.Calls.CONTENT_URI,
+                false,
+                object : ContentObserver(null) {
+                    override fun onChange(selfChange: Boolean) {
+                        Log.i("CallHistoryFragment", "On change called")
+                        super.onChange(selfChange)
+                        showCallHistory()
+                    }
+
+                })
+        }
+
+        binding.lifecycleOwner = viewLifecycleOwner
+        val adapter = CallHistoryAdapter(viewModel, CallHistoryClickListener {
+            makeCall(it.number)
+        })
+
+        binding.callHistoryList.adapter = adapter
+
         viewModel.callHistory.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
@@ -112,10 +127,9 @@ class CallHistoryFragment : Fragment() {
             this.findNavController().navigate(CallHistoryFragmentDirections.actionCallHistoryFragmentToCallHistoryDetailFragment(it))
         })
 
-        return binding.root
+
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("Range")
     private fun showCallHistory() {
 

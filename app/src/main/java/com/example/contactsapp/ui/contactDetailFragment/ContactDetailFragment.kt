@@ -248,7 +248,7 @@ class ContactDetailFragment : Fragment() {
 
     private fun shareContact(contactWithPhone: ContactWithPhone){
 
-        val f = createVcfFile(contactWithPhone, context!!)
+        val f = createVcfFile(contactWithPhone, requireContext())
         val i = Intent()
         i.action = Intent.ACTION_SEND
         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
