@@ -14,7 +14,7 @@ interface ContactDetailsDao {
     fun getAll(): LiveData<List<ContactWithPhone>>
 
     @Query("Select * from contact_details where contactId=:contactId")
-    fun observeContactById(contactId: Long): LiveData<ContactWithPhone>
+    fun observeContactById(contactId: Long): LiveData<ContactWithPhone?>
 
     @Transaction
     suspend fun insert(contactWithPhone: ContactWithPhone): Long {

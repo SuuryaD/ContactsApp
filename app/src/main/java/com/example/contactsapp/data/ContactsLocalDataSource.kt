@@ -22,10 +22,8 @@ class ContactsLocalDataSource(
         }
     }
 
-    override fun observeContactById(contactId: Long): LiveData<Result<ContactWithPhone>> {
-        return contactsDao.observeContactById(contactId).map {
-            Success(it)
-        }
+    override fun observeContactById(contactId: Long): LiveData<ContactWithPhone?> {
+        return contactsDao.observeContactById(contactId)
     }
 
     override suspend fun getContactById(contactId: Long): Result<ContactWithPhone> {

@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,11 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
@@ -60,12 +57,19 @@ class FavoritesFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.favorites_fragment, container, false)
 
         val adapter = FavoritesAdapter(viewModel, FavoritesListener {
-            makeCall(it)
+            showPhoneNumberChooser(it)
         })
 
         binding.favoritesRecyclerView.adapter = adapter
         viewModel.favoriteContact.observe(viewLifecycleOwner){
             it?.let{
+                if(it.isNotEmpty()){
+                    binding.noFavorites.visibility = View.GONE
+                    binding.favoritesRecyclerView.visibility = View.VISIBLE
+                }else{
+                    binding.favoritesRecyclerView.visibility = View.GONE
+                    binding.noFavorites.visibility = View.VISIBLE
+                }
                 adapter.submitList(it)
             }
         }
@@ -84,15 +88,12 @@ class FavoritesFragment : Fragment() {
 
     }
 
-
-
-    private fun makeCall(contactWithPhone: ContactWithPhone) {
+    private fun showPhoneNumberChooser(contactWithPhone: ContactWithPhone) {
 
         if(contactWithPhone.phoneNumbers.size == 1){
-            makeCall2(contactWithPhone.phoneNumbers[0].phoneNumber)
+            makeCall(contactWithPhone.phoneNumbers[0].phoneNumber)
             return
         }
-
 
         val alertBuilder = AlertDialog.Builder(this.context)
         alertBuilder.setTitle("Choose a number")
@@ -102,7 +103,7 @@ class FavoritesFragment : Fragment() {
         }
 
         alertBuilder.setItems(ls.toTypedArray(), DialogInterface.OnClickListener{ dialog, which ->
-            makeCall2(ls[which])
+            makeCall(ls[which])
         })
 
         val alertDialog = alertBuilder.create()
@@ -116,7 +117,7 @@ class FavoritesFragment : Fragment() {
 
     }
 
-    private fun makeCall2(phoneNumber: String){
+    private fun makeCall(phoneNumber: String){
 
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")

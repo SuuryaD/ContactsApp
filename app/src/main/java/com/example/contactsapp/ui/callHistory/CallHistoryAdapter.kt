@@ -41,11 +41,6 @@ class CallHistoryAdapter(
             viewModel: CallHistoryViewModel
         ) {
 
-//            Log.i(
-//                "CallHistoryAdapter",
-//                "Name: ${item.name} Time: ${getTimeAgo(item.callHistoryApi.date)} "
-//            )
-
             binding.textView4.text = item.name
             binding.textView6.text = getTimeAgo(item.callHistoryApi.first().date)
 
@@ -110,13 +105,11 @@ class CallHistoryAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        Log.i("CallHistoryAdapter", "On create called")
 
         return if (viewType == 1)
             ViewHolder1.from(parent)
         else
             ViewHolder2.from(parent)
-//        return ViewHolder1.from(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

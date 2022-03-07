@@ -88,6 +88,13 @@ class ContactsListFragment : Fragment() {
 
         viewModel.contacts.observe(viewLifecycleOwner, Observer {
             it?.let {
+                if(it.isNotEmpty()){
+                    binding.noContacts.visibility = View.GONE
+                    binding.contactList.visibility = View.VISIBLE
+                }else{
+                    binding.contactList.visibility = View.GONE
+                    binding.noContacts.visibility = View.VISIBLE
+                }
                 adapter.submitList(it)
             }
         })

@@ -36,7 +36,7 @@ class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Obser
 
 fun createVcfFile(contactWithPhone: ContactWithPhone, context: Context) : File {
 
-    val f = File(context.getFilesDir(), "${contactWithPhone.contactDetails?.name!!}.vcf")
+    val f = File(context.filesDir, "${contactWithPhone.contactDetails?.name!!}.vcf")
     val fw = FileWriter(f)
     fw.write("BEGIN:VCARD\r\n");
     fw.write("VERSION:4.0\r\n");

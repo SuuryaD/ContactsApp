@@ -1,11 +1,9 @@
 package com.example.contactsapp.ui.addContactFragment
 
 import android.net.Uri
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.*
 import com.example.contactsapp.data.ContactsDataSource
-import com.example.contactsapp.data.Result
 import com.example.contactsapp.data.database.*
 import com.example.contactsapp.util.Event
 import kotlinx.coroutines.CoroutineScope
@@ -17,23 +15,11 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
     private val _contactId: MutableLiveData<Long> = MutableLiveData<Long>()
 
-//    var user_image: Uri? = null
-
     val currentContact = _contactId.switchMap { contactId ->
-        dataSource.observeContactById(contactId).map{ computeResult(it) }
-    }
-
-    private fun computeResult(data: Result<ContactWithPhone>) : ContactWithPhone?{
-
-        return if(data is Result.Success ) {
-            data.data
-        }else {
-            null
-        }
+        dataSource.observeContactById(contactId)
     }
 
     fun setImageUri(uri: Uri){
-//        user_image = uri
         userImage.value = uri.toString()
     }
 
@@ -58,18 +44,10 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
     val snackBarEvent: LiveData<Event<String>>
         get() = _snackBarEvent
 
-    private val _invalidEmailSnackBar = MutableLiveData<Event<String>>()
-    val invalidEmailSnackBar : LiveData<Event<String>>
-        get() = _invalidEmailSnackBar
-
-
-    private val _navigateToContactDetail = MutableLiveData<Event<Unit>>()
-    val navigateToContactDetail : LiveData<Event<Unit>>
+    private val _navigateToContactDetail = MutableLiveData<Event<Pair<Long, String>>>()
+    val navigateToContactDetail: LiveData<Event<Pair<Long, String>>>
         get() = _navigateToContactDetail
 
-    private val _navigateToContacts = MutableLiveData<Event<Unit>>()
-    val navigateToContacts: LiveData<Event<Unit>>
-        get() = _navigateToContacts
 
 
     fun isValuesChanged(phoneNumbers: List<String>): Boolean {
@@ -114,39 +92,32 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
         }
 
         if(email != null && email.isNotEmpty() && !email.matches(Patterns.EMAIL_ADDRESS.toRegex()) ){
-            _invalidEmailSnackBar.value = Event("Enter a valid Email")
+            _snackBarEvent.value = Event("Enter a valid Email")
             return
         }
 
-
         if(_contactId.value == 0L){
             addContact(phoneNumbers)
-            _navigateToContacts.value = Event(Unit)
-
         }else{
             updateContact(phoneNumbers)
-            _navigateToContactDetail.value = Event(Unit)
         }
 
     }
 
     private fun addContact( phoneNumbers: List<String>){
 
-        val ls = ArrayList<ContactPhoneNumber>()
+        val contactPhoneNumbers = ArrayList<ContactPhoneNumber>()
 
         for(i in phoneNumbers){
-            ls.add(ContactPhoneNumber(phoneNumber = i))
+            contactPhoneNumbers.add(ContactPhoneNumber(phoneNumber = i))
         }
 
-        val temp = ContactWithPhone(ContactDetails(name = name.value!!, email = email.value ?: "", user_image = userImage.value ?: ""), ls)
+        val newContact = ContactWithPhone(ContactDetails(name = name.value!!, email = email.value ?: "", user_image = userImage.value ?: ""), contactPhoneNumbers)
 
         CoroutineScope(Dispatchers.Main).launch {
 
-
-            val id = withContext(Dispatchers.IO){
-                dataSource.insert(temp)
-            }
-            navigateToContactDetail2.value = Event(id)
+            val id = dataSource.insert(newContact)
+            _navigateToContactDetail.value = Event(Pair(id, "Contact Added Successfully"))
 
         }
 
@@ -154,11 +125,11 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
     private fun updateContact(phoneNumbers: List<String>){
 
-        val ls = ArrayList<ContactPhoneNumber>()
+        val contactPhoneNumbers = ArrayList<ContactPhoneNumber>()
         var i = 0
 
         while(i < currentContact.value?.phoneNumbers.orEmpty().size && i < phoneNumbers.size ){
-            ls.add(ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(i)?.phoneId!!, currentContact.value?.contactDetails?.contactId!!,phoneNumbers.get(i)))
+            contactPhoneNumbers.add(ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(i)?.phoneId!!, currentContact.value?.contactDetails?.contactId!!,phoneNumbers.get(i)))
             i++
         }
 
@@ -176,44 +147,24 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
             i++
         }
 
-        val temp = ContactWithPhone(
+        val updatedContact = ContactWithPhone(
             ContactDetails(contactId= _contactId.value!!,
                 name = name.value!!, email = email.value!!,
                 user_image = userImage.value ?: "",
                 favorite = currentContact.value?.contactDetails?.favorite!!),
-            ls)
-
-        val ls2 = ArrayList<ContactPhoneNumber>()
-        for(i in phoneNumbers){
-            ls2.add(ContactPhoneNumber(phoneNumber = i))
-        }
-
-
-        val temp2 = ContactWithPhone(
-            ContactDetails(name = name.value!!, email = email.value!!, user_image = userImage.value!!, favorite = currentContact.value?.contactDetails?.favorite!!), ls2
-        )
+            contactPhoneNumbers)
 
         CoroutineScope(Dispatchers.Main).launch {
-            dataSource.updateContact(temp)
+
+            dataSource.updateContact(updatedContact)
             dataSource.insertPhoneNumbers(newPhoneNumbers)
             dataSource.deletePhoneNumbers(deleteList)
-
-//             val id = dataSource.updateContact2(currentContact.value!!, temp2)
-//            val id = updateContactDb(temp2)
-            navigateToContactDetail2.value = Event(_contactId.value!!)
-        }
-
-
-    }
-
-    val navigateToContactDetail2 = MutableLiveData<Event<Long>>()
-
-    private suspend fun updateContactDb(temp2: ContactWithPhone): Long{
-        return withContext(Dispatchers.IO){
-            return@withContext dataSource.updateContact2(currentContact.value!!, temp2)
+            _navigateToContactDetail.value = Event(Pair(_contactId.value!!, "Contact Updated Successfully"))
         }
     }
+
 }
+
 //
 //@BindingAdapter("text2")
 //fun customText(editText: EditText, text: String){

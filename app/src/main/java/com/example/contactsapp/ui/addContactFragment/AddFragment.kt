@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
@@ -83,8 +82,8 @@ class AddFragment : Fragment() {
                 }
             }
 
+        //Overriding back button press for showing dialog
         activity?.onBackPressedDispatcher?.addCallback(this) {
-            Log.i("AddFragment", "On back call back")
 
             if(viewModel.isValuesChanged(onSave())){
                 askUser {
@@ -96,7 +95,6 @@ class AddFragment : Fragment() {
                 isEnabled = false
                 activity?.onBackPressed()
             }
-
         }
 
     }
@@ -128,7 +126,6 @@ class AddFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
@@ -144,27 +141,16 @@ class AddFragment : Fragment() {
             addView()
         })
 
-//        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver {
-//            this.findNavController()
-//                .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(args.contactId))
-//        })
-
-        viewModel.navigateToContactDetail2.observe(viewLifecycleOwner, EventObserver{
-            Toast.makeText(this.context, "Contact Updated", Toast.LENGTH_SHORT).show()
+        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver{
+            Toast.makeText(this.context, it.second, Toast.LENGTH_SHORT).show()
             if(args.phoneNumber != null){
                 this.findNavController().navigateUp()
             }
             else{
                 this.findNavController()
-                    .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(it))
+                    .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(it.first))
             }
         })
-
-//        viewModel.navigateToContacts.observe(viewLifecycleOwner, EventObserver {
-//            Toast.makeText(this.context, "Contact Added", Toast.LENGTH_SHORT).show()
-//            this.findNavController()
-//                .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
-//        })
 
         binding.userImage.setOnClickListener {
 
@@ -202,10 +188,6 @@ class AddFragment : Fragment() {
             Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
         })
 
-        viewModel.invalidEmailSnackBar.observe(viewLifecycleOwner, EventObserver{
-            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
-        })
-
     }
 
 
@@ -225,13 +207,9 @@ class AddFragment : Fragment() {
             android.R.id.home -> {
                 if(viewModel.isValuesChanged(onSave())){
                     askUser {
-//                        this.findNavController()
-//                            .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
                         this.findNavController().navigateUp()
                     }
                 }else{
-//                    this.findNavController()
-//                        .navigate(AddFragmentDirections.actionAddFragmentToContactsFragment())
                     this.findNavController().navigateUp()
                 }
                 true
@@ -250,6 +228,7 @@ class AddFragment : Fragment() {
         i.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         i.flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
         getImageLauncher.launch(Intent.createChooser(i, "Select a photo"))
+
     }
 
     private fun takePicture() {
@@ -259,7 +238,7 @@ class AddFragment : Fragment() {
             } catch (ex: IOException) {
                 null
             }
-            Log.i("AddFragment", "File Created")
+
             // Continue only if the File was successfully created
             photoFile?.also {
                 photoUri = FileProvider.getUriForFile(
@@ -267,7 +246,7 @@ class AddFragment : Fragment() {
                     "com.example.android.fileprovider",
                     it
                 )
-                Log.i("AddFragment", "Photo Uri Created")
+
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
                 takePictureIntent.flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
                 takePictureIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -309,11 +288,14 @@ class AddFragment : Fragment() {
     }
 
     private fun addView(phoneNumber: String? = null) {
-        val v = EditPhoneRowBinding.inflate(layoutInflater)
+
+        val editPhoneRowBinding = EditPhoneRowBinding.inflate(layoutInflater)
         if (phoneNumber != null)
-            v.editTextPhone.text = Editable.Factory.getInstance().newEditable(phoneNumber)
+            editPhoneRowBinding.editTextPhone.text = Editable.Factory.getInstance().newEditable(phoneNumber)
+
         val cnt = binding.linearLayout.childCount
-        v.editTextPhone.doAfterTextChanged {
+
+        editPhoneRowBinding.editTextPhone.doAfterTextChanged {
             if (it.toString().isNotEmpty() && binding.linearLayout.childCount == cnt + 1) {
                 addView()
             }
@@ -323,24 +305,24 @@ class AddFragment : Fragment() {
                 binding.linearLayout.removeViewAt(binding.linearLayout.childCount - 1)
             }
         }
-        binding.linearLayout.addView(v.root, binding.linearLayout.childCount)
+        binding.linearLayout.addView(editPhoneRowBinding.root, binding.linearLayout.childCount)
     }
 
     private fun onSave(): List<String> {
-        val ls = ArrayList<String>()
 
+        val phoneNumbers = ArrayList<String>()
         val count = binding.linearLayout.childCount
 
         for (i in 0 until count) {
 
-            val v = binding.linearLayout.getChildAt(i)
-            val phone = v.findViewById<EditText>(R.id.editTextPhone).text.toString()
+            val phoneRowItem = binding.linearLayout.getChildAt(i)
+            val number = phoneRowItem.findViewById<EditText>(R.id.editTextPhone).text.toString()
 
-            if (phone.isNotEmpty()) {
-                ls.add(phone)
+            if (number.isNotEmpty()) {
+                phoneNumbers.add(number)
             }
         }
-        return ls
+        return phoneNumbers
     }
 }
 

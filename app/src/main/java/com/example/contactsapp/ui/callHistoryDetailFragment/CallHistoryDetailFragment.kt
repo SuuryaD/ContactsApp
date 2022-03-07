@@ -1,6 +1,7 @@
 package com.example.contactsapp.ui.callHistoryDetailFragment
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CallLog
@@ -10,6 +11,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -20,6 +24,7 @@ import com.example.contactsapp.databinding.FragmentCallHistoryDetailBinding
 import com.example.contactsapp.di.ServiceLocator
 import com.example.contactsapp.domain.model.CallHistoryApi
 import com.example.contactsapp.util.EventObserver
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,6 +40,22 @@ class CallHistoryDetailFragment : Fragment() {
     private val args: CallHistoryDetailFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentCallHistoryDetailBinding
+    private lateinit var makeCallRequestPermission: ActivityResultLauncher<String>
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        makeCallRequestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+
+            if(it == true){
+                Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
+            }else{
+                Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,16 +82,15 @@ class CallHistoryDetailFragment : Fragment() {
         })
 
         viewModel.sendMessage.observe(viewLifecycleOwner, EventObserver{
-            Log.i("CallHistoryDetail", "Send message observed")
+
             val i = Intent(Intent.ACTION_SENDTO)
             i.data = Uri.parse("smsto:$it")
             startActivity(i)
+
         })
 
         viewModel.makeCall.observe(viewLifecycleOwner, EventObserver{
-            val intent = Intent(Intent.ACTION_CALL)
-            intent.data = Uri.parse("tel:${args.callHistory.number}")
-            startActivity(intent)
+            makeCall(args.callHistory.number)
         })
 
         viewModel.createNewContact.observe(viewLifecycleOwner, EventObserver{
@@ -82,16 +102,7 @@ class CallHistoryDetailFragment : Fragment() {
         })
 
         viewModel.deleteCallHistory.observe(viewLifecycleOwner, EventObserver{
-            val cres = activity?.contentResolver
-            val callHistory = args.callHistory
-
-            for(i in callHistory.callHistoryApi){
-
-                Log.i("CallHistoryDetail", "id: ${i.id}")
-                cres?.delete(CallLog.Calls.CONTENT_URI, "${CallLog.Calls._ID} = ?" , arrayOf(i.id))
-            }
-
-            this.findNavController().navigateUp()
+            deleteCallHistory()
         })
 
         return binding.root
@@ -124,6 +135,48 @@ class CallHistoryDetailFragment : Fragment() {
 
             binding.callHistoryLayout.addView(v.root, binding.callHistoryLayout.childCount)
 
+        }
+
+    }
+
+    private fun makeCall(phoneNumber: String){
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.CALL_PHONE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val intent = Intent(Intent.ACTION_CALL)
+            intent.data = Uri.parse("tel:$phoneNumber")
+            startActivity(intent)
+        }
+        else {
+            makeCallRequestPermission.launch(
+                android.Manifest.permission.CALL_PHONE
+            )
+        }
+    }
+
+    private fun deleteCallHistory(){
+
+        if(ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.WRITE_CALL_LOG
+        ) == PackageManager.PERMISSION_GRANTED){
+            val cres = activity?.contentResolver
+            val callHistory = args.callHistory
+
+            for(i in callHistory.callHistoryApi){
+
+                Log.i("CallHistoryDetail", "id: ${i.id}")
+                cres?.delete(CallLog.Calls.CONTENT_URI, "${CallLog.Calls._ID} = ?" , arrayOf(i.id))
+            }
+
+            this.findNavController().navigateUp()
+        }else{
+            makeCallRequestPermission.launch(
+                android.Manifest.permission.WRITE_CALL_LOG
+            )
         }
 
     }

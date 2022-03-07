@@ -83,8 +83,6 @@ class ContactDetailFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_contact_detail, container, false)
 
         viewModel.start(args.contactId)
-//        (activity as AppCompatActivity).supportActionBar?.title = "Contact Detail"
-
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
@@ -96,17 +94,6 @@ class ContactDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.button.setOnClickListener {
-//            this.findNavController().navigate(
-//                ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(args.contactId)
-//            )
-//        }
-
-//        binding.displayEmail.setOnClickListener{
-//            val i = Intent(Intent.ACTION_SENDTO)
-//            i.data = Uri.parse("mailto:${binding.displayEmail.text}")
-//            startActivity(i)
-//        }
 
         binding.emailLayout.setOnClickListener {
 
@@ -150,7 +137,6 @@ class ContactDetailFragment : Fragment() {
                 true
             }
             R.id.delete_contact -> {
-//                viewModel.deleteCurrentContact()
                 deleteContact()
                 true
 

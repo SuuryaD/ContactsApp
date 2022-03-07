@@ -29,31 +29,10 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
     fun getCallHistory(ls: List<CallHistoryApi>){
 
         var ls3 = ArrayList<RecyclerViewViewType>()
-        var ls2 = ArrayList<CallHistory>()
 
         val temp = ArrayList<ArrayList<CallHistoryApi>>()
 
         CoroutineScope(Dispatchers.Main).launch{
-
-//            ls2.addAll(dataSource.getContactNames(ls))
-//
-//            val ls4 = ArrayList<CallHistory>()
-//
-//            if(ls2.isNotEmpty()){
-//                ls4.add(ls2[0])
-////                temp.add(arrayListOf(ls2[0].callHistoryApi))
-//            }
-//
-//            for(i in 1 until ls2.size){
-//
-//                if(ls2.get(i).callHistoryApi.number != ls2.get(i - 1).callHistoryApi.number){
-//                    ls4.add(ls2[i])
-////                    temp.add(arrayListOf(ls2[i].callHistoryApi))
-//                }
-////                else{
-////                    temp.last().add(ls2[i].callHistoryApi)
-////                }
-//            }
 
             if(ls.isNotEmpty()){
                 temp.add(arrayListOf(ls[0]))

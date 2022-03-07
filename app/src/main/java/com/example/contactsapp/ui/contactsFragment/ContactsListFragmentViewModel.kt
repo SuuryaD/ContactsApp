@@ -18,7 +18,7 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource) : ViewMo
             null
     }
 
-    val contacts = Transformations.map(_contacts){
+    val contacts:LiveData<List<ContactWithPhone>> = Transformations.map(_contacts){
         val ls = ArrayList<ContactWithPhone>()
         it?.let {
             if(it.isEmpty())

@@ -11,7 +11,7 @@ interface ContactsDataSource {
 
     fun observeAllContacts() : LiveData<Result<List<ContactWithPhone>>>
 
-    fun observeContactById(contactId: Long) : LiveData<Result<ContactWithPhone>>
+    fun observeContactById(contactId: Long) : LiveData<ContactWithPhone?>
 
     suspend fun getContactById(contactId: Long): Result<ContactWithPhone>
 

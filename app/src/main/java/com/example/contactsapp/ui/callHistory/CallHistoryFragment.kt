@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.CallLog
-import android.telecom.Call
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -24,7 +23,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.contactsapp.R
 import com.example.contactsapp.databinding.FragmentCallHistoryBinding
 import com.example.contactsapp.di.ServiceLocator
-import com.example.contactsapp.domain.model.CallHistory
 import com.example.contactsapp.domain.model.CallHistoryApi
 import com.example.contactsapp.util.EventObserver
 import com.google.android.material.snackbar.Snackbar
@@ -42,6 +40,9 @@ class CallHistoryFragment : Fragment() {
     private lateinit var binding: FragmentCallHistoryBinding
     
     private lateinit var requestPermission: ActivityResultLauncher<String>
+    private lateinit var callRequestPermission: ActivityResultLauncher<String>
+
+    private var callLogPermission = false
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -51,7 +52,22 @@ class CallHistoryFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
                     Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
+                    callLogPermission = true
                     showCallHistory()
+                } else {
+                    callLogPermission = false
+                    binding.noCallHistory.text = "Needs call logs permission!"
+//
+                    binding.noCallHistory.visibility = View.VISIBLE
+                    binding.callHistoryList.visibility = View.GONE
+                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+
+        callRequestPermission =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted: Boolean ->
+                if (isGranted) {
+                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
                 } else {
                     Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
                 }
@@ -73,7 +89,7 @@ class CallHistoryFragment : Fragment() {
                 android.Manifest.permission.READ_CALL_LOG
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-
+            callLogPermission = true
             showCallHistory()
         }
         else {
@@ -82,7 +98,6 @@ class CallHistoryFragment : Fragment() {
             )
         }
 
-
         return binding.root
     }
 
@@ -90,11 +105,7 @@ class CallHistoryFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.READ_CALL_LOG
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (callLogPermission) {
 
             val cres = this.context?.contentResolver
             cres?.registerContentObserver(
@@ -133,11 +144,19 @@ class CallHistoryFragment : Fragment() {
     @SuppressLint("Range")
     private fun showCallHistory() {
 
+        if(!callLogPermission){
+            binding.noCallHistory.text = "Needs call logs permission!"
+            binding.callHistoryList.visibility = View.GONE
+            binding.noCallHistory.visibility = View.VISIBLE
+            return
+        }
+
 
         Log.i("CallHistoryFragment", "call history called")
         val cursor = this.context?.contentResolver?.query(CallLog.Calls.CONTENT_URI, null, null,null , CallLog.Calls.DATE + " DESC")
 
-        val ls = ArrayList<CallHistoryApi>()
+        val callHistoryList = ArrayList<CallHistoryApi>()
+
         while(cursor != null && cursor.moveToNext()){
 
             val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
@@ -145,22 +164,41 @@ class CallHistoryFragment : Fragment() {
             val duration = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION))
             val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
             val id = cursor.getString(cursor.getColumnIndex(CallLog.Calls._ID))
-            ls.add(
+            callHistoryList.add(
                 CallHistoryApi(
                     id, number, date, duration, type
             ))
         }
 
-        Log.i("CallHistoryFragment", ls.toString())
-        viewModel.getCallHistory(ls)
+        Log.i("CallHistoryFragment", callHistoryList.toString())
+        if(callHistoryList.size == 0){
+            binding.noCallHistory.text = "No call history to display"
+            binding.noCallHistory.visibility = View.VISIBLE
+            binding.callHistoryList.visibility = View.GONE
+        }else{
+            binding.noCallHistory.visibility = View.GONE
+            binding.callHistoryList.visibility = View.VISIBLE
+        }
+        viewModel.getCallHistory(callHistoryList)
     }
 
 
     private fun makeCall(phoneNumber: String){
 
-        val intent = Intent(Intent.ACTION_CALL)
-        intent.data = Uri.parse("tel:$phoneNumber")
-        startActivity(intent)
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.CALL_PHONE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val intent = Intent(Intent.ACTION_CALL)
+            intent.data = Uri.parse("tel:$phoneNumber")
+            startActivity(intent)
+        }
+        else {
+            callRequestPermission.launch(
+                android.Manifest.permission.CALL_PHONE
+            )
+        }
     }
 
 }

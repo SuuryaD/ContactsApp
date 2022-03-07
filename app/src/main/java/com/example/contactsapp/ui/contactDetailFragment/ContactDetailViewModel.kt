@@ -17,21 +17,10 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
     private val _contactId = MutableLiveData<Long>()
 
     private val _currentContact = _contactId.switchMap {
-        dataSource.observeContactById(it).map { computeResult(it) }
-    }
-
-    private fun computeResult(it: Result<ContactWithPhone>) : ContactWithPhone?{
-        return if(it is Result.Success){
-            it.data
-        }else{
-            null
-        }
+        dataSource.observeContactById(it)
     }
 
     val currentContact: LiveData<ContactWithPhone?> = _currentContact
-
-
-//    val navigateToContactsListFragment = MutableLiveData<Boolean>(false)
 
 
     private val _navigateToContactsListFragment = MutableLiveData<Event<Unit>>()
@@ -49,13 +38,11 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
             Log.i("ContactDetailViewModel", "inside If ")
             _contactId.value = contactId
         }
-
-        Log.i("ContactDetailViewModel", "View Model Start called")
     }
 
     fun deleteCurrentContact() {
         CoroutineScope(Dispatchers.IO).launch {
-            dataSource.deleteContact(currentContact.value?.contactDetails?.contactId!!)
+            dataSource.deleteContact(_currentContact.value?.contactDetails?.contactId!!)
         }
         _navigateToContactsListFragment.value = Event(Unit)
     }
