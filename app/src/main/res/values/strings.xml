@@ -2,6 +2,16 @@
     <string name="app_name">ContactsApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="android_permission_denied_title">Permission Denied</string>
+    <string name="android_permission_denied_open_settings">Open settings</string>
+    <string name="android_permission_denied_not_now">Not now</string>
+    <string name="alert_ok">ok</string>
+    <string name="phone_permission">Phone permission</string>
+    <string name="android_permission_phone_description">Needs access to Phone to make calls</string>
+    <string name="android_permission_phone_denied_description">Needs Phone permission to make calls from the app.</string>
+    <string name="call_log_permission">Call Log Permission</string>
+    <string name="android_permission_call_log_description">Call Log permission required to display call history</string>
+    <string name="android_permission_call_log_denied_description">Needs access to call logs to display recent contacts</string>
 
     <array name="image_option">
         <item>Remove Image</item>

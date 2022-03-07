@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -23,7 +24,9 @@ import com.example.contactsapp.databinding.CallHistoryDetailRowItemBinding
 import com.example.contactsapp.databinding.FragmentCallHistoryDetailBinding
 import com.example.contactsapp.di.ServiceLocator
 import com.example.contactsapp.domain.model.CallHistoryApi
+import com.example.contactsapp.util.CallLogPermissionRequester
 import com.example.contactsapp.util.EventObserver
+import com.example.contactsapp.util.PhonePermissionRequester
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,22 +43,31 @@ class CallHistoryDetailFragment : Fragment() {
     private val args: CallHistoryDetailFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentCallHistoryDetailBinding
-    private lateinit var makeCallRequestPermission: ActivityResultLauncher<String>
+//    private lateinit var makeCallRequestPermission: ActivityResultLauncher<String>
+
+    private val phonePermissionRequester = PhonePermissionRequester(this, { onGranted() }, {
+        Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
+    })
+    var onGranted = { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()}
+
+    private val callLogPermissionRequester = CallLogPermissionRequester(this, { onGrantedCallLog() }, { onDeniedCallLog()})
+    var onGrantedCallLog = {Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()}
+    var onDeniedCallLog = {Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()}
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        makeCallRequestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-
-            if(it == true){
-                Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-            }else{
-                Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-            }
-        }
-
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        makeCallRequestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+//
+//            if(it == true){
+//                Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
+//            }else{
+//                Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
+//            }
+//        }
+//
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -141,28 +153,34 @@ class CallHistoryDetailFragment : Fragment() {
 
     private fun makeCall(phoneNumber: String){
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.CALL_PHONE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            val intent = Intent(Intent.ACTION_CALL)
-            intent.data = Uri.parse("tel:$phoneNumber")
+        val intent = Intent(Intent.ACTION_CALL)
+        intent.data = Uri.parse("tel:$phoneNumber")
+
+        onGranted = {
             startActivity(intent)
         }
-        else {
-            makeCallRequestPermission.launch(
-                android.Manifest.permission.CALL_PHONE
-            )
-        }
+
+        phonePermissionRequester.checkPermissions(requireContext())
+
+//        if (ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                android.Manifest.permission.CALL_PHONE
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            val intent = Intent(Intent.ACTION_CALL)
+//            intent.data = Uri.parse("tel:$phoneNumber")
+//            startActivity(intent)
+//        }
+//        else {
+//            makeCallRequestPermission.launch(
+//                android.Manifest.permission.CALL_PHONE
+//            )
+//        }
     }
 
     private fun deleteCallHistory(){
 
-        if(ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.WRITE_CALL_LOG
-        ) == PackageManager.PERMISSION_GRANTED){
+        onGrantedCallLog = {
             val cres = activity?.contentResolver
             val callHistory = args.callHistory
 
@@ -173,11 +191,29 @@ class CallHistoryDetailFragment : Fragment() {
             }
 
             this.findNavController().navigateUp()
-        }else{
-            makeCallRequestPermission.launch(
-                android.Manifest.permission.WRITE_CALL_LOG
-            )
         }
+
+        callLogPermissionRequester.checkPermissions(requireContext())
+
+//        if(ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                android.Manifest.permission.WRITE_CALL_LOG
+//        ) == PackageManager.PERMISSION_GRANTED){
+//            val cres = activity?.contentResolver
+//            val callHistory = args.callHistory
+//
+//            for(i in callHistory.callHistoryApi){
+//
+//                Log.i("CallHistoryDetail", "id: ${i.id}")
+//                cres?.delete(CallLog.Calls.CONTENT_URI, "${CallLog.Calls._ID} = ?" , arrayOf(i.id))
+//            }
+//
+//            this.findNavController().navigateUp()
+//        }else{
+//            makeCallRequestPermission.launch(
+//                android.Manifest.permission.WRITE_CALL_LOG
+//            )
+//        }
 
     }
 

@@ -1,51 +1,33 @@
 package com.example.contactsapp.ui.contactDetailFragment
 
 import android.app.AlertDialog
-import android.content.ContentResolver
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.content.FileProvider.getUriForFile
-import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.contactsapp.R
-import com.example.contactsapp.data.database.ContactDatabase
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.FragmentContactDetailBinding
 import com.example.contactsapp.databinding.PhoneRowBinding
 import com.example.contactsapp.di.ServiceLocator
-import com.example.contactsapp.ui.addContactFragment.AddFragment
-import com.example.contactsapp.ui.addContactFragment.AddFragmentViewModel
 import com.example.contactsapp.util.EventObserver
+import com.example.contactsapp.util.PhonePermissionRequester
 import com.example.contactsapp.util.createVcfFile
-import com.google.android.material.snackbar.Snackbar
-import java.io.File
-import java.io.FileWriter
-import java.util.jar.Manifest
 
 
 class ContactDetailFragment : Fragment() {
@@ -59,20 +41,11 @@ class ContactDetailFragment : Fragment() {
     }
     private val args: ContactDetailFragmentArgs by navArgs()
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private val phonePermissionRequester = PhonePermissionRequester(this, { onGranted() }, {
+        Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
+    })
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        requestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                if (isGranted) {
-                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-                } else {
-                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-                }
-            }
-    }
+    var onGranted = { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,9 +76,8 @@ class ContactDetailFragment : Fragment() {
             startActivity(i)
         }
 
-        viewModel.navigateToContactsListFragment.observe(this.viewLifecycleOwner, EventObserver {
-            this.findNavController()
-                    .navigate(ContactDetailFragmentDirections.actionContactDetailFragmentToContactsFragment())
+        viewModel.navigateBack.observe(this.viewLifecycleOwner, EventObserver {
+            this.findNavController().navigateUp()
         })
 
         viewModel.currentContact.observe(viewLifecycleOwner, Observer {
@@ -124,7 +96,6 @@ class ContactDetailFragment : Fragment() {
             Toast.makeText(this.context, it, Toast.LENGTH_SHORT).show()
         })
 
-
     }
 
 
@@ -139,7 +110,6 @@ class ContactDetailFragment : Fragment() {
             R.id.delete_contact -> {
                 deleteContact()
                 true
-
             }
             R.id.share_contact -> {
                 shareContact(viewModel.currentContact.value!!)
@@ -199,19 +169,15 @@ class ContactDetailFragment : Fragment() {
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.CALL_PHONE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        onGranted = {
+            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
             startActivity(intent)
-        } else {
-            requestPermissionLauncher.launch(
-                android.Manifest.permission.CALL_PHONE
-            )
         }
 
+        phonePermissionRequester.checkPermissions(requireContext())
+
     }
+
 
     private fun addView(phoneNumber: String) {
         val v = PhoneRowBinding.inflate(layoutInflater)

@@ -1,12 +1,9 @@
 package com.example.contactsapp.ui.contactDetailFragment
 
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.data.ContactsDataSource
-import com.example.contactsapp.data.Result
 import com.example.contactsapp.util.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,9 +20,9 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
     val currentContact: LiveData<ContactWithPhone?> = _currentContact
 
 
-    private val _navigateToContactsListFragment = MutableLiveData<Event<Unit>>()
-    val navigateToContactsListFragment: LiveData<Event<Unit>>
-        get() = _navigateToContactsListFragment
+    private val _navigateBack = MutableLiveData<Event<Unit>>()
+    val navigateBack: LiveData<Event<Unit>>
+        get() = _navigateBack
 
 
     private val _displayFavouriteChangeToast = MutableLiveData<Event<String>>()
@@ -44,7 +41,7 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
         CoroutineScope(Dispatchers.IO).launch {
             dataSource.deleteContact(_currentContact.value?.contactDetails?.contactId!!)
         }
-        _navigateToContactsListFragment.value = Event(Unit)
+        _navigateBack.value = Event(Unit)
     }
 
     fun changeFavourite() {

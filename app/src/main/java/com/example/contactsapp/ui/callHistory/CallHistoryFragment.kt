@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -24,7 +25,9 @@ import com.example.contactsapp.R
 import com.example.contactsapp.databinding.FragmentCallHistoryBinding
 import com.example.contactsapp.di.ServiceLocator
 import com.example.contactsapp.domain.model.CallHistoryApi
+import com.example.contactsapp.util.CallLogPermissionRequester
 import com.example.contactsapp.util.EventObserver
+import com.example.contactsapp.util.PhonePermissionRequester
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -40,7 +43,20 @@ class CallHistoryFragment : Fragment() {
     private lateinit var binding: FragmentCallHistoryBinding
     
     private lateinit var requestPermission: ActivityResultLauncher<String>
-    private lateinit var callRequestPermission: ActivityResultLauncher<String>
+//    private lateinit var callRequestPermission: ActivityResultLauncher<String>
+
+    private val phonePermissionRequester = PhonePermissionRequester(this, { onGranted() }, {
+        Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
+    })
+    var onGranted = {
+        Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
+    }
+
+
+    private val callLogPermissionRequester = CallLogPermissionRequester(this, { onGrantedCallLog() }, { onDeniedCallLog()})
+    var onGrantedCallLog = {Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()}
+    var onDeniedCallLog = {Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()}
+
 
     private var callLogPermission = false
 
@@ -48,30 +64,30 @@ class CallHistoryFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        requestPermission =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                if (isGranted) {
-                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-                    callLogPermission = true
-                    showCallHistory()
-                } else {
-                    callLogPermission = false
-                    binding.noCallHistory.text = "Needs call logs permission!"
-//
-                    binding.noCallHistory.visibility = View.VISIBLE
-                    binding.callHistoryList.visibility = View.GONE
-                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-                }
-            }
+//        requestPermission =
+//            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+//                if (isGranted) {
+//                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
+//                    callLogPermission = true
+//                    showCallHistory()
+//                } else {
+//                    callLogPermission = false
+//                    binding.noCallHistory.text = "Needs call logs permission!"
+////
+//                    binding.noCallHistory.visibility = View.VISIBLE
+//                    binding.callHistoryList.visibility = View.GONE
+//                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
+//                }
+//            }
 
-        callRequestPermission =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted: Boolean ->
-                if (isGranted) {
-                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-                } else {
-                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-                }
-            }
+//        callRequestPermission =
+//            registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted: Boolean ->
+//                if (isGranted) {
+//                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
+//                } else {
+//                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
+//                }
+//            }
 
         super.onCreate(savedInstanceState)
     }
@@ -84,19 +100,38 @@ class CallHistoryFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_call_history, container, false)
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.READ_CALL_LOG
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        onGrantedCallLog = {
+            Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()
             callLogPermission = true
+            binding.noCallHistory.visibility = View.GONE
+            binding.callHistoryList.visibility = View.VISIBLE
             showCallHistory()
         }
-        else {
-            requestPermission.launch(
-                android.Manifest.permission.READ_CALL_LOG
-            )
+
+        onDeniedCallLog = {
+            Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()
+            callLogPermission = false
+            binding.noCallHistory.text = "Needs call logs permission!"
+//
+            binding.noCallHistory.visibility = View.VISIBLE
+            binding.callHistoryList.visibility = View.GONE
         }
+
+        callLogPermissionRequester.checkPermissions(requireContext())
+
+//        if (ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                android.Manifest.permission.READ_CALL_LOG
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            callLogPermission = true
+//            showCallHistory()
+//        }
+//        else {
+//            requestPermission.launch(
+//                android.Manifest.permission.READ_CALL_LOG
+//            )
+//        }
 
         return binding.root
     }
@@ -185,20 +220,15 @@ class CallHistoryFragment : Fragment() {
 
     private fun makeCall(phoneNumber: String){
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.CALL_PHONE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            val intent = Intent(Intent.ACTION_CALL)
-            intent.data = Uri.parse("tel:$phoneNumber")
+        val intent = Intent(Intent.ACTION_CALL)
+        intent.data = Uri.parse("tel:$phoneNumber")
+
+        onGranted = {
+            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
             startActivity(intent)
         }
-        else {
-            callRequestPermission.launch(
-                android.Manifest.permission.CALL_PHONE
-            )
-        }
+        phonePermissionRequester.checkPermissions(requireContext())
+
     }
 
 }

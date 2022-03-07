@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -21,6 +22,7 @@ import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.FavoritesFragmentBinding
 import com.example.contactsapp.di.ServiceLocator
 import com.example.contactsapp.util.EventObserver
+import com.example.contactsapp.util.PhonePermissionRequester
 import com.google.android.material.snackbar.Snackbar
 
 class FavoritesFragment : Fragment() {
@@ -33,21 +35,13 @@ class FavoritesFragment : Fragment() {
     }
     private lateinit var binding: FavoritesFragmentBinding
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val phonePermissionRequester = PhonePermissionRequester(this, { onGranted() }, {
+        Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
+    })
 
-        requestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                if (isGranted) {
-                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-                } else {
-                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-                }
-            }
+    var onGranted = { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()}
 
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,17 +116,11 @@ class FavoritesFragment : Fragment() {
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.CALL_PHONE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        onGranted = {
+            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
             startActivity(intent)
-        } else {
-            requestPermissionLauncher.launch(
-                android.Manifest.permission.CALL_PHONE
-            )
         }
+        phonePermissionRequester.checkPermissions(requireContext())
 
     }
 
