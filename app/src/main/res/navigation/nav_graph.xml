@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_contactsFragment_to_callHistoryFragment"
             app:destination="@id/callHistoryFragment" />
+        <action
+            android:id="@+id/action_contactsFragment_to_dialFragment"
+            app:destination="@id/dialFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
@@ -109,4 +112,8 @@
             app:destination="@id/addFragment"
             app:popUpTo="@id/callHistoryDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/dialFragment"
+        android:name="com.example.contactsapp.ui.dialFragment.DialFragment"
+        android:label="DialFragment" />
 </navigation>

@@ -9,11 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.AlphabetHeaderBinding
 import com.example.contactsapp.databinding.RowItemBinding
-import com.google.android.material.internal.TextDrawableHelper
+import com.example.contactsapp.util.getRandomMaterialColour
 
 class ContactsAdapter2(private val clickListener: ContactListener) :
     ListAdapter<ContactWithPhone, RecyclerView.ViewHolder>(ContactPhoneCallBack()) {
@@ -29,18 +28,19 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
             binding.clickListener = clickListener
 
 
+
             val v = TextDrawable.builder()
-                .buildRound(item.contactDetails.name[0].toString().uppercase(), R.color.purple_200)
+                .buildRound(item.contactDetails.name[0].toString().uppercase(), getRandomMaterialColour(binding.root.context))
 
 
-            Glide.with(binding.root.context)
-                .load(Uri.parse(item.contactDetails.user_image))
-                .fitCenter()
-                .circleCrop()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .error(v)
-                .into(binding.imageView8)
+                    Glide.with(binding.root.context)
+                        .load(Uri.parse(item.contactDetails.user_image))
+                        .fitCenter()
+                        .circleCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .error(v)
+                        .into(binding.imageView8)
 
             binding.executePendingBindings()
         }

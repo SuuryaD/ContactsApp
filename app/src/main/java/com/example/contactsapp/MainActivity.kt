@@ -27,12 +27,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.contactsFragment,
                 R.id.callHistoryFragment,
                 R.id.favoritesFragment
+//                R.id.dialFragment
             )
             .build()
 
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.id == R.id.contactsFragment || destination.id == R.id.callHistoryFragment || destination.id == R.id.favoritesFragment){
+            if(destination.id == R.id.contactsFragment || destination.id == R.id.callHistoryFragment || destination.id == R.id.favoritesFragment
+//                || destination.id == R.id.dialFragment
+            ){
                 navView.visibility = View.VISIBLE
             }
             else

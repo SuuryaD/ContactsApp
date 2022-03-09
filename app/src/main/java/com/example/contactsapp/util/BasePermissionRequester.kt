@@ -50,7 +50,6 @@ abstract class BasePermissionRequester(
             if (userHadPreviouslyDenied) {
                 displayPermissionDeniedDialog(fragment.requireContext())
             } else {
-                // User clicked a one time deny, show him the main screen
                 onDismissed()
             }
         }

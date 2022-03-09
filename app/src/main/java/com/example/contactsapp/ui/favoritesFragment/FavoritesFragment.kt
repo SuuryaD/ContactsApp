@@ -117,7 +117,6 @@ class FavoritesFragment : Fragment() {
         intent.data = Uri.parse("tel:$phoneNumber")
 
         onGranted = {
-            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
             startActivity(intent)
         }
         phonePermissionRequester.checkPermissions(requireContext())

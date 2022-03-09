@@ -45,6 +45,12 @@ class ContactsLocalDataSource(
         }
     }
 
+    override suspend fun insert2(contactWithPhone: ContactWithPhone) {
+        withContext(Dispatchers.IO){
+            contactsDao.insert2(contactWithPhone)
+        }
+    }
+
     override suspend fun insertPhoneNumbers(phoneNumbers: List<ContactPhoneNumber>) {
         withContext(Dispatchers.IO){
             contactsDao.insertPhoneNumbers(phoneNumbers)

@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.FavoritesRowItemBinding
+import com.example.contactsapp.util.getRandomMaterialColour
 
 
 class FavoritesAdapter(val viewModel: FavoritesViewModel, val clickListener: FavoritesListener) :
@@ -28,7 +29,7 @@ class FavoritesAdapter(val viewModel: FavoritesViewModel, val clickListener: Fav
             }
 
             val v = TextDrawable.builder()
-                .buildRect(item.contactDetails.name[0].toString().uppercase(), R.color.purple_200)
+                .buildRect(item.contactDetails.name[0].toString().uppercase(), getRandomMaterialColour(binding.root.context))
 
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.contactDetails.user_image))

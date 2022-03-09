@@ -22,7 +22,7 @@ class AddToFragment: Fragment() {
 
     private lateinit var binding: FragmentAddToContactBinding
     private val viewModel: ContactsListFragmentViewModel by viewModels { ContactsListFragmentViewModelFactory(
-        ServiceLocator.provideContactsDataSource(requireContext())) }
+        ServiceLocator.provideContactsDataSource(requireContext()), requireContext()) }
     private lateinit var adapter: ContactsAdapter2
 
     private val args: AddToFragmentArgs by navArgs()

@@ -68,6 +68,7 @@ class AddFragment : Fragment() {
                                 it.data?.data!!,
                                 flags
                             )
+
                             viewModel.setImageUri(it.data?.data!!)
                         }
                     }
@@ -77,9 +78,13 @@ class AddFragment : Fragment() {
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 
-                if (it.resultCode == Activity.RESULT_OK) {
-                    viewModel.setImageUri(photoUri)
+                it?.let{
+                    if (it.resultCode == Activity.RESULT_OK) {
+                        Log.i("AddFragment", it.data?.data.toString())
+                        viewModel.setImageUri(photoUri)
+                    }
                 }
+
             }
 
         //Overriding back button press for showing dialog
@@ -251,6 +256,7 @@ class AddFragment : Fragment() {
                 takePictureIntent.flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
                 takePictureIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 takePictureIntent.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                Log.i("AddFragment", photoUri.toString())
                 takePictureLauncher.launch(takePictureIntent)
             }
         }

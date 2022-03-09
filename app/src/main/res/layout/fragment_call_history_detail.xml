@@ -4,10 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="callHistory"
             type="com.example.contactsapp.domain.model.CallHistory" />
+
         <variable
             name="viewModel"
             type="com.example.contactsapp.ui.callHistoryDetailFragment.CallHistoryDetailViewModel" />
@@ -28,241 +31,406 @@
                 android:paddingBottom="56dp">
 
 
-                <ImageView
-                    android:id="@+id/imageView13"
-                    ImageUri="@{String.valueOf(callHistory.userImage)}"
-                    android:layout_width="76dp"
-                    android:layout_height="69dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="24dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{callHistory.name}"
-                    android:textSize="22sp"
-                    app:layout_constraintEnd_toStartOf="@+id/frameLayout5"
-                    app:layout_constraintStart_toEndOf="@+id/imageView13"
-                    app:layout_constraintTop_toTopOf="@+id/imageView13" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{callHistory.callHistoryApi[0].number}"
-                    android:visibility="@{callHistory.contactId == 0L? View.GONE: View.VISIBLE}"
-                    app:layout_constraintEnd_toStartOf="@+id/frameLayout5"
-                    app:layout_constraintStart_toEndOf="@+id/imageView13"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-
-                <FrameLayout
-                    android:id="@+id/frameLayout5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView7">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/imageView14"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:id="@+id/imageView13"
+                        ImageUri="@{String.valueOf(callHistory.userImage)}"
+                        android:layout_width="76dp"
+                        android:layout_height="69dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
-                        android:clickable="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_baseline_call_24"
-                        android:onClick="@{() -> viewModel.makeCall()}"/>
+                        android:text="@{callHistory.name}"
+                        android:textSize="22sp"
+                        app:layout_constraintEnd_toStartOf="@+id/frameLayout5"
+                        app:layout_constraintStart_toEndOf="@+id/imageView13"
+                        app:layout_constraintTop_toTopOf="@+id/imageView13"
+                        tools:text="Nameeeeeee" />
 
-                </FrameLayout>
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@{callHistory.callHistoryApi[0].number}"
+                        android:visibility="@{callHistory.contactId == 0L? View.GONE: View.VISIBLE}"
+                        app:layout_constraintEnd_toStartOf="@+id/frameLayout5"
+                        app:layout_constraintStart_toEndOf="@+id/imageView13"
+                        app:layout_constraintTop_toBottomOf="@+id/textView7"
+                        tools:text="ajdfksfjakjs" />
+
+                    <FrameLayout
+                        android:id="@+id/frameLayout5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textView7">
+
+                        <ImageView
+                            android:id="@+id/imageView14"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:onClick="@{() -> viewModel.makeCall()}"
+                            android:src="@drawable/ic_baseline_call_24" />
+
+                    </FrameLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+<!--                <ImageView-->
+<!--                    android:id="@+id/imageView13"-->
+<!--                    ImageUri="@{String.valueOf(callHistory.userImage)}"-->
+<!--                    android:layout_width="76dp"-->
+<!--                    android:layout_height="69dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="24dp"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
+<!--                <TextView-->
+<!--                    android:id="@+id/textView7"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:layout_marginEnd="16dp"-->
+<!--                    android:text="@{callHistory.name}"-->
+<!--                    android:textSize="22sp"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/frameLayout5"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/imageView13"-->
+<!--                    app:layout_constraintTop_toTopOf="@+id/imageView13" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/textView8"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:layout_marginEnd="16dp"-->
+<!--                    android:text="@{callHistory.callHistoryApi[0].number}"-->
+<!--                    android:visibility="@{callHistory.contactId == 0L? View.GONE: View.VISIBLE}"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/frameLayout5"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/imageView13"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/textView7" />-->
+
+
+<!--                <FrameLayout-->
+<!--                    android:id="@+id/frameLayout5"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginEnd="16dp"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="@+id/textView7">-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/imageView14"-->
+<!--                        android:layout_width="42dp"-->
+<!--                        android:layout_height="42dp"-->
+<!--                        android:layout_marginEnd="16dp"-->
+<!--                        android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                        android:clickable="true"-->
+<!--                        android:onClick="@{() -> viewModel.makeCall()}"-->
+<!--                        android:src="@drawable/ic_baseline_call_24" />-->
+
+<!--                </FrameLayout>-->
+
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
                 <LinearLayout
                     android:id="@+id/callHistoryLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView8"/>
+                    app:layout_constraintStart_toStartOf="@+id/divider"
+                    app:layout_constraintTop_toBottomOf="@+id/divider">
+
+                </LinearLayout>
+
+                <!--                <FrameLayout-->
+                <!--                    android:id="@+id/frameLayout2"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="32dp"-->
+                <!--                    android:background="?attr/selectableItemBackground"-->
+                <!--                    android:onClick="@{() -> viewModel.createNewContact()}"-->
+                <!--                    android:visibility="@{callHistory.contactId == 0L? View.VISIBLE : View.GONE}"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/callHistoryLayout">-->
+
+                <!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent">-->
+
+                <!--                        <ImageView-->
+                <!--                            android:id="@+id/imageView17"-->
+                <!--                            android:layout_width="42dp"-->
+                <!--                            android:layout_height="42dp"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:src="@drawable/ic_baseline_add_24"-->
+                <!--                            app:layout_constraintStart_toStartOf="parent"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                        <TextView-->
+                <!--                            android:id="@+id/textView13"-->
+                <!--                            android:layout_width="0dp"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:layout_marginTop="8dp"-->
+                <!--                            android:layout_marginEnd="16dp"-->
+                <!--                            android:text="Create a new Contact"-->
+                <!--                            android:textSize="16sp"-->
+                <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                            app:layout_constraintHorizontal_bias="0.415"-->
+                <!--                            app:layout_constraintStart_toEndOf="@+id/imageView17"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+                <!--                    </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <!--                </FrameLayout>-->
 
 
-                <FrameLayout
-                    android:id="@+id/frameLayout2"
+                <!--                <FrameLayout-->
+                <!--                    android:id="@+id/frameLayout3"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="16dp"-->
+                <!--                    android:background="?attr/selectableItemBackground"-->
+                <!--                    android:onClick="@{() -> viewModel.addToContact()}"-->
+                <!--                    android:visibility="@{callHistory.contactId == 0L? View.VISIBLE : View.GONE}"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/frameLayout2">-->
+
+
+                <!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent">-->
+
+                <!--                        <ImageView-->
+                <!--                            android:id="@+id/imageView18"-->
+                <!--                            android:layout_width="42dp"-->
+                <!--                            android:layout_height="42dp"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:src="@drawable/ic_baseline_account_circle_24"-->
+                <!--                            app:layout_constraintStart_toStartOf="parent"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                        <TextView-->
+                <!--                            android:id="@+id/textView14"-->
+                <!--                            android:layout_width="0dp"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:layout_marginTop="8dp"-->
+                <!--                            android:layout_marginEnd="8dp"-->
+                <!--                            android:text="Add To Contact"-->
+                <!--                            android:textSize="16sp"-->
+                <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                            app:layout_constraintStart_toEndOf="@+id/imageView18"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+                <!--                    </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <!--                </FrameLayout>-->
+
+                <!--                <FrameLayout-->
+                <!--                    android:id="@+id/frameLayout4"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="16dp"-->
+                <!--                    android:background="?attr/selectableItemBackground"-->
+                <!--                    android:clickable="true"-->
+                <!--                    android:onClick="@{() -> viewModel.sendMessage(callHistory.callHistoryApi[0].number)}"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/frameLayout3">-->
+
+
+                <!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent"-->
+                <!--                        android:paddingTop="2dp"-->
+                <!--                        android:paddingBottom="2dp">-->
+
+                <!--                        <ImageView-->
+                <!--                            android:id="@+id/imageView19"-->
+                <!--                            android:layout_width="42dp"-->
+                <!--                            android:layout_height="42dp"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:src="@drawable/ic_baseline_message_24"-->
+                <!--                            app:layout_constraintStart_toStartOf="parent"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                        <TextView-->
+                <!--                            android:id="@+id/textView15"-->
+                <!--                            android:layout_width="0dp"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:layout_marginTop="8dp"-->
+                <!--                            android:layout_marginEnd="8dp"-->
+                <!--                            android:text="Send a message"-->
+                <!--                            android:textSize="16sp"-->
+                <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                            app:layout_constraintStart_toEndOf="@+id/imageView19"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+                <!--                    </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <!--                </FrameLayout>-->
+
+                <!--                <FrameLayout-->
+                <!--                    android:id="@+id/frameLayout6"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="16dp"-->
+                <!--                    android:background="?attr/selectableItemBackground"-->
+                <!--                    android:onClick="@{() -> viewModel.deleteCallHistory()}"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/frameLayout4">-->
+
+
+                <!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent">-->
+
+                <!--                        <ImageView-->
+                <!--                            android:id="@+id/imageView20"-->
+                <!--                            android:layout_width="42dp"-->
+                <!--                            android:layout_height="42dp"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:src="@drawable/ic_baseline_delete_24"-->
+                <!--                            app:layout_constraintStart_toStartOf="parent"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                        <TextView-->
+                <!--                            android:id="@+id/textView16"-->
+                <!--                            android:layout_width="0dp"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:layout_marginStart="16dp"-->
+                <!--                            android:layout_marginTop="8dp"-->
+                <!--                            android:layout_marginEnd="8dp"-->
+                <!--                            android:text="Delete"-->
+                <!--                            android:textSize="16sp"-->
+                <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                            app:layout_constraintStart_toEndOf="@+id/imageView20"-->
+                <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+                <!--                    </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <!--                </FrameLayout>-->
+
+                <View
+                    android:id="@+id/divider2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/callHistoryLayout"
-                    android:onClick="@{() -> viewModel.createNewContact()}"
-                    android:background="?attr/selectableItemBackground"
-                    android:visibility="@{callHistory.contactId == 0L? View.VISIBLE : View.GONE}">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/imageView17"
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:layout_marginStart="16dp"
-                            android:src="@drawable/ic_baseline_add_24"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/textView13"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
-                            android:text="Create a new Contact"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.415"
-                            app:layout_constraintStart_toEndOf="@+id/imageView17"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/frameLayout3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="1dp"
                     android:layout_marginTop="16dp"
+                    android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+                    app:layout_constraintTop_toBottomOf="@+id/callHistoryLayout" />
+
+                <Button
+                    android:id="@+id/create_contact_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width="381dp"
+                    android:layout_height="51dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:onClick="@{() -> viewModel.createNewContact()}"
+                    android:text="Create new contact"
+                    android:textAlignment="textStart"
+                    android:visibility="@{callHistory.contactId == 0L? View.VISIBLE : View.GONE}"
+                    app:icon="@drawable/ic_baseline_add_24"
+                    app:iconPadding="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+                <Button
+                    android:id="@+id/add_to_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width="381dp"
+                    android:layout_height="51dp"
+                    android:textAlignment="textStart"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:onClick="@{() -> viewModel.addToContact()}"
-                    android:background="?attr/selectableItemBackground"
-                    android:visibility="@{callHistory.contactId == 0L? View.VISIBLE : View.GONE}">
+                    android:text="Add to contact"
+                    app:iconPadding="16dp"
+                    android:visibility="@{callHistory.contactId == 0L? View.VISIBLE : View.GONE}"
+                    app:icon="@drawable/ic_baseline_account_circle_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_contact_btn" />
 
+                <Button
+                    android:id="@+id/send_message_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width="381dp"
+                    android:layout_height="51dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textAlignment="textStart"
+                    app:iconPadding="16dp"
+                    android:text="Send a message"
+                    android:onClick="@{() -> viewModel.sendMessage(callHistory.callHistoryApi[0].number)}"
+                    app:icon="@drawable/ic_baseline_email_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/add_to_btn" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/imageView18"
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:layout_marginStart="16dp"
-                            android:src="@drawable/ic_baseline_account_circle_24"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/textView14"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="Add To Contact"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageView18"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/frameLayout4"
+                <Button
+                    android:id="@+id/delete_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:onClick="@{() -> viewModel.sendMessage(callHistory.callHistoryApi[0].number)}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/frameLayout3">
-
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp">
-
-                        <ImageView
-                            android:id="@+id/imageView19"
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:layout_marginStart="16dp"
-                            android:src="@drawable/ic_baseline_message_24"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/textView15"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="Send a message"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageView19"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/frameLayout4"
+                    android:layout_marginEnd="16dp"
+                    android:text="Delete"
+                    android:textAlignment="textStart"
+                    app:iconPadding="16dp"
                     android:onClick="@{() -> viewModel.deleteCallHistory()}"
-                    android:background="?attr/selectableItemBackground">
-
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/imageView20"
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:layout_marginStart="16dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:src="@drawable/ic_baseline_delete_24"/>
-
-                        <TextView
-                            android:id="@+id/textView16"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="Delete"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageView20"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </FrameLayout>
+                    app:icon="@drawable/ic_baseline_delete_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/send_message_btn" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

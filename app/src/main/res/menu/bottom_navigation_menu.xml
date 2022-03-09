@@ -14,4 +14,9 @@
         android:id="@+id/callHistoryFragment"
         android:icon="@drawable/ic_baseline_call_24"
         android:title="Call History" />
+
+<!--    <item-->
+<!--        android:id="@+id/dialFragment"-->
+<!--        android:icon="@drawable/ic_baseline_call_24"-->
+<!--        android:title="Dialer" />-->
 </menu>

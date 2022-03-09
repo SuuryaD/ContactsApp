@@ -20,18 +20,40 @@ interface ContactDetailsDao {
     suspend fun insert(contactWithPhone: ContactWithPhone): Long {
 
 //        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
-        val id = insertContact(contactWithPhone.contactDetails)
+        val id = insertContact2(contactWithPhone.contactDetails)
 
+        Log.i("ContactsDao", id.toString())
         for (i in contactWithPhone.phoneNumbers) {
-            insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
+            insertPhone2(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
         }
         return id
     }
 
-    @Insert
-    suspend fun insertContact(contactDetails: ContactDetails): Long
+    @Transaction
+    suspend fun insert2(contactWithPhone: ContactWithPhone) {
+
+//        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
+        val id = insertContact(contactWithPhone.contactDetails)
+
+        if(id == -1L)
+            return
+        Log.i("ContactsDao", id.toString())
+        for (i in contactWithPhone.phoneNumbers) {
+            insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
+        }
+        return
+    }
 
     @Insert
+    suspend fun insertContact2(contactDetails: ContactDetails): Long
+
+    @Insert
+    suspend fun insertPhone2(contactPhoneNumber: ContactPhoneNumber)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertContact(contactDetails: ContactDetails): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPhone(contactPhoneNumber: ContactPhoneNumber)
 
     @Insert

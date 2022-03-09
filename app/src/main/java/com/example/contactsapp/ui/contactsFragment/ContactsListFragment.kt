@@ -3,12 +3,14 @@ package com.example.contactsapp.ui.contactsFragment
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -24,6 +26,7 @@ import com.example.contactsapp.data.database.ContactPhoneNumber
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.FragmentContactsListBinding
 import com.example.contactsapp.di.ServiceLocator
+import com.example.contactsapp.util.ContactsPermissionRequester
 import com.example.contactsapp.util.EventObserver
 import com.google.android.material.tabs.TabLayout
 import ezvcard.Ezvcard
@@ -36,10 +39,20 @@ class ContactsListFragment : Fragment() {
 
 
     private lateinit var binding: FragmentContactsListBinding
-    private val viewModel: ContactsListFragmentViewModel by viewModels { ContactsListFragmentViewModelFactory(ServiceLocator.provideContactsDataSource(requireContext())) }
+    private val viewModel: ContactsListFragmentViewModel by viewModels {
+        ContactsListFragmentViewModelFactory(ServiceLocator.provideContactsDataSource(requireContext()), requireContext())
+    }
     private lateinit var adapter: ContactsAdapter2
 
     private lateinit var getFileLauncher: ActivityResultLauncher<Intent>
+
+    private val contactsPermissionRequester = ContactsPermissionRequester(this, { onGranted() }, {
+        Toast.makeText(requireContext(), "Contacts Permission Denied", Toast.LENGTH_SHORT).show()
+    })
+    var onGranted = {
+        viewModel.import()
+        Toast.makeText(requireContext(), "Contacts permission granted", Toast.LENGTH_SHORT).show()
+    }
 
     //    private val args: ContactsListFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +81,7 @@ class ContactsListFragment : Fragment() {
             }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -76,9 +90,9 @@ class ContactsListFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts_list, container, false)
 
+
         binding.contactsListViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-
 
         adapter = ContactsAdapter2(ContactListener {
                 contactWithPhone -> this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactWithPhone.contactDetails.contactId))
@@ -147,13 +161,18 @@ class ContactsListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
-            R.id.import_contact -> {
+            R.id.import_contact_vcf -> {
                 val i = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 i.type = "text/x-vcard"
                 i.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 i.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 i.flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
                 getFileLauncher.launch(i)
+                true
+            }
+            R.id.import_contact -> {
+//                viewModel.import()
+                contactsPermissionRequester.checkPermissions(requireContext())
                 true
             }
             R.id.actionSearch -> {
@@ -179,39 +198,6 @@ class ContactsListFragment : Fragment() {
 
         Toast.makeText(requireContext(), "$noOfContactsAdded Contacts added successfully", Toast.LENGTH_LONG).show()
 
-//        val v = Ezvcard.parse(inputStream)
-//        val y = v.all()
-//
-//        for(i in y){
-//
-//            val name = i.formattedName.value
-//            val number = i.telephoneNumbers.map {
-//                it.text.replace("\\s".toRegex(), "")
-//            }
-//            val email = i.emails.first().value
-//
-//            val temp = ContactWithPhone(ContactDetails(name = name, email = email), listOf(
-//                ContactPhoneNumber(phoneNumber = number.first())
-//            ))
-//
-//            Log.i("CallList", i.formattedName.value)
-//            Log.i("CallList", i.telephoneNumbers.first().text.toString())
-//            Log.i("CallList", i.emails.first().value)
-//        }
-//        inputStream?.close()
-
-
-//        while(x != null){
-//
-//            Log.i("CallList", x.formattedName.toString())
-//            Log.i("CallList", x.telephoneNumbers.first().text)
-//            Log.i("CallList", x.emails.first().toString())
-//        }
-//        Log.i("CallList", v.formattedName.toString())
-//        Log.i("CallList", v.telephoneNumbers.first().text.trim {
-//            it == ' '
-//        })
-//        Log.i("CallList", v.emails.first().value)
     }
 
 }

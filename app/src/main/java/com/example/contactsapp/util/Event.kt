@@ -6,6 +6,18 @@ import androidx.room.migration.Migration
 import com.example.contactsapp.data.database.ContactWithPhone
 import java.io.File
 import java.io.FileWriter
+import android.content.res.XmlResourceParser
+
+
+import android.graphics.Color
+import com.example.contactsapp.R
+
+import org.xmlpull.v1.XmlPullParserException
+import java.io.IOException
+import java.security.AccessController.getContext
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 open class Event<out T>(private val content: T) {
 
@@ -87,5 +99,25 @@ fun getTimeAgo(time: Long): String? {
         "yesterday"
     } else {
         diff.div(DAY_MILLIS).toString() + " days ago"
+    }
+}
+
+fun getRandomMaterialColour(context: Context): Int {
+
+    try{
+        val xrp: XmlResourceParser = context.resources.getXml(R.xml.android_material_design_colours)
+        val allColors: MutableList<Int> = ArrayList()
+        var nextEvent: Int
+        while (xrp.next().also { nextEvent = it } != XmlResourceParser.END_DOCUMENT) {
+            val s = xrp.name
+            if ("color" == s) {
+                val color = xrp.nextText()
+                allColors.add(Color.parseColor(color))
+            }
+        }
+        val ran = Random().nextInt(allColors.size)
+        return allColors.get(ran)
+    }catch (e: Exception){
+        return R.color.purple_200
     }
 }

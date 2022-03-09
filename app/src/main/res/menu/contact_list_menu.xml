@@ -11,8 +11,14 @@
         app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/import_contact"
-        android:title="Import contacts"
+        android:title="Import device contacts"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/import_contact_vcf"
+        android:title="Import contacts from vcf file"
+        app:showAsAction="never"
+        />
 
 
 </menu>

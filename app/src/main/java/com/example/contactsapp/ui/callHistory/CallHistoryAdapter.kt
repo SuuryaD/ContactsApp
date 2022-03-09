@@ -1,7 +1,6 @@
 package com.example.contactsapp.ui.callHistory
 
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -17,6 +16,7 @@ import com.example.contactsapp.databinding.CallHistoryRowItemBinding
 import com.example.contactsapp.domain.model.AlphabetHeaderType
 import com.example.contactsapp.domain.model.CallHistory
 import com.example.contactsapp.domain.model.RecyclerViewViewType
+import com.example.contactsapp.util.getRandomMaterialColour
 import com.example.contactsapp.util.getTimeAgo
 
 class CallHistoryAdapter(
@@ -62,7 +62,7 @@ class CallHistoryAdapter(
             }
 
             val v = TextDrawable.builder()
-                .buildRound(item.name.get(0).uppercase(), R.color.purple_200)
+                .buildRound(item.name.get(0).uppercase(), getRandomMaterialColour(binding.root.context))
 
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.userImage))
@@ -87,17 +87,17 @@ class CallHistoryAdapter(
     }
 
 
-    class ViewHolder2(val binding: CallHistoryHeaderBinding) :
+    class ViewHolder2(val binding: AlphabetHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: AlphabetHeaderType) {
-            binding.textView5.text = item.title
+            binding.textView3.text = item.title
         }
 
         companion object {
             fun from(parent: ViewGroup): ViewHolder2 {
                 val inflater = LayoutInflater.from(parent.context)
-                val binding = CallHistoryHeaderBinding.inflate(inflater, parent, false)
+                val binding = AlphabetHeaderBinding.inflate(inflater, parent, false)
                 return ViewHolder2(binding)
             }
         }

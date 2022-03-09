@@ -17,6 +17,8 @@ interface ContactsDataSource {
 
     suspend fun insert(contactWithPhone: ContactWithPhone) : Long
 
+    suspend fun insert2(contactWithPhone: ContactWithPhone)
+
     suspend fun insertPhoneNumbers(phoneNumbers: List<ContactPhoneNumber>)
 
     suspend fun updateContact(contactWithPhone: ContactWithPhone)

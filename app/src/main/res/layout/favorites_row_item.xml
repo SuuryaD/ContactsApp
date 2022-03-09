@@ -14,7 +14,11 @@
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="2dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
@@ -22,16 +26,16 @@
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:layout_margin="2dp"
-            app:cardElevation="15dp"
-            android:onClick="@{() -> clickListener.onClick(contactWithPhone)}">
+            android:onClick="@{() -> clickListener.onClick(contactWithPhone)}"
+            app:cardElevation="15dp">
 
             <!--Card Image-->
             <ImageView
                 android:id="@+id/img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_account_circle_24"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_baseline_account_circle_24" />
 
             <!--            <FrameLayout-->
             <!--                android:layout_width="match_parent"-->
@@ -51,6 +55,8 @@
                     android:layout_gravity="start|bottom"
                     android:layout_margin="5dp"
                     android:text="@{contactWithPhone.contactDetails.name}"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -72,7 +78,7 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/ic_baseline_more_vert_24"
                 android:clickable="true"
-                android:focusable="true"/>
+                android:focusable="true" />
 
             <!--                </FrameLayout>-->
 

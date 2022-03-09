@@ -12,6 +12,9 @@
     <string name="call_log_permission">Call Log Permission</string>
     <string name="android_permission_call_log_description">Call Log permission required to display call history</string>
     <string name="android_permission_call_log_denied_description">Needs access to call logs to display recent contacts</string>
+    <string name="contact_permission">Contacts Permission</string>
+    <string name="android_permission_contact_description">Needs contacts permission for importing contacts</string>
+    <string name="android_permission_contact_denied_description">Contacts permission required for importing contacts</string>
 
     <array name="image_option">
         <item>Remove Image</item>

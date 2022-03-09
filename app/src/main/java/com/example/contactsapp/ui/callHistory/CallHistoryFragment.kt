@@ -63,32 +63,6 @@ class CallHistoryFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-
-//        requestPermission =
-//            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-//                if (isGranted) {
-//                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-//                    callLogPermission = true
-//                    showCallHistory()
-//                } else {
-//                    callLogPermission = false
-//                    binding.noCallHistory.text = "Needs call logs permission!"
-////
-//                    binding.noCallHistory.visibility = View.VISIBLE
-//                    binding.callHistoryList.visibility = View.GONE
-//                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-//                }
-//            }
-
-//        callRequestPermission =
-//            registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted: Boolean ->
-//                if (isGranted) {
-//                    Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-//                } else {
-//                    Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-//                }
-//            }
-
         super.onCreate(savedInstanceState)
     }
 
@@ -101,7 +75,7 @@ class CallHistoryFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_call_history, container, false)
 
         onGrantedCallLog = {
-            Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()
             callLogPermission = true
             binding.noCallHistory.visibility = View.GONE
             binding.callHistoryList.visibility = View.VISIBLE
@@ -112,7 +86,6 @@ class CallHistoryFragment : Fragment() {
             Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()
             callLogPermission = false
             binding.noCallHistory.text = "Needs call logs permission!"
-//
             binding.noCallHistory.visibility = View.VISIBLE
             binding.callHistoryList.visibility = View.GONE
         }
