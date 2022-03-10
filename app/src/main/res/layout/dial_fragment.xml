@@ -1,317 +1,347 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
     </data>
-
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parent_constrain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
+        android:layout_height="match_parent"
+        android:paddingBottom="56dp">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dialer_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/dialer_cardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello World"/>
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:src="@drawable/ic_baseline_dialpad_24"
+            android:paddingBottom="75dp"
+            app:layout_constraintBottom_toBottomOf="@+id/parent_constrain"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-<!--        <RelativeLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:paddingBottom="56dp">-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dialer_cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialer_recycler_view"
+            tools:visibility="gone">
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="500dp"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                android:background="#2C3335"-->
-<!--                android:orientation="vertical"-->
-<!--                android:weightSum="6">-->
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:layout_weight="1">-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:padding="5dp"-->
-<!--                        android:weightSum="4">-->
 
-<!--                        <TextView-->
-<!--                            android:id="@+id/tv"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_weight="3.2"-->
-<!--                            android:padding="10dp"-->
-<!--                            android:text=""-->
-<!--                            android:textColor="#fff"-->
-<!--                            android:textSize="40sp">-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/text_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    app:layout_constraintBottom_toTopOf="@+id/divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent">
 
-<!--                        </TextView>-->
+                    <ImageView
+                        android:id="@+id/drop_down"
+                        android:layout_width="37dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
 
-<!--                        <ImageButton-->
-<!--                            android:id="@+id/bclear"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_gravity="center"-->
-<!--                            android:layout_weight="0.8"-->
-<!--                            android:background="#2C3335"-->
-<!--                            android:src="@android:drawable/ic_delete">-->
+                    <!--                    <com.google.android.material.textfield.TextInputLayout-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="50dp"-->
+                    <!--                        android:layout_marginEnd="8dp"-->
+                    <!--                        app:boxBackgroundMode="none"-->
+                    <!--                        app:layout_constraintEnd_toStartOf="@+id/imageButton"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toTopOf="parent"-->
+                    <!--                        android:focusable="false"-->
+                    <!--                        android:clickable="false">-->
 
-<!--                        </ImageButton>-->
+                    <!--                    </com.google.android.material.textfield.TextInputLayout>-->
 
-<!--                    </LinearLayout>-->
+                    <TextView
+                        android:id="@+id/editText"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="4dp"
+                        android:autoSizeTextType="uniform"
+                        android:background="@android:color/transparent"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:textSize="25sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/imageButton"
+                        app:layout_constraintStart_toEndOf="@+id/drop_down"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        tools:text="abbbddd" />
 
-<!--                </LinearLayout>-->
+                    <ImageView
+                        android:id="@+id/imageButton"
+                        android:layout_width="37dp"
+                        android:layout_height="37dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_baseline_backspace_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:layout_weight="1">-->
 
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:weightSum="3">-->
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b1"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="1"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-<!--                        </Button>-->
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b2"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="2"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:elevation="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent">
 
-<!--                        </Button>-->
+                    <Button
+                        android:id="@+id/btn_1"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="1"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_4"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_2"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b3"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="3"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+                    <Button
+                        android:id="@+id/btn_7"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_margin="0dp"
+                        android:text="7"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_str"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_8"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_4" />
 
-<!--                        </Button>-->
+                    <Button
+                        android:id="@+id/btn_str"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="1dp"
+                        android:text="*"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/frameLayout3"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_0"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_7" />
 
-<!--                    </LinearLayout>-->
+                    <Button
+                        android:id="@+id/btn_4"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="4"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_7"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_5"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_1" />
 
-<!--                </LinearLayout>-->
+                    <Button
+                        android:id="@+id/btn_2"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="2"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_5"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_3"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_1"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:layout_weight="1">-->
+                    <Button
+                        android:id="@+id/btn_3"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="3"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_6"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_2"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:weightSum="3">-->
+                    <Button
+                        android:id="@+id/btn_5"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="5"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_8"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_6"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_4"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_2" />
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b4"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="4"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+                    <Button
+                        android:id="@+id/btn_6"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="6"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_9"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_5"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_3" />
 
-<!--                        </Button>-->
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b5"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="5"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+                    <Button
+                        android:id="@+id/btn_8"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="8"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_0"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_9"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_7"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_5" />
 
-<!--                        </Button>-->
+                    <Button
+                        android:id="@+id/btn_9"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="9"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_hash"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_8"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_6" />
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b6"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="6"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+                    <Button
+                        android:id="@+id/btn_0"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/frameLayout3"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_hash"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_str"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_8" />
 
-<!--                        </Button>-->
+                    <Button
+                        android:id="@+id/btn_hash"
+                        style="@android:style/Widget.Holo.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="#"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toTopOf="@+id/frameLayout3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/btn_0"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_9" />
 
-<!--                    </LinearLayout>-->
+                    <FrameLayout
+                        android:id="@+id/frameLayout3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:paddingBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_str">
 
-<!--                </LinearLayout>-->
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/call_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:elevation="100dp"
+                            android:src="@drawable/ic_baseline_call_24" />
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:layout_weight="1">-->
 
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:weightSum="3">-->
+                    </FrameLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b7"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="7"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--                        </Button>-->
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b8"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="8"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
+        </androidx.cardview.widget.CardView>
 
-<!--                        </Button>-->
 
-<!--                        <Button-->
-<!--                            android:id="@+id/b9"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="9"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
-
-<!--                        </Button>-->
-
-<!--                    </LinearLayout>-->
-
-<!--                </LinearLayout>-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:layout_weight="1">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:weightSum="3">-->
-
-<!--                        <Button-->
-<!--                            android:id="@+id/bstar"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="*"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
-
-<!--                        </Button>-->
-
-<!--                        <Button-->
-<!--                            android:id="@+id/b0"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="0"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
-
-<!--                        </Button>-->
-
-<!--                        <Button-->
-<!--                            android:id="@+id/bhash"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="#000"-->
-<!--                            android:text="#"-->
-<!--                            android:textColor="#2ecc72"-->
-<!--                            android:textSize="40sp">-->
-
-<!--                        </Button>-->
-
-<!--                    </LinearLayout>-->
-
-<!--                </LinearLayout>-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:layout_weight="1">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:weightSum="3">-->
-
-<!--                        <ImageButton-->
-<!--                            android:id="@+id/bcall"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_margin="5dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:src="@drawable/ic_baseline_call_24"-->
-<!--                            android:textColor="#fff"-->
-<!--                            android:textSize="30sp">-->
-
-<!--                        </ImageButton>-->
-
-<!--                    </LinearLayout>-->
-
-<!--                </LinearLayout>-->
-
-<!--            </LinearLayout>-->
-
-<!--        </RelativeLayout>-->
-
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

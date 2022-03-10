@@ -61,9 +61,12 @@ class CallHistoryAdapter(
                 viewModel.navigateToCallHistory(item)
             }
 
-            val v = TextDrawable.builder()
-                .buildRound(item.name.get(0).uppercase(), getRandomMaterialColour(binding.root.context))
-
+            var v = TextDrawable.builder().buildRound(item.name.get(0).uppercase(), getRandomMaterialColour(binding.root.context))
+            if(!item.name[0].isLetterOrDigit() || item.name[0].isDigit()){
+                v = TextDrawable.builder()
+                    .buildRound("#", getRandomMaterialColour(binding.root.context))
+            }
+            
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.userImage))
                 .fitCenter()

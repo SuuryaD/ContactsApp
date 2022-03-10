@@ -38,15 +38,30 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, val cont
         it?.let {
             if (it.isEmpty())
                 return@map ls
-            ls.add(
-                ContactWithPhone(
-                    ContactDetails(
-                        name = it[0].contactDetails.name.substring(0, 1).uppercase(),
-                        email = ""
-                    ),
-                    listOf(ContactPhoneNumber(phoneNumber = ""))
+
+            if(it[0].contactDetails.name[0].isDigit()){
+                ls.add(
+                    ContactWithPhone(
+                        ContactDetails(
+                            name = "#",
+                            email = ""
+                        ),
+                        listOf(ContactPhoneNumber(phoneNumber = ""))
+                    )
                 )
-            )
+            }
+            else{
+                ls.add(
+                    ContactWithPhone(
+                        ContactDetails(
+                            name = it[0].contactDetails.name[0].uppercase(),
+                            email = ""
+                        ),
+                        listOf(ContactPhoneNumber(phoneNumber = ""))
+                    )
+                )
+            }
+
             ls.add(it[0])
             for (i in 1 until it.size) {
                 if (it[i - 1].contactDetails.name.substring(0, 1)

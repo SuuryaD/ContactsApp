@@ -57,7 +57,8 @@ class ContactDetailFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_contact_detail, container, false)
 
-        binding.displayName.isSelected = true
+//        binding.displayName.isSelected = true
+        binding.displayName2.isSelected = true
 
         viewModel.start(args.contactId)
         binding.viewModel = viewModel
@@ -222,11 +223,10 @@ fun setImageUri(imgView: ImageView, uri: String?) {
 
         Glide.with(imgView.context)
             .load(u)
-            .fitCenter()
-            .circleCrop()
+            .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
-            .error(R.drawable.ic_baseline_account_circle_24)
+            .error(R.drawable.ic_baseline_person_24)
             .into(imgView)
 
 }

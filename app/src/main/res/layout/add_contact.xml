@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,17 +88,27 @@
 
         <ImageView
             android:id="@+id/user_image"
-            ImageUri2="@{String.valueOf(viewModel.userImage)}"
             android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="250dp"
             android:adjustViewBounds="true"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
+            ImageUri="@{String.valueOf(viewModel.userImage)}"
+            android:background="@color/purple_500"
+            android:src="@drawable/ic_baseline_person_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_baseline_account_circle_24" />
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_user_image_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="216dp"
+            android:layout_marginEnd="16dp"
+            android:elevation="25dp"
+            android:src="@drawable/ic_baseline_photo_camera_24"
+            app:fabSize="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

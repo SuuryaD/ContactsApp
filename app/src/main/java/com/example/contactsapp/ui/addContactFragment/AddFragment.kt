@@ -157,7 +157,7 @@ class AddFragment : Fragment() {
             }
         })
 
-        binding.userImage.setOnClickListener {
+        binding.addUserImageBtn.setOnClickListener {
 
             val builder = AlertDialog.Builder(this.context)
             builder.setTitle("Change Photo")

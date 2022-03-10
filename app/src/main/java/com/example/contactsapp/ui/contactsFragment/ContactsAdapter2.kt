@@ -37,8 +37,6 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
                         .load(Uri.parse(item.contactDetails.user_image))
                         .fitCenter()
                         .circleCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
                         .error(v)
                         .into(binding.imageView8)
 
@@ -70,6 +68,7 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
     }
 
     override fun getItemViewType(position: Int): Int {
+
         return when (getItem(position).contactDetails.contactId) {
             0L -> VIEW_TYPE_ONE
             else -> VIEW_TYPE_TWO
