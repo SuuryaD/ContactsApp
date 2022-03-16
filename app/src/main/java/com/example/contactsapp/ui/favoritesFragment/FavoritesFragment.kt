@@ -40,7 +40,8 @@ class FavoritesFragment : Fragment() {
         Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
     })
 
-    var onGranted = { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()}
+    var onGranted =
+        { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show() }
 
 
     override fun onCreateView(
@@ -55,12 +56,12 @@ class FavoritesFragment : Fragment() {
         })
 
         binding.favoritesRecyclerView.adapter = adapter
-        viewModel.favoriteContact.observe(viewLifecycleOwner){
-            it?.let{
-                if(it.isNotEmpty()){
+        viewModel.favoriteContact.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it.isNotEmpty()) {
                     binding.noFavorites.visibility = View.GONE
                     binding.favoritesRecyclerView.visibility = View.VISIBLE
-                }else{
+                } else {
                     binding.favoritesRecyclerView.visibility = View.GONE
                     binding.noFavorites.visibility = View.VISIBLE
                 }
@@ -76,15 +77,17 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver{
-            this.findNavController().navigate(FavoritesFragmentDirections.actionFavoritesFragmentToContactDetailFragment(it))
+        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(
+                FavoritesFragmentDirections.actionFavoritesFragmentToContactDetailFragment(it)
+            )
         })
 
     }
 
     private fun showPhoneNumberChooser(contactWithPhone: ContactWithPhone) {
 
-        if(contactWithPhone.phoneNumbers.size == 1){
+        if (contactWithPhone.phoneNumbers.size == 1) {
             makeCall(contactWithPhone.phoneNumbers[0].phoneNumber)
             return
         }
@@ -96,7 +99,7 @@ class FavoritesFragment : Fragment() {
             it.phoneNumber
         }
 
-        alertBuilder.setItems(ls.toTypedArray(), DialogInterface.OnClickListener{ dialog, which ->
+        alertBuilder.setItems(ls.toTypedArray(), DialogInterface.OnClickListener { dialog, which ->
             makeCall(ls[which])
         })
 
@@ -111,7 +114,7 @@ class FavoritesFragment : Fragment() {
 
     }
 
-    private fun makeCall(phoneNumber: String){
+    private fun makeCall(phoneNumber: String) {
 
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")

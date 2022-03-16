@@ -115,5 +115,15 @@
     <fragment
         android:id="@+id/dialFragment"
         android:name="com.example.contactsapp.ui.dialFragment.DialFragment"
-        android:label="Dialer" />
+        android:label="Dialer" >
+        <action
+            android:id="@+id/action_dialFragment_to_contactDetailFragment"
+            app:destination="@id/contactDetailFragment" />
+        <action
+            android:id="@+id/action_dialFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+        <action
+            android:id="@+id/action_dialFragment_to_addToFragment"
+            app:destination="@id/addToFragment" />
+    </fragment>
 </navigation>

@@ -21,7 +21,11 @@ class FavoritesAdapter(val viewModel: FavoritesViewModel, val clickListener: Fav
 
     class ViewHolder(val binding: FavoritesRowItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ContactWithPhone, viewModel: FavoritesViewModel, clickListener: FavoritesListener) {
+        fun bind(
+            item: ContactWithPhone,
+            viewModel: FavoritesViewModel,
+            clickListener: FavoritesListener
+        ) {
             binding.contactWithPhone = item
             binding.clickListener = clickListener
             binding.btn.setOnClickListener {
@@ -29,7 +33,10 @@ class FavoritesAdapter(val viewModel: FavoritesViewModel, val clickListener: Fav
             }
 
             val v = TextDrawable.builder()
-                .buildRect(item.contactDetails.name[0].toString().uppercase(), getRandomMaterialColour(binding.root.context))
+                .buildRect(
+                    item.contactDetails.name[0].toString().uppercase(),
+                    getRandomMaterialColour(binding.root.context)
+                )
 
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.contactDetails.user_image))
@@ -70,6 +77,6 @@ class FavoritesDiffUtil : DiffUtil.ItemCallback<ContactWithPhone>() {
 
 }
 
-class FavoritesListener(val clickListner: (contactWithPhone: ContactWithPhone) -> Unit){
+class FavoritesListener(val clickListner: (contactWithPhone: ContactWithPhone) -> Unit) {
     fun onClick(contactWithPhone: ContactWithPhone) = clickListner(contactWithPhone)
 }

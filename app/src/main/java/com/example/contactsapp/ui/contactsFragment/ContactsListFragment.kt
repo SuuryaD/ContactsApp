@@ -37,10 +37,12 @@ import java.io.File
 class ContactsListFragment : Fragment() {
 
 
-
     private lateinit var binding: FragmentContactsListBinding
     private val viewModel: ContactsListFragmentViewModel by viewModels {
-        ContactsListFragmentViewModelFactory(ServiceLocator.provideContactsDataSource(requireContext()), requireContext())
+        ContactsListFragmentViewModelFactory(
+            ServiceLocator.provideContactsDataSource(requireContext()),
+            requireContext()
+        )
     }
     private lateinit var adapter: ContactsAdapter2
 
@@ -59,10 +61,10 @@ class ContactsListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         getFileLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 //                Log.d("ContactListFragment", it.data?.data.toString())
                 it?.let {
-                    if(it.resultCode == Activity.RESULT_OK){
+                    if (it.resultCode == Activity.RESULT_OK) {
                         if (it.data?.data != null) {
 
                             Log.d("ContactList", it.data?.data.toString())
@@ -88,27 +90,33 @@ class ContactsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts_list, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_contacts_list, container, false)
 
 
         binding.contactsListViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
-        adapter = ContactsAdapter2(ContactListener {
-                contactWithPhone -> this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(contactWithPhone.contactDetails.contactId))
+        adapter = ContactsAdapter2(ContactListener { contactWithPhone ->
+            this.findNavController().navigate(
+                ContactsListFragmentDirections.actionContactsFragmentToContactDetailFragment(
+                    contactWithPhone.contactDetails.contactId
+                )
+            )
         })
 
 
 
         viewModel.contacts.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if(it.isNotEmpty()){
+                if (it.isNotEmpty()) {
                     binding.noContacts.visibility = View.GONE
                     binding.contactList.visibility = View.VISIBLE
-                }else{
+                } else {
                     binding.contactList.visibility = View.GONE
                     binding.noContacts.visibility = View.VISIBLE
                 }
+                binding.contactList.layoutManager?.scrollToPosition(0)
                 adapter.submitList(it)
             }
         })
@@ -124,9 +132,9 @@ class ContactsListFragment : Fragment() {
 
         inflater.inflate(R.menu.contact_list_menu, menu)
 
-        val searchItem : MenuItem = menu.findItem(R.id.actionSearch)
+        val searchItem: MenuItem = menu.findItem(R.id.actionSearch)
 
-        val searchView : SearchView = searchItem.actionView as SearchView
+        val searchView: SearchView = searchItem.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
@@ -138,16 +146,19 @@ class ContactsListFragment : Fragment() {
 
                 newText?.let {
 
-                    if(newText.isNotEmpty()){
+                    if (newText.isNotEmpty()) {
                         val ls = ArrayList<ContactWithPhone>()
 
                         viewModel.contacts.value?.forEach {
-                            if(it.contactDetails.contactId != 0L && it.contactDetails.name.startsWith(newText, true))
+                            if (it.contactDetails.contactId != 0L && it.contactDetails.name.startsWith(
+                                    newText,
+                                    true
+                                )
+                            )
                                 ls.add(it)
                         }
                         adapter.submitList(ls)
-                    }
-                    else{
+                    } else {
                         adapter.submitList(viewModel.contacts.value)
                     }
                 }
@@ -160,7 +171,7 @@ class ContactsListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.import_contact_vcf -> {
                 val i = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 i.type = "text/x-vcard"
@@ -187,7 +198,12 @@ class ContactsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.navigateToAddContact.observe(this.viewLifecycleOwner, EventObserver {
-                this.findNavController().navigate(ContactsListFragmentDirections.actionContactsFragmentToAddFragment(0L, null))
+            this.findNavController().navigate(
+                ContactsListFragmentDirections.actionContactsFragmentToAddFragment(
+                    0L,
+                    null
+                )
+            )
         })
 
     }
@@ -196,7 +212,11 @@ class ContactsListFragment : Fragment() {
         val inputStream = activity?.contentResolver?.openInputStream(uri)
         val noOfContactsAdded = viewModel.importContacts(inputStream)
 
-        Toast.makeText(requireContext(), "$noOfContactsAdded Contacts added successfully", Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            requireContext(),
+            "$noOfContactsAdded Contacts added successfully",
+            Toast.LENGTH_LONG
+        ).show()
 
     }
 

@@ -48,11 +48,17 @@ class CallHistoryDetailFragment : Fragment() {
     private val phonePermissionRequester = PhonePermissionRequester(this, { onGranted() }, {
         Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
     })
-    var onGranted = { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()}
+    var onGranted =
+        { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show() }
 
-    private val callLogPermissionRequester = CallLogPermissionRequester(this, { onGrantedCallLog() }, { onDeniedCallLog()})
-    var onGrantedCallLog = {Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()}
-    var onDeniedCallLog = {Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()}
+    private val callLogPermissionRequester =
+        CallLogPermissionRequester(this, { onGrantedCallLog() }, { onDeniedCallLog() })
+    var onGrantedCallLog = {
+        Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()
+    }
+    var onDeniedCallLog = {
+        Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()
+    }
 
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +99,7 @@ class CallHistoryDetailFragment : Fragment() {
             }
         })
 
-        viewModel.sendMessage.observe(viewLifecycleOwner, EventObserver{
+        viewModel.sendMessage.observe(viewLifecycleOwner, EventObserver {
 
             val i = Intent(Intent.ACTION_SENDTO)
             i.data = Uri.parse("smsto:$it")
@@ -101,19 +107,28 @@ class CallHistoryDetailFragment : Fragment() {
 
         })
 
-        viewModel.makeCall.observe(viewLifecycleOwner, EventObserver{
+        viewModel.makeCall.observe(viewLifecycleOwner, EventObserver {
             makeCall(args.callHistory.number)
         })
 
-        viewModel.createNewContact.observe(viewLifecycleOwner, EventObserver{
-            this.findNavController().navigate(CallHistoryDetailFragmentDirections.actionCallHistoryDetailFragmentToAddFragment(0L, args.callHistory.number))
+        viewModel.createNewContact.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(
+                CallHistoryDetailFragmentDirections.actionCallHistoryDetailFragmentToAddFragment(
+                    0L,
+                    args.callHistory.number
+                )
+            )
         })
 
-        viewModel.addToContact.observe(viewLifecycleOwner, EventObserver{
-            this.findNavController().navigate(CallHistoryDetailFragmentDirections.actionCallHistoryDetailFragmentToAddToFragment(args.callHistory.number))
+        viewModel.addToContact.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(
+                CallHistoryDetailFragmentDirections.actionCallHistoryDetailFragmentToAddToFragment(
+                    args.callHistory.number
+                )
+            )
         })
 
-        viewModel.deleteCallHistory.observe(viewLifecycleOwner, EventObserver{
+        viewModel.deleteCallHistory.observe(viewLifecycleOwner, EventObserver {
             deleteCallHistory()
         })
 
@@ -135,7 +150,7 @@ class CallHistoryDetailFragment : Fragment() {
                     else -> R.drawable.ic_baseline_block_24
                 }
             )
-            v.textView9.text = when(i.type){
+            v.textView9.text = when (i.type) {
                 1 -> "Incoming Call"
                 2 -> "Outgoing Call"
                 3 -> "Missed Call"
@@ -151,7 +166,7 @@ class CallHistoryDetailFragment : Fragment() {
 
     }
 
-    private fun makeCall(phoneNumber: String){
+    private fun makeCall(phoneNumber: String) {
 
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")
@@ -178,16 +193,16 @@ class CallHistoryDetailFragment : Fragment() {
 //        }
     }
 
-    private fun deleteCallHistory(){
+    private fun deleteCallHistory() {
 
         onGrantedCallLog = {
             val cres = activity?.contentResolver
             val callHistory = args.callHistory
 
-            for(i in callHistory.callHistoryApi){
+            for (i in callHistory.callHistoryApi) {
 
                 Log.i("CallHistoryDetail", "id: ${i.id}")
-                cres?.delete(CallLog.Calls.CONTENT_URI, "${CallLog.Calls._ID} = ?" , arrayOf(i.id))
+                cres?.delete(CallLog.Calls.CONTENT_URI, "${CallLog.Calls._ID} = ?", arrayOf(i.id))
             }
 
             this.findNavController().navigateUp()

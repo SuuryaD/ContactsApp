@@ -20,12 +20,15 @@ data class ContactDetails(
 
 )
 
-@Entity(tableName = "phone",
-    foreignKeys = [ForeignKey(entity = ContactDetails::class,
-    parentColumns = ["contactId"],
-    childColumns = ["contactId"],
-    onDelete = ForeignKey.CASCADE,
-    onUpdate = ForeignKey.CASCADE)]
+@Entity(
+    tableName = "phone",
+    foreignKeys = [ForeignKey(
+        entity = ContactDetails::class,
+        parentColumns = ["contactId"],
+        childColumns = ["contactId"],
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+    )]
 )
 data class ContactPhoneNumber(
 
@@ -42,7 +45,11 @@ data class ContactWithPhone(
     @Embedded
     val contactDetails: ContactDetails,
 
-    @Relation(entity = ContactPhoneNumber::class, parentColumn = "contactId", entityColumn = "contactId")
+    @Relation(
+        entity = ContactPhoneNumber::class,
+        parentColumn = "contactId",
+        entityColumn = "contactId"
+    )
     val phoneNumbers: List<ContactPhoneNumber>
 )
 

@@ -29,9 +29,9 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
     val displayFavouriteChangeToast: LiveData<Event<String>>
         get() = _displayFavouriteChangeToast
 
-    fun start(contactId: Long){
+    fun start(contactId: Long) {
 
-        if(_contactId.value != contactId){
+        if (_contactId.value != contactId) {
             Log.i("ContactDetailViewModel", "inside If ")
             _contactId.value = contactId
         }
@@ -51,21 +51,19 @@ class ContactDetailViewModel(private val dataSource: ContactsDataSource) : ViewM
             CoroutineScope(Dispatchers.Main).launch {
                 val before = it
                 val v = dataSource.updateFavourite(!it, _contactId.value!!)
-                if(v == 1){
-                    if(before)
+                if (v == 1) {
+                    if (before)
                         _displayFavouriteChangeToast.value = Event("Removed from favourites")
                     else
-                        _displayFavouriteChangeToast.value = Event("Added to Favourites Successfully")
-                }
-                else
+                        _displayFavouriteChangeToast.value =
+                            Event("Added to Favourites Successfully")
+                } else
                     _displayFavouriteChangeToast.value = Event("Something Went Wrong, Try again!")
             }
         }
 
 
     }
-
-
 
 
 }

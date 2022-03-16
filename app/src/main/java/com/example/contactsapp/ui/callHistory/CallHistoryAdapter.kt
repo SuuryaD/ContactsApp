@@ -61,12 +61,15 @@ class CallHistoryAdapter(
                 viewModel.navigateToCallHistory(item)
             }
 
-            var v = TextDrawable.builder().buildRound(item.name.get(0).uppercase(), getRandomMaterialColour(binding.root.context))
-            if(!item.name[0].isLetterOrDigit() || item.name[0].isDigit()){
+            var v = TextDrawable.builder().buildRound(
+                item.name.get(0).uppercase(),
+                getRandomMaterialColour(binding.root.context)
+            )
+            if (!item.name[0].isLetterOrDigit() || item.name[0].isDigit()) {
                 v = TextDrawable.builder()
                     .buildRound("#", getRandomMaterialColour(binding.root.context))
             }
-            
+
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.userImage))
                 .fitCenter()
@@ -131,17 +134,17 @@ class CallHistoryDiffUtil : DiffUtil.ItemCallback<RecyclerViewViewType>() {
         oldItem: RecyclerViewViewType,
         newItem: RecyclerViewViewType
     ): Boolean {
-        return oldItem == newItem
+//        return oldItem == newItem
+        return false
     }
 
     override fun areContentsTheSame(
         oldItem: RecyclerViewViewType,
         newItem: RecyclerViewViewType
     ): Boolean {
-        return oldItem.equals(newItem)
+//        return oldItem.equals(newItem)
+        return false
     }
-
-
 }
 
 class CallHistoryClickListener(val onClickListener: (callHistory: CallHistory) -> Unit) {

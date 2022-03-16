@@ -19,7 +19,7 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
         dataSource.observeContactById(contactId)
     }
 
-    fun setImageUri(uri: Uri){
+    fun setImageUri(uri: Uri) {
         userImage.value = uri.toString()
     }
 
@@ -31,12 +31,12 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
         it?.contactDetails?.name ?: ""
     } as MutableLiveData<String>
 
-    val email = currentContact.map{
+    val email = currentContact.map {
         it?.contactDetails?.email ?: ""
     } as MutableLiveData<String>
 
 
-    fun start(contactId: Long){
+    fun start(contactId: Long) {
         _contactId.value = contactId
     }
 
@@ -49,70 +49,74 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
         get() = _navigateToContactDetail
 
 
-
     fun isValuesChanged(phoneNumbers: List<String>): Boolean {
 
-        if(currentContact.value != null){
+        if (currentContact.value != null) {
 
-            if(name.value != currentContact.value?.contactDetails?.name){
+            if (name.value != currentContact.value?.contactDetails?.name) {
                 return true
             }
 
-            if(email.value != currentContact.value?.contactDetails?.email){
+            if (email.value != currentContact.value?.contactDetails?.email) {
                 return true
             }
 
-            if(phoneNumbers.size != currentContact.value?.phoneNumbers?.size)
+            if (phoneNumbers.size != currentContact.value?.phoneNumbers?.size)
                 return true
 
-            for(i in 0 until currentContact.value?.phoneNumbers?.size!!){
+            for (i in 0 until currentContact.value?.phoneNumbers?.size!!) {
 
-                if(phoneNumbers.get(i) != currentContact.value?.phoneNumbers?.get(i)?.phoneNumber)
+                if (phoneNumbers.get(i) != currentContact.value?.phoneNumbers?.get(i)?.phoneNumber)
                     return true
 
             }
-        }
-        else{
+        } else {
 
-            if(name.value?.isNotEmpty() == true || email.value?.isNotEmpty() == true || phoneNumbers.isNotEmpty())
+            if (name.value?.isNotEmpty() == true || email.value?.isNotEmpty() == true || phoneNumbers.isNotEmpty())
                 return true
         }
         return false
     }
 
 
-    fun onSave(phoneNumbers: List<String> ){
+    fun onSave(phoneNumbers: List<String>) {
 
         val name = name.value
         val email = email.value
 
-        if(name == null || name.isEmpty()){
+        if (name == null || name.isEmpty()) {
             _snackBarEvent.value = Event("Name cannot be empty")
             return
         }
 
-        if(email != null && email.isNotEmpty() && !email.matches(Patterns.EMAIL_ADDRESS.toRegex()) ){
+        if (email != null && email.isNotEmpty() && !email.matches(Patterns.EMAIL_ADDRESS.toRegex())) {
             _snackBarEvent.value = Event("Enter a valid Email")
             return
         }
 
-        if(_contactId.value == 0L){
+        if (_contactId.value == 0L) {
             addContact(phoneNumbers)
-        }else{
+        } else {
             updateContact(phoneNumbers)
         }
 
     }
 
-    private fun addContact( phoneNumbers: List<String>){
+    private fun addContact(phoneNumbers: List<String>) {
 
         val contactPhoneNumbers = ArrayList<ContactPhoneNumber>()
 
-        for(i in phoneNumbers){
+        for (i in phoneNumbers) {
             contactPhoneNumbers.add(ContactPhoneNumber(phoneNumber = i))
         }
 
-        val newContact = ContactWithPhone(ContactDetails(name = name.value!!, email = email.value ?: "", user_image = userImage.value ?: ""), contactPhoneNumbers)
+        val newContact = ContactWithPhone(
+            ContactDetails(
+                name = name.value!!,
+                email = email.value ?: "",
+                user_image = userImage.value ?: ""
+            ), contactPhoneNumbers
+        )
 
         CoroutineScope(Dispatchers.Main).launch {
 
@@ -123,43 +127,58 @@ class AddFragmentViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
     }
 
-    private fun updateContact(phoneNumbers: List<String>){
+    private fun updateContact(phoneNumbers: List<String>) {
 
         val contactPhoneNumbers = ArrayList<ContactPhoneNumber>()
         var i = 0
 
-        while(i < currentContact.value?.phoneNumbers.orEmpty().size && i < phoneNumbers.size ){
-            contactPhoneNumbers.add(ContactPhoneNumber(currentContact.value?.phoneNumbers?.get(i)?.phoneId!!, currentContact.value?.contactDetails?.contactId!!,phoneNumbers.get(i)))
+        while (i < currentContact.value?.phoneNumbers.orEmpty().size && i < phoneNumbers.size) {
+            contactPhoneNumbers.add(
+                ContactPhoneNumber(
+                    currentContact.value?.phoneNumbers?.get(i)?.phoneId!!,
+                    currentContact.value?.contactDetails?.contactId!!,
+                    phoneNumbers.get(i)
+                )
+            )
             i++
         }
 
         val deleteList = ArrayList<ContactPhoneNumber>()
 
-        while(i < currentContact.value?.phoneNumbers.orEmpty().size){
+        while (i < currentContact.value?.phoneNumbers.orEmpty().size) {
             deleteList.add(currentContact.value?.phoneNumbers?.get(i)!!)
             i++
         }
 
         val newPhoneNumbers = ArrayList<ContactPhoneNumber>()
 
-        while(i < phoneNumbers.size){
-            newPhoneNumbers.add(ContactPhoneNumber(contactId = _contactId.value!!, phoneNumber = phoneNumbers[i]))
+        while (i < phoneNumbers.size) {
+            newPhoneNumbers.add(
+                ContactPhoneNumber(
+                    contactId = _contactId.value!!,
+                    phoneNumber = phoneNumbers[i]
+                )
+            )
             i++
         }
 
         val updatedContact = ContactWithPhone(
-            ContactDetails(contactId= _contactId.value!!,
+            ContactDetails(
+                contactId = _contactId.value!!,
                 name = name.value!!, email = email.value!!,
                 user_image = userImage.value ?: "",
-                favorite = currentContact.value?.contactDetails?.favorite!!),
-            contactPhoneNumbers)
+                favorite = currentContact.value?.contactDetails?.favorite!!
+            ),
+            contactPhoneNumbers
+        )
 
         CoroutineScope(Dispatchers.Main).launch {
 
             dataSource.updateContact(updatedContact)
             dataSource.insertPhoneNumbers(newPhoneNumbers)
             dataSource.deletePhoneNumbers(deleteList)
-            _navigateToContactDetail.value = Event(Pair(_contactId.value!!, "Contact Updated Successfully"))
+            _navigateToContactDetail.value =
+                Event(Pair(_contactId.value!!, "Contact Updated Successfully"))
         }
     }
 

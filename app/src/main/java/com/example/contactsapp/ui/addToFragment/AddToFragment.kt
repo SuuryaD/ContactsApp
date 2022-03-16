@@ -17,12 +17,15 @@ import com.example.contactsapp.di.ServiceLocator
 import com.example.contactsapp.ui.contactsFragment.*
 import com.example.contactsapp.util.EventObserver
 
-class AddToFragment: Fragment() {
+class AddToFragment : Fragment() {
 
 
     private lateinit var binding: FragmentAddToContactBinding
-    private val viewModel: ContactsListFragmentViewModel by viewModels { ContactsListFragmentViewModelFactory(
-        ServiceLocator.provideContactsDataSource(requireContext()), requireContext()) }
+    private val viewModel: ContactsListFragmentViewModel by viewModels {
+        ContactsListFragmentViewModelFactory(
+            ServiceLocator.provideContactsDataSource(requireContext()), requireContext()
+        )
+    }
     private lateinit var adapter: ContactsAdapter2
 
     private val args: AddToFragmentArgs by navArgs()
@@ -33,14 +36,20 @@ class AddToFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add_to_contact, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_add_to_contact, container, false)
 
         binding.contactsListViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
 
         adapter = ContactsAdapter2(ContactListener {
-            this.findNavController().navigate(AddToFragmentDirections.actionAddToFragmentToAddFragment(it.contactDetails.contactId, args.phoneNumber))
+            this.findNavController().navigate(
+                AddToFragmentDirections.actionAddToFragmentToAddFragment(
+                    it.contactDetails.contactId,
+                    args.phoneNumber
+                )
+            )
         })
 
         viewModel.contacts.observe(viewLifecycleOwner, Observer {
@@ -60,9 +69,9 @@ class AddToFragment: Fragment() {
 
         inflater.inflate(R.menu.add_to_fragment_menu, menu)
 
-        val searchItem : MenuItem = menu.findItem(R.id.actionSearch)
+        val searchItem: MenuItem = menu.findItem(R.id.actionSearch)
 
-        val searchView : SearchView = searchItem.actionView as SearchView
+        val searchView: SearchView = searchItem.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
@@ -74,16 +83,19 @@ class AddToFragment: Fragment() {
 
                 newText?.let {
 
-                    if(newText.isNotEmpty()){
+                    if (newText.isNotEmpty()) {
                         val ls = ArrayList<ContactWithPhone>()
 
                         viewModel.contacts.value?.forEach {
-                            if(it.contactDetails.contactId != 0L && it.contactDetails.name.startsWith(newText, true))
+                            if (it.contactDetails.contactId != 0L && it.contactDetails.name.startsWith(
+                                    newText,
+                                    true
+                                )
+                            )
                                 ls.add(it)
                         }
                         adapter.submitList(ls)
-                    }
-                    else{
+                    } else {
                         adapter.submitList(viewModel.contacts.value)
                     }
                 }
@@ -100,7 +112,12 @@ class AddToFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.navigateToAddContact.observe(this.viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(AddToFragmentDirections.actionAddToFragmentToAddFragment(0L, args.phoneNumber))
+            this.findNavController().navigate(
+                AddToFragmentDirections.actionAddToFragmentToAddFragment(
+                    0L,
+                    args.phoneNumber
+                )
+            )
         })
 
     }

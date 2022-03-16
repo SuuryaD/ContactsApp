@@ -41,7 +41,7 @@ class CallHistoryFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentCallHistoryBinding
-    
+
     private lateinit var requestPermission: ActivityResultLauncher<String>
 //    private lateinit var callRequestPermission: ActivityResultLauncher<String>
 
@@ -53,9 +53,14 @@ class CallHistoryFragment : Fragment() {
     }
 
 
-    private val callLogPermissionRequester = CallLogPermissionRequester(this, { onGrantedCallLog() }, { onDeniedCallLog()})
-    var onGrantedCallLog = {Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()}
-    var onDeniedCallLog = {Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()}
+    private val callLogPermissionRequester =
+        CallLogPermissionRequester(this, { onGrantedCallLog() }, { onDeniedCallLog() })
+    var onGrantedCallLog = {
+        Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()
+    }
+    var onDeniedCallLog = {
+        Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()
+    }
 
 
     private var callLogPermission = false
@@ -72,7 +77,8 @@ class CallHistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_call_history, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_call_history, container, false)
 
         onGrantedCallLog = {
 //            Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()
@@ -83,7 +89,8 @@ class CallHistoryFragment : Fragment() {
         }
 
         onDeniedCallLog = {
-            Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT)
+                .show()
             callLogPermission = false
             binding.noCallHistory.text = "Needs call logs permission!"
             binding.noCallHistory.visibility = View.VISIBLE
@@ -142,8 +149,12 @@ class CallHistoryFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToCallHistoryDetail.observe(viewLifecycleOwner, EventObserver{
-            this.findNavController().navigate(CallHistoryFragmentDirections.actionCallHistoryFragmentToCallHistoryDetailFragment(it))
+        viewModel.navigateToCallHistoryDetail.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(
+                CallHistoryFragmentDirections.actionCallHistoryFragmentToCallHistoryDetailFragment(
+                    it
+                )
+            )
         })
 
 
@@ -152,7 +163,7 @@ class CallHistoryFragment : Fragment() {
     @SuppressLint("Range")
     private fun showCallHistory() {
 
-        if(!callLogPermission){
+        if (!callLogPermission) {
             binding.noCallHistory.text = "Needs call logs permission!"
             binding.callHistoryList.visibility = View.GONE
             binding.noCallHistory.visibility = View.VISIBLE
@@ -161,11 +172,17 @@ class CallHistoryFragment : Fragment() {
 
 
         Log.i("CallHistoryFragment", "call history called")
-        val cursor = this.context?.contentResolver?.query(CallLog.Calls.CONTENT_URI, null, null,null , CallLog.Calls.DATE + " DESC")
+        val cursor = this.context?.contentResolver?.query(
+            CallLog.Calls.CONTENT_URI,
+            null,
+            null,
+            null,
+            CallLog.Calls.DATE + " DESC"
+        )
 
         val callHistoryList = ArrayList<CallHistoryApi>()
 
-        while(cursor != null && cursor.moveToNext()){
+        while (cursor != null && cursor.moveToNext()) {
 
             val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
             val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
@@ -175,15 +192,16 @@ class CallHistoryFragment : Fragment() {
             callHistoryList.add(
                 CallHistoryApi(
                     id, number, date, duration, type
-            ))
+                )
+            )
         }
 
         Log.i("CallHistoryFragment", callHistoryList.toString())
-        if(callHistoryList.size == 0){
+        if (callHistoryList.size == 0) {
             binding.noCallHistory.text = "No call history to display"
             binding.noCallHistory.visibility = View.VISIBLE
             binding.callHistoryList.visibility = View.GONE
-        }else{
+        } else {
             binding.noCallHistory.visibility = View.GONE
             binding.callHistoryList.visibility = View.VISIBLE
         }
@@ -191,7 +209,7 @@ class CallHistoryFragment : Fragment() {
     }
 
 
-    private fun makeCall(phoneNumber: String){
+    private fun makeCall(phoneNumber: String) {
 
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$phoneNumber")

@@ -8,9 +8,10 @@ import com.example.contactsapp.data.ContactsDataSource
 import com.example.contactsapp.domain.model.CallHistory
 import com.example.contactsapp.util.Event
 
-class CallHistoryDetailViewModel(val dataSource: ContactsDataSource, val callHistory: CallHistory) : ViewModel() {
+class CallHistoryDetailViewModel(val dataSource: ContactsDataSource, val callHistory: CallHistory) :
+    ViewModel() {
 
-//    private val _callHistory = MutableLiveData<CallHistory>()
+    //    private val _callHistory = MutableLiveData<CallHistory>()
 //    val callHistory: LiveData<CallHistory>
 //        get() = _callHistory
 //
@@ -37,23 +38,23 @@ class CallHistoryDetailViewModel(val dataSource: ContactsDataSource, val callHis
         get() = _deleteCallHistory
 
 
-    fun sendMessage(phoneNumber: String){
+    fun sendMessage(phoneNumber: String) {
         _sendMessage.value = Event(phoneNumber)
     }
 
-    fun makeCall(){
+    fun makeCall() {
         _makeCall.value = Event(Unit)
     }
 
-    fun createNewContact(){
+    fun createNewContact() {
         _createNewContact.value = Event(Unit)
     }
 
-    fun addToContact(){
+    fun addToContact() {
         _addToContact.value = Event(Unit)
     }
 
-    fun deleteCallHistory(){
+    fun deleteCallHistory() {
         _deleteCallHistory.value = Event(Unit)
     }
 }

@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.contactsapp.data.ContactsDataSource
 
-class ContactDetailViewModelFactory(val dataSource: ContactsDataSource): ViewModelProvider.Factory {
+class ContactDetailViewModelFactory(val dataSource: ContactsDataSource) :
+    ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(ContactDetailViewModel::class.java))
+        if (modelClass.isAssignableFrom(ContactDetailViewModel::class.java))
             return ContactDetailViewModel(dataSource) as T
         else
             throw IllegalArgumentException("Unknown ViewModel class")

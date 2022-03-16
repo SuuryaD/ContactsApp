@@ -16,7 +16,7 @@ class ContactsLocalDataSource(
 ) : ContactsDataSource {
 
 
-    override fun observeAllContacts(): LiveData<Result<List<ContactWithPhone>>>{
+    override fun observeAllContacts(): LiveData<Result<List<ContactWithPhone>>> {
         return contactsDao.getAll().map {
             Success(it)
         }
@@ -39,38 +39,41 @@ class ContactsLocalDataSource(
     }
 
 
-    override suspend fun insert(contactWithPhone: ContactWithPhone) : Long{
-        return withContext(Dispatchers.IO){
+    override suspend fun insert(contactWithPhone: ContactWithPhone): Long {
+        return withContext(Dispatchers.IO) {
             contactsDao.insert(contactWithPhone)
         }
     }
 
     override suspend fun insert2(contactWithPhone: ContactWithPhone) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             contactsDao.insert2(contactWithPhone)
         }
     }
 
     override suspend fun insertPhoneNumbers(phoneNumbers: List<ContactPhoneNumber>) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             contactsDao.insertPhoneNumbers(phoneNumbers)
         }
     }
 
     override suspend fun updateContact(contactWithPhone: ContactWithPhone) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             contactsDao.updateContact(contactWithPhone)
         }
     }
 
-    override suspend fun updateContact2(contactWithPhone: ContactWithPhone, new: ContactWithPhone) : Long {
-        return withContext(Dispatchers.IO){
-           return@withContext contactsDao.updateContact2(contactWithPhone, new)
+    override suspend fun updateContact2(
+        contactWithPhone: ContactWithPhone,
+        new: ContactWithPhone
+    ): Long {
+        return withContext(Dispatchers.IO) {
+            return@withContext contactsDao.updateContact2(contactWithPhone, new)
         }
     }
 
-    override suspend fun updateFavourite(boolean: Boolean, contactId: Long) : Int {
-       return withContext(Dispatchers.IO){
+    override suspend fun updateFavourite(boolean: Boolean, contactId: Long): Int {
+        return withContext(Dispatchers.IO) {
             contactsDao.updateFavourite(boolean, contactId)
         }
     }
@@ -80,43 +83,49 @@ class ContactsLocalDataSource(
     }
 
     override suspend fun deletePhoneNumbers(phoneNumbers: List<ContactPhoneNumber>) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             contactsDao.deletePhoneNumbers(phoneNumbers)
         }
     }
 
     override suspend fun deleteContact(contactId: Long) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             contactsDao.deleteContact(contactId)
         }
     }
 
     override fun getContactFromPhone(callHistory: CallHistory): LiveData<CallHistory> {
 
-            val contact = contactsDao.getContactFromPhone(callHistory.number)
+        val contact = contactsDao.getContactFromPhone(callHistory.number)
 
-            val x: LiveData<CallHistory> = Transformations.map(contact) {
-                it?.let {
-                     return@map CallHistory(it.contactDetails.contactId, it.contactDetails.name, it.contactDetails.user_image, callHistory.number, callHistory.callHistoryApi)
-                }
-                callHistory
+        val x: LiveData<CallHistory> = Transformations.map(contact) {
+            it?.let {
+                return@map CallHistory(
+                    it.contactDetails.contactId,
+                    it.contactDetails.name,
+                    it.contactDetails.user_image,
+                    callHistory.number,
+                    callHistory.callHistoryApi
+                )
             }
+            callHistory
+        }
 
-            return x
+        return x
 
     }
 
     override suspend fun nukeDb() {
 
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             contactsDao.nukeDb()
         }
 
     }
 
-    override suspend fun getContactNames(ls: List<List<CallHistoryApi>>) : List<CallHistory>{
+    override suspend fun getContactNames(ls: List<List<CallHistoryApi>>): List<CallHistory> {
 
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             contactsDao.getContactDetailsForCallHistory(ls)
         }
 

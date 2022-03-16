@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.contactsapp.data.ContactsDataSource
 
-class ContactsListFragmentViewModelFactory(val datasource: ContactsDataSource, val context: Context) : ViewModelProvider.Factory {
+class ContactsListFragmentViewModelFactory(
+    val datasource: ContactsDataSource,
+    val context: Context
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(ContactsListFragmentViewModel::class.java))
+        if (modelClass.isAssignableFrom(ContactsListFragmentViewModel::class.java))
             return ContactsListFragmentViewModel(datasource, context) as T
         else
             throw IllegalArgumentException("Unknown ViewModel class")

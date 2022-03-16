@@ -47,7 +47,8 @@ class ContactDetailFragment : Fragment() {
         Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
     })
 
-    var onGranted = { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()}
+    var onGranted =
+        { Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,7 +98,7 @@ class ContactDetailFragment : Fragment() {
             activity?.invalidateOptionsMenu()
         })
 
-        viewModel.displayFavouriteChangeToast.observe(viewLifecycleOwner, EventObserver{
+        viewModel.displayFavouriteChangeToast.observe(viewLifecycleOwner, EventObserver {
             Toast.makeText(this.context, it, Toast.LENGTH_SHORT).show()
         })
 
@@ -108,7 +109,10 @@ class ContactDetailFragment : Fragment() {
         return when (item.itemId) {
             R.id.edit_contact -> {
                 this.findNavController().navigate(
-                    ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(args.contactId, null)
+                    ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(
+                        args.contactId,
+                        null
+                    )
                 )
                 true
             }
@@ -132,11 +136,12 @@ class ContactDetailFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
 
-        if(viewModel.currentContact.value?.contactDetails?.favorite == false || viewModel.currentContact.value?.contactDetails?.favorite == null){
-            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_border_24)
-        }
-        else{
-            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_24)
+        if (viewModel.currentContact.value?.contactDetails?.favorite == false || viewModel.currentContact.value?.contactDetails?.favorite == null) {
+            menu.findItem(R.id.star_contact).icon =
+                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_border_24)
+        } else {
+            menu.findItem(R.id.star_contact).icon =
+                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_24)
 
         }
 
@@ -146,16 +151,17 @@ class ContactDetailFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.contact_detail_menu, menu)
 
-        if(viewModel.currentContact.value?.contactDetails?.favorite == false || viewModel.currentContact.value?.contactDetails?.favorite == null){
-            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_border_24)
-        }
-        else{
-            menu.findItem(R.id.star_contact).icon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_24)
+        if (viewModel.currentContact.value?.contactDetails?.favorite == false || viewModel.currentContact.value?.contactDetails?.favorite == null) {
+            menu.findItem(R.id.star_contact).icon =
+                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_border_24)
+        } else {
+            menu.findItem(R.id.star_contact).icon =
+                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_24)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun deleteContact(){
+    private fun deleteContact() {
         val builder = AlertDialog.Builder(context)
 
         builder.setTitle("Delete Contact")
@@ -195,21 +201,24 @@ class ContactDetailFragment : Fragment() {
         binding.parentLinearLayout.addView(v.root, binding.parentLinearLayout.childCount)
     }
 
-    private fun sendMessage(phoneNumber: String){
+    private fun sendMessage(phoneNumber: String) {
         val i = Intent(Intent.ACTION_SENDTO)
         i.data = Uri.parse("smsto:$phoneNumber")
         startActivity(i)
     }
 
 
-    private fun shareContact(contactWithPhone: ContactWithPhone){
+    private fun shareContact(contactWithPhone: ContactWithPhone) {
 
         val f = createVcfFile(contactWithPhone, requireContext())
         val i = Intent()
         i.action = Intent.ACTION_SEND
         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         i.type = "text/x-vcard"
-        i.putExtra(Intent.EXTRA_STREAM, getUriForFile(context!!,"com.example.android.fileprovider", f ))
+        i.putExtra(
+            Intent.EXTRA_STREAM,
+            getUriForFile(context!!, "com.example.android.fileprovider", f)
+        )
         startActivity(Intent.createChooser(i, "Contact"))
 
     }
@@ -219,20 +228,20 @@ class ContactDetailFragment : Fragment() {
 @BindingAdapter("ImageUri")
 fun setImageUri(imgView: ImageView, uri: String?) {
 
-        val u = Uri.parse(uri)
+    val u = Uri.parse(uri)
 
-        Glide.with(imgView.context)
-            .load(u)
-            .centerCrop()
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .error(R.drawable.ic_baseline_person_24)
-            .into(imgView)
+    Glide.with(imgView.context)
+        .load(u)
+        .centerCrop()
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
+        .error(R.drawable.ic_baseline_person_24)
+        .into(imgView)
 
 }
 
 @BindingAdapter("ImageUri2")
-fun setImageUri2(imgView: ImageView, uri: String){
+fun setImageUri2(imgView: ImageView, uri: String) {
 
     val u = Uri.parse(uri)
 

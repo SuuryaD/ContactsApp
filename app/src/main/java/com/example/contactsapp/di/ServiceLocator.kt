@@ -13,29 +13,29 @@ object ServiceLocator {
 
     private var contactsDataSource: ContactsDataSource? = null
 
-    fun provideContactsDataSource(context: Context) : ContactsDataSource {
-        return contactsDataSource ?: synchronized(this){
+    fun provideContactsDataSource(context: Context): ContactsDataSource {
+        return contactsDataSource ?: synchronized(this) {
             return contactsDataSource ?: createContactsLocalDataSource(context)
         }
     }
 
-    private fun createContactsLocalDataSource(context: Context) : ContactsDataSource {
+    private fun createContactsLocalDataSource(context: Context): ContactsDataSource {
         val newSrc = ContactsLocalDataSource(createContactsDatabase(context))
         contactsDataSource = newSrc
         return newSrc
     }
 
-    private fun createContactsDatabase(context: Context) : ContactDetailsDao{
+    private fun createContactsDatabase(context: Context): ContactDetailsDao {
         val contactsDatabase = contactsDatabase ?: createDatabase(context)
         return contactsDatabase.contactDetailsDao
     }
 
-    private fun createDatabase(context: Context) : ContactDatabase{
+    private fun createDatabase(context: Context): ContactDatabase {
 
         val res = Room.databaseBuilder(
             context.applicationContext,
-        ContactDatabase::class.java,
-        "contact_database"
+            ContactDatabase::class.java,
+            "contact_database"
         )
             .fallbackToDestructiveMigration()
             .build()

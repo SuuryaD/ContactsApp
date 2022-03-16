@@ -35,7 +35,7 @@ interface ContactDetailsDao {
 //        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
         val id = insertContact(contactWithPhone.contactDetails)
 
-        if(id == -1L)
+        if (id == -1L)
             return
         Log.i("ContactsDao", id.toString())
         for (i in contactWithPhone.phoneNumbers) {

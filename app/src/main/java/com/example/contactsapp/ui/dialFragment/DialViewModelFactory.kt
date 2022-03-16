@@ -1,13 +1,13 @@
-package com.example.contactsapp.ui.addContactFragment
+package com.example.contactsapp.ui.dialFragment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.contactsapp.data.ContactsDataSource
 
-class AddFragmentViewModelFactory(val datasource: ContactsDataSource) : ViewModelProvider.Factory {
+class DialViewModelFactory(val dataSource: ContactsDataSource) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(AddFragmentViewModel::class.java))
-            return AddFragmentViewModel(datasource) as T
+        if (modelClass.isAssignableFrom(DialViewModel::class.java))
+            return DialViewModel(dataSource) as T
         else
             throw IllegalArgumentException("Unknown ViewModel class")
     }

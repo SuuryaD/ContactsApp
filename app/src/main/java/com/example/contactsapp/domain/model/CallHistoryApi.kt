@@ -4,7 +4,13 @@ import android.os.Parcel
 import android.os.Parcelable
 
 
-data class CallHistoryApi(val id: String, val number: String, val date: Long, val duration: String, val type: Int) : Parcelable {
+data class CallHistoryApi(
+    val id: String,
+    val number: String,
+    val date: Long,
+    val duration: String,
+    val type: Int
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),

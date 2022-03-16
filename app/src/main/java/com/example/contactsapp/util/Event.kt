@@ -45,8 +45,7 @@ class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Obser
 }
 
 
-
-fun createVcfFile(contactWithPhone: ContactWithPhone, context: Context) : File {
+fun createVcfFile(contactWithPhone: ContactWithPhone, context: Context): File {
 
     val f = File(context.filesDir, "${contactWithPhone.contactDetails?.name!!}.vcf")
     val fw = FileWriter(f)
@@ -57,7 +56,7 @@ fun createVcfFile(contactWithPhone: ContactWithPhone, context: Context) : File {
 //        fw.write("ORG:" + p.getCompanyName() + "\r\n");
 //        fw.write("TITLE:" + p.getTitle() + "\r\n");
 
-    for(i in contactWithPhone.phoneNumbers){
+    for (i in contactWithPhone.phoneNumbers) {
         fw.write("TEL;TYPE=WORK,VOICE:" + i.phoneNumber + "\r\n");
     }
 //        fw.write("TEL;TYPE=WORK,VOICE:" + p.getWorkPhone() + "\r\n");
@@ -104,7 +103,7 @@ fun getTimeAgo(time: Long): String? {
 
 fun getRandomMaterialColour(context: Context): Int {
 
-    try{
+    try {
         val xrp: XmlResourceParser = context.resources.getXml(R.xml.android_material_design_colours)
         val allColors: MutableList<Int> = ArrayList()
         var nextEvent: Int
@@ -117,7 +116,7 @@ fun getRandomMaterialColour(context: Context): Int {
         }
         val ran = Random().nextInt(allColors.size)
         return allColors.get(ran)
-    }catch (e: Exception){
+    } catch (e: Exception) {
         return R.color.purple_200
     }
 }

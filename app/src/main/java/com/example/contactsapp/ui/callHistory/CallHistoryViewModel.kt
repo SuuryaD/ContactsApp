@@ -26,24 +26,23 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
     val navigateToCallHistoryDetail: LiveData<Event<CallHistory>>
         get() = _navigateToCallHistoryDetail
 
-    fun getCallHistory(ls: List<CallHistoryApi>){
+    fun getCallHistory(ls: List<CallHistoryApi>) {
 
         var ls3 = ArrayList<RecyclerViewViewType>()
 
         val temp = ArrayList<ArrayList<CallHistoryApi>>()
 
-        CoroutineScope(Dispatchers.Main).launch{
+        CoroutineScope(Dispatchers.Main).launch {
 
-            if(ls.isNotEmpty()){
+            if (ls.isNotEmpty()) {
                 temp.add(arrayListOf(ls[0]))
             }
 
-            for(i in 1 until ls.size){
+            for (i in 1 until ls.size) {
 
-                if(ls[i].number != ls[i - 1].number){
+                if (ls[i].number != ls[i - 1].number) {
                     temp.add(arrayListOf(ls[i]))
-                }
-                else{
+                } else {
                     temp.last().add(ls[i])
                 }
             }
@@ -51,14 +50,14 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
             val ls4 = dataSource.getContactNames(temp)
             Log.i("CallHistoryViewModel", temp.toString())
 
-            if(ls4.isNotEmpty() && DateUtils.isToday(ls4[0].callHistoryApi.first().date)){
+            if (ls4.isNotEmpty() && DateUtils.isToday(ls4[0].callHistoryApi.first().date)) {
                 ls3.add(AlphabetHeaderType("Today"))
             }
 
             var add = true
-            for(i in ls4){
+            for (i in ls4) {
 
-                if(!DateUtils.isToday(i.callHistoryApi.first().date) && add){
+                if (!DateUtils.isToday(i.callHistoryApi.first().date) && add) {
 
                     ls3.add(AlphabetHeaderType("Older"))
                     add = false
@@ -74,7 +73,7 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
 
     }
 
-    fun navigateToCallHistory(callHistory: CallHistory){
+    fun navigateToCallHistory(callHistory: CallHistory) {
         _navigateToCallHistoryDetail.value = Event(callHistory)
     }
 

@@ -23,18 +23,28 @@ abstract class BasePermissionRequester(
     protected abstract val descriptionResId: Int
     protected abstract val descriptionWhenDeniedResId: Int
 
-    private val permissionRequest: ActivityResultLauncher<Array<String>> = fragment.registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()) { grants ->
-        onPermissionsResult(grants)
-    }
+    private val permissionRequest: ActivityResultLauncher<Array<String>> =
+        fragment.registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { grants ->
+            onPermissionsResult(grants)
+        }
 
     fun checkPermissions(context: Context) {
-        val allGranted = permissions.all { p -> PermissionChecker.checkSelfPermission(context, p) == PermissionChecker.PERMISSION_GRANTED }
+        val allGranted = permissions.all { p ->
+            PermissionChecker.checkSelfPermission(
+                context,
+                p
+            ) == PermissionChecker.PERMISSION_GRANTED
+        }
 
-        val shouldDisplayExplanation = permissions.any { p -> fragment.shouldShowRequestPermissionRationale(p) }
+        val shouldDisplayExplanation =
+            permissions.any { p -> fragment.shouldShowRequestPermissionRationale(p) }
 
         if (shouldDisplayExplanation) {
-            displayPermissionExplanationDialog(context, then = { permissionRequest.launch(permissions) })
+            displayPermissionExplanationDialog(
+                context,
+                then = { permissionRequest.launch(permissions) })
         } else if (!allGranted) {
             permissionRequest.launch(permissions)
         } else {
@@ -46,7 +56,8 @@ abstract class BasePermissionRequester(
         if (grants.all { grant -> grant.value }) {
             onGranted()
         } else {
-            val userHadPreviouslyDenied = grants.keys.none { p -> fragment.shouldShowRequestPermissionRationale(p) }
+            val userHadPreviouslyDenied =
+                grants.keys.none { p -> fragment.shouldShowRequestPermissionRationale(p) }
             if (userHadPreviouslyDenied) {
                 displayPermissionDeniedDialog(fragment.requireContext())
             } else {
@@ -68,7 +79,11 @@ abstract class BasePermissionRequester(
         AlertDialog.Builder(context)
             .setTitle(context.getString(R.string.android_permission_denied_title))
             .setMessage(context.getString(descriptionWhenDeniedResId))
-            .setPositiveButton(R.string.android_permission_denied_open_settings) { _: DialogInterface?, _: Int -> openSettings(context) }
+            .setPositiveButton(R.string.android_permission_denied_open_settings) { _: DialogInterface?, _: Int ->
+                openSettings(
+                    context
+                )
+            }
             .setNeutralButton(R.string.android_permission_denied_not_now) { _: DialogInterface?, _: Int -> onDismissed() }
             .setCancelable(false)
             .show()

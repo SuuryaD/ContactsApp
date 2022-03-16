@@ -14,24 +14,23 @@ import kotlinx.coroutines.launch
 class FavoritesViewModel(private val dataSource: ContactsDataSource) : ViewModel() {
 
 
-    private val _navigateToContactDetail = MutableLiveData< Event<Long> >()
+    private val _navigateToContactDetail = MutableLiveData<Event<Long>>()
     val navigateToContactDetail: LiveData<Event<Long>>
         get() = _navigateToContactDetail
 
 
     fun navigateToContactDetail(contactId: Long) {
-            _navigateToContactDetail.value = Event(contactId)
+        _navigateToContactDetail.value = Event(contactId)
     }
 
 
     val favoriteContact = dataSource.getAllFavoriteContacts().map {
         it.filter { contactWithPhone ->
-            if(contactWithPhone.phoneNumbers.isNullOrEmpty())
+            if (contactWithPhone.phoneNumbers.isNullOrEmpty())
                 return@filter false
             true
         }
     }
-
 
 
 }

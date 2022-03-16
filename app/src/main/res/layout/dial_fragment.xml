@@ -20,7 +20,8 @@
             app:layout_constraintBottom_toTopOf="@id/dialer_cardView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -33,7 +34,8 @@
             android:src="@drawable/ic_baseline_dialpad_24"
             android:paddingBottom="75dp"
             app:layout_constraintBottom_toBottomOf="@+id/parent_constrain"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:elevation="0dp"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/dialer_cardView"

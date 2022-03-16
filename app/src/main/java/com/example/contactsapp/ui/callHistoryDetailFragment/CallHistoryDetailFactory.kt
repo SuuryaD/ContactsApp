@@ -6,9 +6,10 @@ import com.example.contactsapp.data.ContactsDataSource
 import com.example.contactsapp.domain.model.CallHistory
 import java.lang.IllegalArgumentException
 
-class CallHistoryDetailFactory(val dataSource: ContactsDataSource, val callHistory: CallHistory): ViewModelProvider.Factory {
+class CallHistoryDetailFactory(val dataSource: ContactsDataSource, val callHistory: CallHistory) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(CallHistoryDetailViewModel::class.java))
+        if (modelClass.isAssignableFrom(CallHistoryDetailViewModel::class.java))
             return CallHistoryDetailViewModel(dataSource, callHistory) as T
         else
             throw IllegalArgumentException("Unknown class")

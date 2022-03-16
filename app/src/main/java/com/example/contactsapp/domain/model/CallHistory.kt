@@ -3,7 +3,13 @@ package com.example.contactsapp.domain.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class CallHistory(val contactId: Long, val name: String, val userImage: String?, val number: String, val callHistoryApi: List<CallHistoryApi>) : RecyclerViewViewType, Parcelable {
+data class CallHistory(
+    val contactId: Long,
+    val name: String,
+    val userImage: String?,
+    val number: String,
+    val callHistoryApi: List<CallHistoryApi>
+) : RecyclerViewViewType, Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
         parcel.readString().toString(),

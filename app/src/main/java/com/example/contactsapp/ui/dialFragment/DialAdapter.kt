@@ -1,27 +1,23 @@
-package com.example.contactsapp.ui.contactsFragment
+package com.example.contactsapp.ui.dialFragment
 
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.AlphabetHeaderBinding
 import com.example.contactsapp.databinding.BottomButtonBinding
 import com.example.contactsapp.databinding.RowItemBinding
+import com.example.contactsapp.ui.contactsFragment.ContactListener
 import com.example.contactsapp.util.getRandomMaterialColour
 
-class ContactsAdapter2(private val clickListener: ContactListener) :
+class DialAdapter(private val clickListener: ContactListener, val listener: DialClickListener) :
     ListAdapter<ContactWithPhone, RecyclerView.ViewHolder>(ContactPhoneCallBack()) {
-
 
     private val VIEW_TYPE_ONE = 1
     private val VIEW_TYPE_TWO = 2
@@ -72,39 +68,52 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
         }
     }
 
-//    class ViewHolder3(val binding: BottomButtonBinding) : RecyclerView.ViewHolder(binding.root){
-//
-//        fun bind(){
-////            val btn1 = view.findViewById<Button>(R.id.create_contact_btn)
-//            binding.createContactBtn.setOnClickListener {
-//                Log.i("ContactsAdapter", "Create contact Button called")
-//            }
-//        }
-//
-//
-//        companion object{
-//            fun from(parent: ViewGroup) : ViewHolder3{
-//                val layoutInflater = LayoutInflater.from(parent.context)
-//                val binding = BottomButtonBinding.inflate(layoutInflater,parent, false)
-//                return ViewHolder3(binding)
-//            }
-//        }
-//    }
+    class ViewHolder3(val binding: BottomButtonBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(list: DialClickListener) {
+
+            binding.createContactBtn.setOnClickListener {
+                list.listener()
+                Log.i("ContactsAdapter", "Create contact Button called")
+            }
+
+            binding.addToBtn.setOnClickListener {
+                list.addToContactListener()
+            }
+
+            binding.sendMessageBtn.setOnClickListener {
+                list.sendMsgListener()
+            }
+
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder3 {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = BottomButtonBinding.inflate(layoutInflater, parent, false)
+                return ViewHolder3(binding)
+            }
+        }
+    }
 
     override fun getItemViewType(position: Int): Int {
-
-//        if(position == currentList.size)
-//            return 3
+        if (position == currentList.size)
+            return 3
         return when (getItem(position).contactDetails.contactId) {
             0L -> VIEW_TYPE_ONE
             else -> VIEW_TYPE_TWO
         }
+    }
 
+    override fun getItemCount(): Int {
+        return currentList.size + 1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ONE) {
             ViewHolder2.from(parent)
+        } else if (viewType == 3) {
+            ViewHolder3.from(parent)
         } else {
             ViewHolder1.from(parent)
         }
@@ -112,15 +121,15 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-//        if(position == currentList.size)
-//            (holder as ViewHolder3).bind()
-//        else {
-        if (getItemViewType(position) == VIEW_TYPE_ONE) {
-            (holder as ViewHolder2).bind(getItem(position))
-        } else {
-            (holder as ViewHolder1).bind(getItem(position), clickListener)
+        if (position == currentList.size)
+            (holder as ViewHolder3).bind(listener)
+        else {
+            if (getItemViewType(position) == VIEW_TYPE_ONE) {
+                (holder as ViewHolder2).bind(getItem(position))
+            } else {
+                (holder as ViewHolder1).bind(getItem(position), clickListener)
+            }
         }
-//        }
     }
 }
 
@@ -132,9 +141,11 @@ class ContactPhoneCallBack : DiffUtil.ItemCallback<ContactWithPhone>() {
     override fun areContentsTheSame(oldItem: ContactWithPhone, newItem: ContactWithPhone): Boolean {
         return oldItem == newItem
     }
-
 }
 
-class ContactListener(val onClickListener: (contactWithPhone: ContactWithPhone) -> Unit) {
-    fun onClick(contactWithPhone: ContactWithPhone) = onClickListener(contactWithPhone)
-}
+class DialClickListener(
+    val listener: () -> Unit,
+    val addToContactListener: () -> Unit,
+    val sendMsgListener: () -> Unit
+)
+

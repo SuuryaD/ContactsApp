@@ -39,7 +39,7 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, val cont
             if (it.isEmpty())
                 return@map ls
 
-            if(it[0].contactDetails.name[0].isDigit()){
+            if (it[0].contactDetails.name[0].isDigit()) {
                 ls.add(
                     ContactWithPhone(
                         ContactDetails(
@@ -49,8 +49,7 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, val cont
                         listOf(ContactPhoneNumber(phoneNumber = ""))
                     )
                 )
-            }
-            else{
+            } else {
                 ls.add(
                     ContactWithPhone(
                         ContactDetails(
@@ -201,8 +200,9 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, val cont
                 )
 
                 var email = ""
-                if(emailCursor?.moveToNext() == true){
-                    email = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS))
+                if (emailCursor?.moveToNext() == true) {
+                    email =
+                        emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS))
                     Log.i(TAG, email.toString())
                 }
 
@@ -213,14 +213,21 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, val cont
 
     }
 
-    private fun addContact(id: Long, name: String, email: String, phoneNumbers: List<String>){
+    private fun addContact(id: Long, name: String, email: String, phoneNumbers: List<String>) {
         val contactPhoneNumbers = ArrayList<ContactPhoneNumber>()
 
-        for(i in phoneNumbers){
+        for (i in phoneNumbers) {
             contactPhoneNumbers.add(ContactPhoneNumber(phoneNumber = i))
         }
 
-        val newContact = ContactWithPhone(ContactDetails(contactId = id, name = name, email = email, user_image = ""), contactPhoneNumbers)
+        val newContact = ContactWithPhone(
+            ContactDetails(
+                contactId = id,
+                name = name,
+                email = email,
+                user_image = ""
+            ), contactPhoneNumbers
+        )
 
         CoroutineScope(Dispatchers.Main).launch {
             val id = datasource.insert(newContact)
