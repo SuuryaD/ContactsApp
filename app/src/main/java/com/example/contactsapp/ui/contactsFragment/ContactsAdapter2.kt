@@ -1,5 +1,6 @@
 package com.example.contactsapp.ui.contactsFragment
 
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,7 +36,7 @@ class ContactsAdapter2(private val clickListener: ContactListener) :
             val v = TextDrawable.builder()
                 .buildRound(
                     item.contactDetails.name[0].toString().uppercase(),
-                    getRandomMaterialColour(binding.root.context)
+                    Color.parseColor(item.contactDetails.color_code)
                 )
 
 

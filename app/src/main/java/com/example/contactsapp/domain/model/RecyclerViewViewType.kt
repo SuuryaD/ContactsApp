@@ -1,3 +1,3 @@
 package com.example.contactsapp.domain.model
 
-interface RecyclerViewViewType
+sealed class RecyclerViewViewType

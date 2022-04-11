@@ -3,6 +3,7 @@ package com.example.contactsapp.ui.contactDetailFragment
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -23,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactsapp.R
+import com.example.contactsapp.data.database.ContactPhoneNumber
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.FragmentContactDetailBinding
 import com.example.contactsapp.databinding.PhoneRowBinding
@@ -38,7 +40,8 @@ class ContactDetailFragment : Fragment() {
 
     private val viewModel by viewModels<ContactDetailViewModel> {
         ContactDetailViewModelFactory(
-            ServiceLocator.provideContactsDataSource(requireContext())
+            ServiceLocator.provideContactsDataSource(requireContext()),
+            requireContext()
         )
     }
     private val args: ContactDetailFragmentArgs by navArgs()
@@ -65,6 +68,7 @@ class ContactDetailFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
+
         setHasOptionsMenu(true)
 
         return binding.root
@@ -72,7 +76,6 @@ class ContactDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         binding.emailLayout.setOnClickListener {
 
@@ -87,14 +90,19 @@ class ContactDetailFragment : Fragment() {
         })
 
         viewModel.currentContact.observe(viewLifecycleOwner, Observer {
+            Log.i("ContactDetailFragment", it.toString())
             it?.let {
-
+                if(it.contactDetails.user_image.isNullOrEmpty())
+                    binding.imageView6.drawable.setTint(Color.parseColor(it.contactDetails.color_code))
+                binding.imageView7.setBackgroundColor(Color.parseColor(it.contactDetails.color_code))
                 binding.parentLinearLayout.removeAllViews()
-                it.phoneNumbers.forEach {
-                    addView(it.phoneNumber)
+                if (it.phoneNumbers.isEmpty() && it.contactDetails.email.isEmpty()) {
+                    addViewEmpty("Add phone number", it.contactDetails.user_image.isNullOrEmpty())
+                }
+                it.phoneNumbers.forEach { it2: ContactPhoneNumber ->
+                    addView(it2.phoneNumber, it.contactDetails.user_image.isNullOrEmpty())
                 }
             }
-
             activity?.invalidateOptionsMenu()
         })
 
@@ -142,7 +150,6 @@ class ContactDetailFragment : Fragment() {
         } else {
             menu.findItem(R.id.star_contact).icon =
                 ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_favorite_24)
-
         }
 
         super.onPrepareOptionsMenu(menu)
@@ -189,8 +196,18 @@ class ContactDetailFragment : Fragment() {
     }
 
 
-    private fun addView(phoneNumber: String) {
+    private fun addView(phoneNumber: String, addTint: Boolean) {
         val v = PhoneRowBinding.inflate(layoutInflater)
+
+        if(addTint){
+            v.imageView9.drawable.setTint(
+                Color.parseColor(viewModel.currentContact.value?.contactDetails?.color_code)
+            )
+            v.imageView2.drawable.setTint(
+                Color.parseColor(viewModel.currentContact.value?.contactDetails?.color_code)
+            )
+        }
+
         v.textView2.text = phoneNumber
         v.root.setOnClickListener {
             makeCall(phoneNumber)
@@ -199,6 +216,28 @@ class ContactDetailFragment : Fragment() {
             sendMessage(phoneNumber)
         }
         binding.parentLinearLayout.addView(v.root, binding.parentLinearLayout.childCount)
+    }
+
+    private fun addViewEmpty(phoneNumber: String, addTint: Boolean) {
+
+        val v = PhoneRowBinding.inflate(layoutInflater)
+        v.textView2.text = phoneNumber
+        if(addTint){
+            v.imageView2.drawable.setTint(
+                Color.parseColor(viewModel.currentContact.value?.contactDetails?.color_code)
+            )
+        }
+        v.root.setOnClickListener {
+            this.findNavController().navigate(
+                ContactDetailFragmentDirections.actionContactDetailFragmentToAddFragment(
+                    args.contactId,
+                    null
+                )
+            )
+        }
+        v.imageView9.visibility = View.GONE
+        binding.parentLinearLayout.addView(v.root, binding.parentLinearLayout.childCount)
+
     }
 
     private fun sendMessage(phoneNumber: String) {
@@ -213,7 +252,7 @@ class ContactDetailFragment : Fragment() {
         val f = createVcfFile(contactWithPhone, requireContext())
         val i = Intent()
         i.action = Intent.ACTION_SEND
-        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         i.type = "text/x-vcard"
         i.putExtra(
             Intent.EXTRA_STREAM,
@@ -251,6 +290,6 @@ fun setImageUri2(imgView: ImageView, uri: String) {
         .circleCrop()
         .diskCacheStrategy(DiskCacheStrategy.NONE)
         .skipMemoryCache(true)
-        .error(R.mipmap.account_image)
+        .error(R.drawable.ic_baseline_person_24)
         .into(imgView)
 }

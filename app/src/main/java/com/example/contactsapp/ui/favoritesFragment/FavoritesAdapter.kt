@@ -1,8 +1,13 @@
 package com.example.contactsapp.ui.favoritesFragment
 
+import android.content.Context
+import android.content.ContextWrapper
+import android.graphics.Color
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +20,10 @@ import com.example.contactsapp.databinding.FavoritesRowItemBinding
 import com.example.contactsapp.util.getRandomMaterialColour
 
 
-class FavoritesAdapter(val viewModel: FavoritesViewModel, val clickListener: FavoritesListener) :
+class FavoritesAdapter(
+    val viewModel: FavoritesViewModel,
+    val clickListener: FavoritesListener
+    ) :
     ListAdapter<ContactWithPhone, FavoritesAdapter.ViewHolder>(FavoritesDiffUtil()) {
 
 
@@ -28,14 +36,38 @@ class FavoritesAdapter(val viewModel: FavoritesViewModel, val clickListener: Fav
         ) {
             binding.contactWithPhone = item
             binding.clickListener = clickListener
-            binding.btn.setOnClickListener {
-                viewModel.navigateToContactDetail(item.contactDetails.contactId)
+//            binding.btn.setOnClickListener {
+//                viewModel.navigateToContactDetail(item.contactDetails.contactId)
+//            }
+
+            binding.btn.setOnClickListener{
+
+                Log.i("FavoritesAdapter", "onCLickCalled")
+                val popMenu = PopupMenu(binding.root.context,binding.btn)
+                popMenu.menuInflater.inflate(R.menu.favorite_popup_menu,popMenu.menu)
+//                popMenu.inflate(R.menu.favorite_popup_menu)
+                popMenu.show()
+                popMenu.setOnMenuItemClickListener {
+                    Log.i("FavoritesAdapter", "popMenuOnClickListener")
+                    when(it.itemId){
+                        R.id.remove_fav -> {
+                            viewModel.removeFavorite(item.contactDetails.contactId)
+                            true
+                        }
+                        R.id.fav_details -> {
+                            viewModel.navigateToContactDetail(item.contactDetails.contactId)
+                            true
+                        }
+                        else -> false
+                    }
+                }
             }
+
 
             val v = TextDrawable.builder()
                 .buildRect(
                     item.contactDetails.name[0].toString().uppercase(),
-                    getRandomMaterialColour(binding.root.context)
+                    Color.parseColor(item.contactDetails.color_code)
                 )
 
             Glide.with(binding.root.context)
@@ -79,4 +111,8 @@ class FavoritesDiffUtil : DiffUtil.ItemCallback<ContactWithPhone>() {
 
 class FavoritesListener(val clickListner: (contactWithPhone: ContactWithPhone) -> Unit) {
     fun onClick(contactWithPhone: ContactWithPhone) = clickListner(contactWithPhone)
+}
+
+fun interface OnClickContactMenu{
+    fun onClickMenu()
 }

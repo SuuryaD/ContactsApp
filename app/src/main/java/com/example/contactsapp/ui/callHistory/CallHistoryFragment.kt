@@ -2,7 +2,6 @@ package com.example.contactsapp.ui.callHistory
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Build
@@ -15,9 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -28,7 +25,6 @@ import com.example.contactsapp.domain.model.CallHistoryApi
 import com.example.contactsapp.util.CallLogPermissionRequester
 import com.example.contactsapp.util.EventObserver
 import com.example.contactsapp.util.PhonePermissionRequester
-import com.google.android.material.snackbar.Snackbar
 
 
 class CallHistoryFragment : Fragment() {
@@ -36,7 +32,8 @@ class CallHistoryFragment : Fragment() {
 
     private val viewModel by viewModels<CallHistoryViewModel> {
         CallHistoryViewModelFactory(
-            ServiceLocator.provideContactsDataSource(requireContext())
+            ServiceLocator.provideContactsDataSource(requireContext()),
+            requireContext()
         )
     }
 
@@ -56,6 +53,7 @@ class CallHistoryFragment : Fragment() {
     private val callLogPermissionRequester =
         CallLogPermissionRequester(this, { onGrantedCallLog() }, { onDeniedCallLog() })
     var onGrantedCallLog = {
+        showCallHistory()
         Toast.makeText(requireContext(), "Call log permission Granted", Toast.LENGTH_SHORT).show()
     }
     var onDeniedCallLog = {
@@ -86,6 +84,7 @@ class CallHistoryFragment : Fragment() {
             binding.noCallHistory.visibility = View.GONE
             binding.callHistoryList.visibility = View.VISIBLE
             showCallHistory()
+            onCallLogChange()
         }
 
         onDeniedCallLog = {
@@ -98,6 +97,21 @@ class CallHistoryFragment : Fragment() {
         }
 
         callLogPermissionRequester.checkPermissions(requireContext())
+
+        if (callLogPermission) {
+
+            val cres = this.context?.contentResolver
+            cres?.registerContentObserver(
+                CallLog.Calls.CONTENT_URI,
+                false,
+                object : ContentObserver(null) {
+                    override fun onChange(selfChange: Boolean) {
+                        Log.i("CallHistoryFragment", "On change called")
+                        super.onChange(selfChange)
+                        showCallHistory()
+                    }
+                })
+        }
 
 //        if (ActivityCompat.checkSelfPermission(
 //                requireContext(),
@@ -120,21 +134,7 @@ class CallHistoryFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        if (callLogPermission) {
 
-            val cres = this.context?.contentResolver
-            cres?.registerContentObserver(
-                CallLog.Calls.CONTENT_URI,
-                false,
-                object : ContentObserver(null) {
-                    override fun onChange(selfChange: Boolean) {
-                        Log.i("CallHistoryFragment", "On change called")
-                        super.onChange(selfChange)
-                        showCallHistory()
-                    }
-
-                })
-        }
 
         binding.lifecycleOwner = viewLifecycleOwner
         val adapter = CallHistoryAdapter(viewModel, CallHistoryClickListener {
@@ -149,15 +149,13 @@ class CallHistoryFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToCallHistoryDetail.observe(viewLifecycleOwner, EventObserver {
+        viewModel.navigateToCallHistoryDataDetail.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(
                 CallHistoryFragmentDirections.actionCallHistoryFragmentToCallHistoryDetailFragment(
                     it
                 )
             )
         })
-
-
     }
 
     @SuppressLint("Range")
@@ -169,43 +167,8 @@ class CallHistoryFragment : Fragment() {
             binding.noCallHistory.visibility = View.VISIBLE
             return
         }
-
-
-        Log.i("CallHistoryFragment", "call history called")
-        val cursor = this.context?.contentResolver?.query(
-            CallLog.Calls.CONTENT_URI,
-            null,
-            null,
-            null,
-            CallLog.Calls.DATE + " DESC"
-        )
-
-        val callHistoryList = ArrayList<CallHistoryApi>()
-
-        while (cursor != null && cursor.moveToNext()) {
-
-            val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
-            val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
-            val duration = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION))
-            val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
-            val id = cursor.getString(cursor.getColumnIndex(CallLog.Calls._ID))
-            callHistoryList.add(
-                CallHistoryApi(
-                    id, number, date, duration, type
-                )
-            )
-        }
-
-        Log.i("CallHistoryFragment", callHistoryList.toString())
-        if (callHistoryList.size == 0) {
-            binding.noCallHistory.text = "No call history to display"
-            binding.noCallHistory.visibility = View.VISIBLE
-            binding.callHistoryList.visibility = View.GONE
-        } else {
-            binding.noCallHistory.visibility = View.GONE
-            binding.callHistoryList.visibility = View.VISIBLE
-        }
-        viewModel.getCallHistory(callHistoryList)
+        viewModel.getCallHistory2()
+        viewModel.importCallLog()
     }
 
 
@@ -220,6 +183,20 @@ class CallHistoryFragment : Fragment() {
         }
         phonePermissionRequester.checkPermissions(requireContext())
 
+    }
+
+    private fun onCallLogChange(){
+        val cres = this.context?.contentResolver
+        cres?.registerContentObserver(
+            CallLog.Calls.CONTENT_URI,
+            false,
+            object : ContentObserver(null) {
+                override fun onChange(selfChange: Boolean) {
+                    Log.i("CallHistoryFragment", "On change called")
+                    super.onChange(selfChange)
+                    showCallHistory()
+                }
+            })
     }
 
 }

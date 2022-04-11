@@ -50,9 +50,10 @@ fun createVcfFile(contactWithPhone: ContactWithPhone, context: Context): File {
     val f = File(context.filesDir, "${contactWithPhone.contactDetails?.name!!}.vcf")
     val fw = FileWriter(f)
     fw.write("BEGIN:VCARD\r\n");
-    fw.write("VERSION:4.0\r\n");
+    fw.write("VERSION:3.0\r\n");
 //        fw.write("N:" + contactWithPhone.getSurname() + ";" + p.getFirstName() + "\r\n");
     fw.write("FN:" + contactWithPhone.contactDetails.name + "\r\n");
+    fw.write("N:" + contactWithPhone.contactDetails.name + "\r\n")
 //        fw.write("ORG:" + p.getCompanyName() + "\r\n");
 //        fw.write("TITLE:" + p.getTitle() + "\r\n");
 
@@ -64,6 +65,33 @@ fun createVcfFile(contactWithPhone: ContactWithPhone, context: Context): File {
 //        fw.write("ADR;TYPE=WORK:;;" + p.getStreet() + ";" + p.getCity() + ";" + p.getState() + ";" + p.getPostcode() + ";" + p.getCountry() + "\r\n");
     fw.write("EMAIL;TYPE=PREF,INTERNET:" + contactWithPhone.contactDetails.email + "\r\n");
     fw.write("END:VCARD\r\n");
+    fw.close();
+    return f
+}
+
+fun createVcfFile(contacts: List<ContactWithPhone>, context: Context): File{
+    val f = File(context.filesDir, "contacts.vcf")
+    val fw = FileWriter(f)
+    for(i in contacts){
+
+        fw.write("BEGIN:VCARD\r\n");
+        fw.write("VERSION:3.0\r\n");
+//        fw.write("N:" + contactWithPhone.getSurname() + ";" + p.getFirstName() + "\r\n");
+        fw.write("FN:" + i.contactDetails.name + "\r\n");
+        fw.write("N:" + i.contactDetails.name + "\r\n")
+//        fw.write("ORG:" + p.getCompanyName() + "\r\n");
+//        fw.write("TITLE:" + p.getTitle() + "\r\n");
+
+        for (i in i.phoneNumbers) {
+            fw.write("TEL;TYPE=WORK,VOICE:" + i.phoneNumber + "\r\n");
+        }
+//        fw.write("TEL;TYPE=WORK,VOICE:" + p.getWorkPhone() + "\r\n");
+//        fw.write("TEL;TYPE=HOME,VOICE:" + p.getHomePhone() + "\r\n");
+//        fw.write("ADR;TYPE=WORK:;;" + p.getStreet() + ";" + p.getCity() + ";" + p.getState() + ";" + p.getPostcode() + ";" + p.getCountry() + "\r\n");
+        fw.write("EMAIL;TYPE=PREF,INTERNET:" + i.contactDetails.email + "\r\n");
+        fw.write("END:VCARD\r\n");
+    }
+
     fw.close();
     return f
 }
@@ -120,3 +148,24 @@ fun getRandomMaterialColour(context: Context): Int {
         return R.color.purple_200
     }
 }
+
+fun getRandomMaterialColourCode(context: Context): String {
+
+    try {
+        val xrp: XmlResourceParser = context.resources.getXml(R.xml.android_material_design_colours)
+        val allColors: MutableList<String> = ArrayList()
+        var nextEvent: Int
+        while (xrp.next().also { nextEvent = it } != XmlResourceParser.END_DOCUMENT) {
+            val s = xrp.name
+            if ("color" == s) {
+                val color = xrp.nextText()
+                allColors.add(color)
+            }
+        }
+        val ran = Random().nextInt(allColors.size)
+        return allColors.get(ran)
+    } catch (e: Exception) {
+        return "#FCE4EC"
+    }
+}
+

@@ -11,7 +11,7 @@
         app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/import_contact"
-        android:title="Import device contacts"
+        android:title="Sync contacts"
         app:showAsAction="never" />
 
     <item
@@ -19,6 +19,16 @@
         android:title="Import contacts from vcf file"
         app:showAsAction="never"
         />
+
+    <item
+        android:id="@+id/export_contacts"
+        android:title="Export contacts"
+        app:showAsAction="never"/>
+
+<!--    <item-->
+<!--        android:id="@+id/sync"-->
+<!--        android:title="Toggle sync"-->
+<!--        app:showAsAction="never"/>-->
 
 
 </menu>

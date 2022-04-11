@@ -15,43 +15,53 @@
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_call_missed_24.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.3351851851851852" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.19583333333333333" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.3351851851851852" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_person_24_2.xml" value="0.19583333333333333" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_photo_camera_24.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/drawable/transparent_card.xml" value="0.3828125" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/activity_main2.xml" value="0.1796875" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/add_contact.xml" value="0.25" />
-        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/alphabet_header.xml" value="0.25" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/alphabet_header.xml" value="0.1" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/blank_fragment.xml" value="0.33559782608695654" />
-        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/bottom_button.xml" value="0.3365036231884058" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/bottom_button.xml" value="0.1" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/call_history_detail_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/call_history_detail_row_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/call_history_header.xml" value="0.3446557971014493" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/call_history_row_item.xml" value="0.33" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/contacts_list.xml" value="0.33" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/content_main.xml" value="0.1796875" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/dial_fragment.xml" value="0.1" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/dial_fragment_row_item.xml" value="0.1" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/edit_phone_row.xml" value="0.34601449275362317" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/favorites_fragment.xml" value="0.33" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/favorites_row_item.xml" value="0.33" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_add.xml" value="0.36666666666666664" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_add_to_contact.xml" value="0.36666666666666664" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_call_history.xml" value="0.2697201017811705" />
-        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_call_history_detail.xml" value="0.25" />
-        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_contact_detail.xml" value="0.25" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_call_history_detail.xml" value="0.3333333333333333" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_contact_detail.xml" value="0.22" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_contacts_list.xml" value="0.29775280898876405" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_edit_contact.xml" value="0.33" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_first.xml" value="0.1796875" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_search.xml" value="0.20520833333333333" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/fragment_second.xml" value="0.1796875" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/phone_row.xml" value="0.25" />
-        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/row_item.xml" value="0.2965686274509804" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/layout/row_item.xml" value="0.1" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/menu/add_contact_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/menu/add_to_fragment_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/menu/contact_detail_activity_menu.xml" value="0.1796875" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/menu/contact_detail_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/menu/contact_list_menu.xml" value="0.1" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/menu/favorite_popup_menu.xml" value="0.1" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/mipmap-anydpi-v26/account_image.xml" value="0.3828125" />
+        <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/xml/account_auth.xml" value="0.1796875" />
         <entry key="..\:/Dhanush/ContactsApp/app/src/main/res/xml/android_material_design_colours.xml" value="0.34692028985507245" />
       </map>
     </option>

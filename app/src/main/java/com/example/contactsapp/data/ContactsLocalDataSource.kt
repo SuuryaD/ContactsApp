@@ -1,20 +1,20 @@
 package com.example.contactsapp.data
 
-import android.os.Build
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.contactsapp.data.database.ContactDetailsDao
 import com.example.contactsapp.data.database.ContactPhoneNumber
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.data.Result.Success
-import com.example.contactsapp.domain.model.CallHistory
-import com.example.contactsapp.domain.model.CallHistoryApi
+import com.example.contactsapp.data.database.CallHistory
+import com.example.contactsapp.domain.model.CallHistoryData
+import com.example.contactsapp.domain.model.CallHistoryTemp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ContactsLocalDataSource(
     private val contactsDao: ContactDetailsDao
 ) : ContactsDataSource {
-
 
     override fun observeAllContacts(): LiveData<Result<List<ContactWithPhone>>> {
         return contactsDao.getAll().map {
@@ -35,7 +35,12 @@ class ContactsLocalDataSource(
                 Result.Error(e)
             }
         }
+    }
 
+    override suspend fun getContactById2(contactId: Long): ContactWithPhone? {
+        return withContext(Dispatchers.IO) {
+            contactsDao.getContactById2(contactId)
+        }
     }
 
 
@@ -94,25 +99,73 @@ class ContactsLocalDataSource(
         }
     }
 
-    override fun getContactFromPhone(callHistory: CallHistory): LiveData<CallHistory> {
+    override fun getContactFromPhone(callHistoryData: CallHistoryData): LiveData<CallHistoryData> {
 
-        val contact = contactsDao.getContactFromPhone(callHistory.number)
+        val contact = contactsDao.getContactFromPhone(callHistoryData.number)
 
-        val x: LiveData<CallHistory> = Transformations.map(contact) {
+        val x: LiveData<CallHistoryData> = Transformations.map(contact) {
             it?.let {
-                return@map CallHistory(
+                return@map CallHistoryData(
                     it.contactDetails.contactId,
                     it.contactDetails.name,
                     it.contactDetails.user_image,
-                    callHistory.number,
-                    callHistory.callHistoryApi
+                    callHistoryData.number,
+                    callHistoryData.callHistoryApi
                 )
             }
-            callHistory
+            callHistoryData
         }
 
         return x
 
+    }
+
+    override suspend fun insertCallLog(callHistory: List<CallHistoryTemp>) {
+
+        withContext(Dispatchers.IO) {
+
+            val ls = ArrayList<CallHistory>()
+
+            for (i in callHistory) {
+
+                val contact = contactsDao.getContactFromPhone2(i.number)
+
+                ls.add(
+                    CallHistory(
+                        i.id,
+                        contact?.contactDetails?.contactId ?: 0L,
+                        i.number,
+                        contact?.contactDetails?.name ?: i.number,
+                        contact?.contactDetails?.user_image ?: "",
+                        i.date,
+                        i.duration,
+                        i.type
+                    )
+                )
+            }
+            contactsDao.insertCallLog(ls)
+        }
+    }
+
+    override suspend fun getCallLog(): List<CallHistory> {
+
+        return withContext(Dispatchers.IO) {
+            contactsDao.getCallLog()
+        }
+
+    }
+
+    override suspend fun removeFavorite(contactId: Long) {
+        withContext(Dispatchers.IO) {
+            contactsDao.removeFavorite(contactId)
+        }
+    }
+
+    override suspend fun getUnsyncedContacts(): List<ContactWithPhone> {
+//        return withContext(Dispatchers.IO){
+//            contactsDao.getUnsyncedContacts()
+//        }
+        return emptyList()
     }
 
     override suspend fun nukeDb() {
@@ -123,13 +176,37 @@ class ContactsLocalDataSource(
 
     }
 
-    override suspend fun getContactNames(ls: List<List<CallHistoryApi>>): List<CallHistory> {
+    override suspend fun getContactNames(ls: List<List<CallHistory>>): List<CallHistoryData> {
 
         return withContext(Dispatchers.IO) {
-            contactsDao.getContactDetailsForCallHistory(ls)
+            val ls2 = ArrayList<CallHistoryData>()
+            for (i in ls) {
+
+                if (i.isEmpty()) {
+                    continue
+                }
+
+                val temp = CallHistoryData(
+                    i[0].contactId,
+                    i[0].name,
+                    i[0].user_image,
+                    i[0].number,
+                    i
+                )
+                ls2.add(temp)
+
+            }
+            Log.i("ContactDetailsDao", ls2.toString())
+            ls2
+        }
+    }
+
+    override suspend fun deleteCallHistory(id: Long) {
+
+        withContext(Dispatchers.IO) {
+            contactsDao.deleteCallHistory(id)
         }
 
     }
-
 
 }

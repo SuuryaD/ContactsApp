@@ -11,10 +11,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.contactsapp.R
 import com.example.contactsapp.databinding.AlphabetHeaderBinding
-import com.example.contactsapp.databinding.CallHistoryHeaderBinding
 import com.example.contactsapp.databinding.CallHistoryRowItemBinding
 import com.example.contactsapp.domain.model.AlphabetHeaderType
-import com.example.contactsapp.domain.model.CallHistory
+import com.example.contactsapp.domain.model.CallHistoryData
 import com.example.contactsapp.domain.model.RecyclerViewViewType
 import com.example.contactsapp.util.getRandomMaterialColour
 import com.example.contactsapp.util.getTimeAgo
@@ -27,7 +26,7 @@ class CallHistoryAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is CallHistory -> 1
+            is CallHistoryData -> 1
             else -> 2
         }
     }
@@ -36,7 +35,7 @@ class CallHistoryAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
-            item: CallHistory,
+            item: CallHistoryData,
             clickListener: CallHistoryClickListener,
             viewModel: CallHistoryViewModel
         ) {
@@ -120,7 +119,7 @@ class CallHistoryAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == 1) {
-            (holder as ViewHolder1).bind(getItem(position) as CallHistory, clickListener, viewModel)
+            (holder as ViewHolder1).bind(getItem(position) as CallHistoryData, clickListener, viewModel)
         } else {
             (holder as ViewHolder2).bind(getItem(position) as AlphabetHeaderType)
         }
@@ -134,19 +133,19 @@ class CallHistoryDiffUtil : DiffUtil.ItemCallback<RecyclerViewViewType>() {
         oldItem: RecyclerViewViewType,
         newItem: RecyclerViewViewType
     ): Boolean {
-//        return oldItem == newItem
-        return false
+        return oldItem == newItem
+//        return false
     }
 
     override fun areContentsTheSame(
         oldItem: RecyclerViewViewType,
         newItem: RecyclerViewViewType
     ): Boolean {
-//        return oldItem.equals(newItem)
-        return false
+        return oldItem.equals(newItem)
+//        return false
     }
 }
 
-class CallHistoryClickListener(val onClickListener: (callHistory: CallHistory) -> Unit) {
-    fun onClick(callHistory: CallHistory) = onClickListener(callHistory)
+class CallHistoryClickListener(val onClickListener: (callHistoryData: CallHistoryData) -> Unit) {
+    fun onClick(callHistoryData: CallHistoryData) = onClickListener(callHistoryData)
 }

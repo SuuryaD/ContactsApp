@@ -4,24 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.example.contactsapp.ui.dialFragment.DialViewModel" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/parent_constrain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="56dp">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dialer_recycler_view"
-            android:layout_width="0dp"
+        <ScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/dialer_cardView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layout_constraintBottom_toTopOf="@id/dialer_cardView">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/scroll_view_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
+
+        </ScrollView>
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -45,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dialer_recycler_view"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_view"
             tools:visibility="gone">
 
 
@@ -74,19 +84,6 @@
                         app:layout_constraintTop_toTopOf="parent"
                         android:background="?attr/selectableItemBackgroundBorderless"/>
 
-                    <!--                    <com.google.android.material.textfield.TextInputLayout-->
-                    <!--                        android:layout_width="0dp"-->
-                    <!--                        android:layout_height="50dp"-->
-                    <!--                        android:layout_marginEnd="8dp"-->
-                    <!--                        app:boxBackgroundMode="none"-->
-                    <!--                        app:layout_constraintEnd_toStartOf="@+id/imageButton"-->
-                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
-                    <!--                        app:layout_constraintTop_toTopOf="parent"-->
-                    <!--                        android:focusable="false"-->
-                    <!--                        android:clickable="false">-->
-
-                    <!--                    </com.google.android.material.textfield.TextInputLayout>-->
-
                     <TextView
                         android:id="@+id/editText"
                         android:layout_width="0dp"
@@ -103,6 +100,7 @@
                         android:lines="1"
                         android:maxLines="1"
                         android:textSize="25sp"
+                        android:freezesText="true"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/imageButton"
@@ -346,4 +344,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

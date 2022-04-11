@@ -91,7 +91,7 @@
         tools:layout="@layout/fragment_call_history_detail">
         <argument
             android:name="CallHistory"
-            app:argType="com.example.contactsapp.domain.model.CallHistory" />
+            app:argType="com.example.contactsapp.domain.model.CallHistoryData" />
         <action
             android:id="@+id/action_callHistoryDetailFragment_to_addFragment"
             app:destination="@id/addFragment" />
@@ -102,7 +102,7 @@
     <fragment
         android:id="@+id/addToFragment"
         android:name="com.example.contactsapp.ui.addToFragment.AddToFragment"
-        android:label="AddToFragment" >
+        android:label="Add to contact">
         <argument
             android:name="phoneNumber"
             app:argType="string"

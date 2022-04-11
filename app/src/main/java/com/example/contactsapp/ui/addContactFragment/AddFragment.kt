@@ -42,7 +42,8 @@ class AddFragment : Fragment() {
     private val args: AddFragmentArgs by navArgs()
     private val viewModel: AddFragmentViewModel by viewModels {
         AddFragmentViewModelFactory(
-            ServiceLocator.provideContactsDataSource(requireContext())
+            ServiceLocator.provideContactsDataSource(requireContext()),
+            requireContext()
         )
     }
 
@@ -78,7 +79,7 @@ class AddFragment : Fragment() {
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 
-                it?.let{
+                it?.let {
                     if (it.resultCode == Activity.RESULT_OK) {
                         Log.i("AddFragment", it.data?.data.toString())
                         viewModel.setImageUri(photoUri)
@@ -90,13 +91,12 @@ class AddFragment : Fragment() {
         //Overriding back button press for showing dialog
         activity?.onBackPressedDispatcher?.addCallback(this) {
 
-            if(viewModel.isValuesChanged(onSave())){
+            if (viewModel.isValuesChanged(onSave())) {
                 askUser {
                     isEnabled = false
                     activity?.onBackPressed()
                 }
-            }
-            else{
+            } else {
                 isEnabled = false
                 activity?.onBackPressed()
             }
@@ -117,7 +117,7 @@ class AddFragment : Fragment() {
         viewModel.start(args.contactId)
 
         (activity as AppCompatActivity).supportActionBar?.let {
-            if(args.contactId == 0L)
+            if (args.contactId == 0L)
                 it.title = "Add Contact"
             else
                 it.title = "Edit Contact"
@@ -135,23 +135,22 @@ class AddFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentContact.observe(viewLifecycleOwner,{
+        viewModel.currentContact.observe(viewLifecycleOwner, {
             it?.let {
                 it.phoneNumbers.forEach {
                     addView(it.phoneNumber)
                 }
             }
-            if(args.phoneNumber != null)
+            if (args.phoneNumber != null)
                 addView(args.phoneNumber)
             addView()
         })
 
-        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver{
+        viewModel.navigateToContactDetail.observe(viewLifecycleOwner, EventObserver {
             Toast.makeText(this.context, it.second, Toast.LENGTH_SHORT).show()
-            if(args.phoneNumber != null){
+            if (args.phoneNumber != null) {
                 this.findNavController().navigateUp()
-            }
-            else{
+            } else {
                 this.findNavController()
                     .navigate(AddFragmentDirections.actionAddFragmentToContactDetailFragment(it.first))
             }
@@ -210,11 +209,11 @@ class AddFragment : Fragment() {
                 true
             }
             android.R.id.home -> {
-                if(viewModel.isValuesChanged(onSave())){
+                if (viewModel.isValuesChanged(onSave())) {
                     askUser {
                         this.findNavController().navigateUp()
                     }
-                }else{
+                } else {
                     this.findNavController().navigateUp()
                 }
                 true
@@ -297,7 +296,8 @@ class AddFragment : Fragment() {
 
         val editPhoneRowBinding = EditPhoneRowBinding.inflate(layoutInflater)
         if (phoneNumber != null)
-            editPhoneRowBinding.editTextPhone.text = Editable.Factory.getInstance().newEditable(phoneNumber)
+            editPhoneRowBinding.editTextPhone.text =
+                Editable.Factory.getInstance().newEditable(phoneNumber)
 
         val cnt = binding.linearLayout.childCount
 

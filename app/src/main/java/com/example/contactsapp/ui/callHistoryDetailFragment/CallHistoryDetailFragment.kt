@@ -1,7 +1,6 @@
 package com.example.contactsapp.ui.callHistoryDetailFragment
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CallLog
@@ -12,22 +11,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.contactsapp.R
+import com.example.contactsapp.data.database.CallHistory
 import com.example.contactsapp.databinding.CallHistoryDetailRowItemBinding
 import com.example.contactsapp.databinding.FragmentCallHistoryDetailBinding
 import com.example.contactsapp.di.ServiceLocator
-import com.example.contactsapp.domain.model.CallHistoryApi
 import com.example.contactsapp.util.CallLogPermissionRequester
 import com.example.contactsapp.util.EventObserver
 import com.example.contactsapp.util.PhonePermissionRequester
-import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,7 +38,6 @@ class CallHistoryDetailFragment : Fragment() {
     private val args: CallHistoryDetailFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentCallHistoryDetailBinding
-//    private lateinit var makeCallRequestPermission: ActivityResultLauncher<String>
 
     private val phonePermissionRequester = PhonePermissionRequester(this, { onGranted() }, {
         Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
@@ -60,20 +54,6 @@ class CallHistoryDetailFragment : Fragment() {
         Toast.makeText(requireContext(), "Call log permission denied", Toast.LENGTH_SHORT).show()
     }
 
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        makeCallRequestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-//
-//            if(it == true){
-//                Snackbar.make(binding.root, "Permission granted", Snackbar.LENGTH_SHORT).show()
-//            }else{
-//                Snackbar.make(binding.root, "Permission Denied", Snackbar.LENGTH_SHORT).show()
-//            }
-//        }
-//
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -136,7 +116,7 @@ class CallHistoryDetailFragment : Fragment() {
     }
 
 
-    private fun addView(ls: List<CallHistoryApi>) {
+    private fun addView(ls: List<CallHistory>) {
 
         binding.callHistoryLayout.removeAllViews()
 
@@ -159,7 +139,6 @@ class CallHistoryDetailFragment : Fragment() {
             v.textView10.text = SimpleDateFormat("EEE, d MMM yyyy hh:mm a").format(Date(i.date))
             v.textView11.text = DateUtils.formatElapsedTime(i.duration.toLong())
 
-
             binding.callHistoryLayout.addView(v.root, binding.callHistoryLayout.childCount)
 
         }
@@ -176,21 +155,6 @@ class CallHistoryDetailFragment : Fragment() {
         }
 
         phonePermissionRequester.checkPermissions(requireContext())
-
-//        if (ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                android.Manifest.permission.CALL_PHONE
-//            ) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            val intent = Intent(Intent.ACTION_CALL)
-//            intent.data = Uri.parse("tel:$phoneNumber")
-//            startActivity(intent)
-//        }
-//        else {
-//            makeCallRequestPermission.launch(
-//                android.Manifest.permission.CALL_PHONE
-//            )
-//        }
     }
 
     private fun deleteCallHistory() {
@@ -203,6 +167,7 @@ class CallHistoryDetailFragment : Fragment() {
 
                 Log.i("CallHistoryDetail", "id: ${i.id}")
                 cres?.delete(CallLog.Calls.CONTENT_URI, "${CallLog.Calls._ID} = ?", arrayOf(i.id))
+                viewModel.deleteCallHistory(i.id.toLong())
             }
 
             this.findNavController().navigateUp()

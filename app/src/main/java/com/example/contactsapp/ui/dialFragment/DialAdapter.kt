@@ -1,8 +1,10 @@
 package com.example.contactsapp.ui.dialFragment
 
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -31,7 +33,7 @@ class DialAdapter(private val clickListener: ContactListener, val listener: Dial
             val v = TextDrawable.builder()
                 .buildRound(
                     item.contactDetails.name[0].toString().uppercase(),
-                    getRandomMaterialColour(binding.root.context)
+                    Color.parseColor(item.contactDetails.color_code)
                 )
 
 
@@ -70,7 +72,14 @@ class DialAdapter(private val clickListener: ContactListener, val listener: Dial
 
     class ViewHolder3(val binding: BottomButtonBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(list: DialClickListener) {
+        fun bind(list: DialClickListener, position: Int, size: Int) {
+//            if(itemId == 0L)
+            if(size == 0 && layoutPosition == 0){
+                binding.createContactBtn.visibility = View.GONE
+            }
+            else{
+                binding.createContactBtn.visibility = View.VISIBLE
+            }
 
             binding.createContactBtn.setOnClickListener {
                 list.listener()
@@ -122,7 +131,7 @@ class DialAdapter(private val clickListener: ContactListener, val listener: Dial
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         if (position == currentList.size)
-            (holder as ViewHolder3).bind(listener)
+            (holder as ViewHolder3).bind(listener, position, currentList.size)
         else {
             if (getItemViewType(position) == VIEW_TYPE_ONE) {
                 (holder as ViewHolder2).bind(getItem(position))

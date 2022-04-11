@@ -1,21 +1,25 @@
 package com.example.contactsapp.ui.callHistoryDetailFragment
 
-import android.telecom.Call
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.contactsapp.data.ContactsDataSource
-import com.example.contactsapp.domain.model.CallHistory
+import com.example.contactsapp.domain.model.CallHistoryData
 import com.example.contactsapp.util.Event
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class CallHistoryDetailViewModel(val dataSource: ContactsDataSource, val callHistory: CallHistory) :
+class CallHistoryDetailViewModel(val dataSource: ContactsDataSource, val callHistoryData: CallHistoryData) :
     ViewModel() {
 
     //    private val _callHistory = MutableLiveData<CallHistory>()
 //    val callHistory: LiveData<CallHistory>
 //        get() = _callHistory
 //
-    val callHistoryLiv = dataSource.getContactFromPhone(callHistory)
+    val callHistoryLiv = dataSource.getContactFromPhone(callHistoryData)
 
     private val _sendMessage = MutableLiveData<Event<String>>()
     val sendMessage: LiveData<Event<String>>
@@ -57,4 +61,13 @@ class CallHistoryDetailViewModel(val dataSource: ContactsDataSource, val callHis
     fun deleteCallHistory() {
         _deleteCallHistory.value = Event(Unit)
     }
+
+    fun deleteCallHistory(id: Long){
+
+        CoroutineScope(Dispatchers.Main).launch {
+            dataSource.deleteCallHistory(id)
+        }
+
+    }
+
 }

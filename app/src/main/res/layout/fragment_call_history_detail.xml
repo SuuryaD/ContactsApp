@@ -9,7 +9,7 @@
 
         <variable
             name="callHistory"
-            type="com.example.contactsapp.domain.model.CallHistory" />
+            type="com.example.contactsapp.domain.model.CallHistoryData" />
 
         <variable
             name="viewModel"
@@ -41,7 +41,7 @@
 
                     <ImageView
                         android:id="@+id/imageView13"
-                        ImageUri="@{String.valueOf(callHistory.userImage)}"
+                        ImageUri2="@{String.valueOf(callHistory.userImage)}"
                         android:layout_width="76dp"
                         android:layout_height="69dp"
                         android:layout_marginStart="16dp"
@@ -361,8 +361,8 @@
                 <Button
                     android:id="@+id/create_contact_btn"
                     style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width="381dp"
-                    android:layout_height="51dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"

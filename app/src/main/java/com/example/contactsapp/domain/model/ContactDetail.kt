@@ -4,5 +4,7 @@ data class ContactDetail(
     val contactId: Long,
     val name: String,
     val email: String,
-    val phone: List<String>
+    val user_image: String,
+    val color_code: String,
+    val phone: String
 )

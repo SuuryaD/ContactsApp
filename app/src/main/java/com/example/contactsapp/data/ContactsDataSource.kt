@@ -1,11 +1,11 @@
 package com.example.contactsapp.data
 
 import androidx.lifecycle.LiveData
+import com.example.contactsapp.data.database.CallHistory
 import com.example.contactsapp.data.database.ContactPhoneNumber
 import com.example.contactsapp.data.database.ContactWithPhone
-import com.example.contactsapp.domain.model.CallHistory
-import com.example.contactsapp.domain.model.CallHistoryApi
-import com.example.contactsapp.ui.callHistoryDetailFragment.CallHistoryDetailFragmentDirections
+import com.example.contactsapp.domain.model.CallHistoryData
+import com.example.contactsapp.domain.model.CallHistoryTemp
 
 interface ContactsDataSource {
 
@@ -14,6 +14,8 @@ interface ContactsDataSource {
     fun observeContactById(contactId: Long): LiveData<ContactWithPhone?>
 
     suspend fun getContactById(contactId: Long): Result<ContactWithPhone>
+
+    suspend fun getContactById2(contactId: Long): ContactWithPhone?
 
     suspend fun insert(contactWithPhone: ContactWithPhone): Long
 
@@ -25,7 +27,9 @@ interface ContactsDataSource {
 
     suspend fun updateContact2(contactWithPhone: ContactWithPhone, new: ContactWithPhone): Long
 
-    suspend fun getContactNames(ls: List<List<CallHistoryApi>>): List<CallHistory>
+    suspend fun getContactNames(ls: List<List<CallHistory>>): List<CallHistoryData>
+
+    suspend fun deleteCallHistory(id: Long)
 
     suspend fun updateFavourite(boolean: Boolean, contactId: Long): Int
 
@@ -35,7 +39,15 @@ interface ContactsDataSource {
 
     suspend fun deleteContact(contactId: Long)
 
-    fun getContactFromPhone(callHistory: CallHistory): LiveData<CallHistory>
+    fun getContactFromPhone(callHistoryData: CallHistoryData): LiveData<CallHistoryData>
+
+    suspend fun insertCallLog(callHistory: List<CallHistoryTemp>)
+
+    suspend fun getCallLog(): List<CallHistory>
+
+    suspend fun removeFavorite(contactId: Long)
+
+    suspend fun getUnsyncedContacts() : List<ContactWithPhone>
 
     suspend fun nukeDb()
 

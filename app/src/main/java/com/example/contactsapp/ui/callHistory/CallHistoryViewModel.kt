@@ -1,43 +1,88 @@
 package com.example.contactsapp.ui.callHistory
 
-import android.telecom.Call
+import android.annotation.SuppressLint
+import android.content.Context
+import android.provider.CallLog
 import android.text.format.DateUtils
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.contactsapp.data.ContactsDataSource
-import com.example.contactsapp.domain.model.AlphabetHeaderType
-import com.example.contactsapp.domain.model.CallHistory
-import com.example.contactsapp.domain.model.CallHistoryApi
-import com.example.contactsapp.domain.model.RecyclerViewViewType
+import com.example.contactsapp.data.database.CallHistory
+import com.example.contactsapp.domain.model.*
 import com.example.contactsapp.util.Event
 import kotlinx.coroutines.*
 
-class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewModel() {
-
+class CallHistoryViewModel(
+    private val dataSource: ContactsDataSource,
+    val context: Context
+) : ViewModel() {
 
     private val _data = MutableLiveData<List<RecyclerViewViewType>>()
     val callHistory: LiveData<List<RecyclerViewViewType>>
         get() = _data
 
-
-    private val _navigateToCallHistoryDetail = MutableLiveData<Event<CallHistory>>()
-    val navigateToCallHistoryDetail: LiveData<Event<CallHistory>>
+    private val _navigateToCallHistoryDetail = MutableLiveData<Event<CallHistoryData>>()
+    val navigateToCallHistoryDataDetail: LiveData<Event<CallHistoryData>>
         get() = _navigateToCallHistoryDetail
 
-    fun getCallHistory(ls: List<CallHistoryApi>) {
+
+    @SuppressLint("Range")
+    fun importCallLog() {
+        val cres = context.contentResolver
+
+        val cursor = cres?.query(
+            CallLog.Calls.CONTENT_URI,
+            null,
+            null,
+            null,
+            CallLog.Calls.DATE + " DESC"
+        )
+
+        val callHistoryList = ArrayList<CallHistoryTemp>()
+
+        while (cursor != null && cursor.moveToNext()) {
+
+            val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
+            val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
+            val duration = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION))
+            val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
+            val id = cursor.getString(cursor.getColumnIndex(CallLog.Calls._ID))
+            val name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME))
+//            CallLog.Calls.
+            callHistoryList.add(
+                CallHistoryTemp(
+                    id, number, date, duration, type
+                )
+            )
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            dataSource.insertCallLog(callHistoryList)
+        }
+
+    }
+
+    fun getCallHistory2() {
+        CoroutineScope(Dispatchers.IO).launch {
+            getCallHistory()
+        }
+    }
+
+    suspend fun getCallHistory() {
+
+        var ls: List<CallHistory> = emptyList()
+
+        ls = dataSource.getCallLog()
 
         var ls3 = ArrayList<RecyclerViewViewType>()
 
-        val temp = ArrayList<ArrayList<CallHistoryApi>>()
+        val temp = ArrayList<ArrayList<CallHistory>>()
 
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
 
             if (ls.isNotEmpty()) {
                 temp.add(arrayListOf(ls[0]))
             }
-
             for (i in 1 until ls.size) {
 
                 if (ls[i].number != ls[i - 1].number) {
@@ -58,24 +103,23 @@ class CallHistoryViewModel(private val dataSource: ContactsDataSource) : ViewMod
             for (i in ls4) {
 
                 if (!DateUtils.isToday(i.callHistoryApi.first().date) && add) {
-
                     ls3.add(AlphabetHeaderType("Older"))
                     add = false
-
                 }
                 ls3.add(i)
             }
 
             Log.i("CallHistoryViewModel", ls3.toString())
             Log.i("CallHistoryViewModel", ls4.toString())
-            _data.value = ls3
+
+            withContext(Dispatchers.Main) {
+                _data.value = ls3
+            }
         }
-
     }
 
-    fun navigateToCallHistory(callHistory: CallHistory) {
-        _navigateToCallHistoryDetail.value = Event(callHistory)
+    fun navigateToCallHistory(callHistoryData: CallHistoryData) {
+        _navigateToCallHistoryDetail.value = Event(callHistoryData)
     }
-
 
 }

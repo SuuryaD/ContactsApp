@@ -1,9 +1,6 @@
 package com.example.contactsapp.ui.favoritesFragment
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import androidx.lifecycle.*
 import com.example.contactsapp.data.ContactsDataSource
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.util.Event
@@ -21,6 +18,12 @@ class FavoritesViewModel(private val dataSource: ContactsDataSource) : ViewModel
 
     fun navigateToContactDetail(contactId: Long) {
         _navigateToContactDetail.value = Event(contactId)
+    }
+
+    fun removeFavorite(contactId: Long){
+        viewModelScope.launch {
+            dataSource.removeFavorite(contactId)
+        }
     }
 
 

@@ -2,20 +2,23 @@ package com.example.contactsapp.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.contactsapp.data.database.CallHistory
+import java.util.ArrayList
 
-data class CallHistory(
+data class CallHistoryData(
     val contactId: Long,
     val name: String,
     val userImage: String?,
     val number: String,
-    val callHistoryApi: List<CallHistoryApi>
-) : RecyclerViewViewType, Parcelable {
+    val callHistoryApi: List<CallHistory>
+) : RecyclerViewViewType(), Parcelable{
+
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
         parcel.readString().toString(),
         parcel.readString(),
         parcel.readString().toString(),
-        parcel.createTypedArrayList(CallHistoryApi)!!
+        parcel.createTypedArrayList(CallHistory)!!
     ) {
     }
 
@@ -31,12 +34,12 @@ data class CallHistory(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CallHistory> {
-        override fun createFromParcel(parcel: Parcel): CallHistory {
-            return CallHistory(parcel)
+    companion object CREATOR : Parcelable.Creator<CallHistoryData> {
+        override fun createFromParcel(parcel: Parcel): CallHistoryData {
+            return CallHistoryData(parcel)
         }
 
-        override fun newArray(size: Int): Array<CallHistory?> {
+        override fun newArray(size: Int): Array<CallHistoryData?> {
             return arrayOfNulls(size)
         }
     }

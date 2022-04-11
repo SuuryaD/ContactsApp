@@ -3,8 +3,7 @@ package com.example.contactsapp.data.database
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.contactsapp.domain.model.CallHistory
-import com.example.contactsapp.domain.model.CallHistoryApi
+import com.example.contactsapp.domain.model.CallHistoryData
 
 @Dao
 interface ContactDetailsDao {
@@ -20,11 +19,11 @@ interface ContactDetailsDao {
     suspend fun insert(contactWithPhone: ContactWithPhone): Long {
 
 //        val id = insertContact(ContactDetails(name = contactWithPhone.contactDetails.name, email = contactWithPhone.contactDetails.email))
-        val id = insertContact2(contactWithPhone.contactDetails)
+        val id = insertContact(contactWithPhone.contactDetails)
 
         Log.i("ContactsDao", id.toString())
         for (i in contactWithPhone.phoneNumbers) {
-            insertPhone2(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
+            insertPhone(ContactPhoneNumber(contactId = id, phoneNumber = i.phoneNumber))
         }
         return id
     }
@@ -50,10 +49,10 @@ interface ContactDetailsDao {
     @Insert
     suspend fun insertPhone2(contactPhoneNumber: ContactPhoneNumber)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertContact(contactDetails: ContactDetails): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPhone(contactPhoneNumber: ContactPhoneNumber)
 
     @Insert
@@ -72,61 +71,27 @@ interface ContactDetailsDao {
     suspend fun updateContact2(oldContactWithPhone: ContactWithPhone, new: ContactWithPhone): Long {
 
         deleteContact(oldContactWithPhone.contactDetails.contactId)
-
-
         return insert(new)
-    }
-
-    suspend fun getContactDetailsForCallHistory(ls: List<List<CallHistoryApi>>): List<CallHistory> {
-
-        val ls2 = ArrayList<CallHistory>()
-        for (i in ls) {
-
-            if (i.isEmpty()) {
-                continue
-            }
-
-            val id: Long? = getContactId(i[0].number)
-
-            if (id != null) {
-                val contact = getContactById(id)
-                val temp = CallHistory(
-                    contact.contactDetails.contactId,
-                    contact.contactDetails.name,
-                    contact.contactDetails.user_image,
-                    i[0].number,
-                    i
-                )
-                ls2.add(temp)
-
-            } else {
-                val temp = CallHistory(0L, i[0].number, "", i[0].number, i)
-                ls2.add(temp)
-            }
-        }
-        Log.i("ContactDetailsDao", ls2.toString())
-        return ls2
     }
 
     @Query("SELECT contactId From phone WHERE phoneNumber=:phoneNumber LIMIT 1 ")
     suspend fun getContactId(phoneNumber: String): Long
 
-
     @Query("SELECT * FROM contact_details WHERE contactId = ( SELECT contactId FROM phone WHERE phoneNumber=:phoneNumber LIMIT 1)")
     fun getContactFromPhone(phoneNumber: String): LiveData<ContactWithPhone>
 
+    @Query("SELECT * FROM contact_details WHERE contactId = ( SELECT contactId FROM phone WHERE phoneNumber=:phoneNumber LIMIT 1)")
+    fun getContactFromPhone2(phoneNumber: String): ContactWithPhone?
 
     @Transaction
     @Query("SELECT * FROM contact_details WHERE favorite=1")
     fun getAllFavoriteContacts(): LiveData<List<ContactWithPhone>>
-
 
     @Query("UPDATE contact_details SET favorite=:boo WHERE contactId=:contactId")
     suspend fun updateFavourite(boo: Boolean, contactId: Long): Int
 
     @Delete
     suspend fun deletePhoneNumbers(contactPhoneNumber: List<ContactPhoneNumber>)
-
 
     @Update
     suspend fun updateContactDetails(contactDetails: ContactDetails)
@@ -142,6 +107,21 @@ interface ContactDetailsDao {
 
     @Query("select * from contact_details where contactId=:contactId")
     suspend fun getContactById(contactId: Long): ContactWithPhone
+
+    @Query("select * from contact_details where contactId=:contactId")
+    suspend fun getContactById2(contactId: Long): ContactWithPhone?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCallLog(callHistory: List<CallHistory>)
+
+    @Query("select * from call_logs")
+    suspend fun getCallLog(): List<CallHistory>
+
+    @Query("delete from call_logs where id=:id")
+    suspend fun deleteCallHistory(id: Long)
+
+    @Query("UPDATE CONTACT_DETAILS SET favorite=0 WHERE contactId=:contactId")
+    suspend fun removeFavorite(contactId: Long)
 
     @Query("delete from contact_details")
     suspend fun nukeDb()

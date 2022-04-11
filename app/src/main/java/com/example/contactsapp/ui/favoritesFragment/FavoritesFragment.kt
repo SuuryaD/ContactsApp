@@ -68,7 +68,6 @@ class FavoritesFragment : Fragment() {
                 adapter.submitList(it)
             }
         }
-
         return binding.root
     }
 
@@ -111,7 +110,6 @@ class FavoritesFragment : Fragment() {
             dialogInterface.dismiss()
         }
         alertDialog.show()
-
     }
 
     private fun makeCall(phoneNumber: String) {
@@ -123,8 +121,5 @@ class FavoritesFragment : Fragment() {
             startActivity(intent)
         }
         phonePermissionRequester.checkPermissions(requireContext())
-
     }
-
-
 }
