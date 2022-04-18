@@ -243,7 +243,7 @@ class ContactsListFragment : Fragment() {
 
                         val ls = ArrayList<ContactWithPhone>()
                         viewModel.contacts.value?.forEach {
-                            if (it.contactDetails.contactId != 0L && it.contactDetails.name.startsWith(
+                            if (it.contactDetails.contactId != 0L && it.contactDetails.name.contains(
                                     newText,
                                     true
                                 )
@@ -253,8 +253,9 @@ class ContactsListFragment : Fragment() {
                         adapter.submitList(ls)
                     } else {
                         Log.i("ContactsListFragment", "empty text triggered")
-                        adapter.submitList(viewModel.contacts.value)
-                        binding.contactList.scrollToPosition(0)
+                        adapter.submitList(viewModel.contacts.value){
+                            binding.contactList.scrollToPosition(0)
+                        }
                     }
                 }
                 return true
@@ -340,7 +341,6 @@ class ContactsListFragment : Fragment() {
             "$noOfContactsAdded Contacts added successfully",
             Toast.LENGTH_LONG
         ).show()
-
     }
 
     private fun toggleSync() {

@@ -177,7 +177,7 @@
 
                 <ImageView
                     android:id="@+id/imageView7"
-                    ImageUri="@{String.valueOf(viewModel.currentContact.contactDetails.user_image)}"
+                    ImageUri3="@{String.valueOf(viewModel.currentContact.contactDetails.user_image)}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/teal_700"
@@ -185,8 +185,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/ic_baseline_person_24" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/displayName2"

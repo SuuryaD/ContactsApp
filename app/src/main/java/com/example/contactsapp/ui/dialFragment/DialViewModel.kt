@@ -131,18 +131,10 @@ class DialViewModel(val dataSource: ContactsDataSource) : ViewModel() {
                     }
                 }
             }
-
-            return@launch withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main){
                 contacts3.value = ls
-                return@withContext
             }
         }
 
-//        phoneNumber.value = input
     }
-
-//    fun getContactCorout(input: String){
-//
-//    }
-
 }

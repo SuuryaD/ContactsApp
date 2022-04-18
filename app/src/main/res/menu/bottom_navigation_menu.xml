@@ -5,18 +5,22 @@
     <item
         android:id="@+id/favoritesFragment"
         android:title="Favorites"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_favorite_24"/>
     <item
         android:id="@+id/contactsFragment"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_account_circle_24"
         android:title="Contacts" />
     <item
         android:id="@+id/callHistoryFragment"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_call_24"
         android:title="Call History" />
 
     <item
         android:id="@+id/dialFragment"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_dialpad_24"
         android:title="Dialer" />
 </menu>

@@ -89,14 +89,14 @@ private val context: Context
             CoroutineScope(Dispatchers.Main).launch {
                 val before = it
                 val v = dataSource.updateFavourite(!it, _contactId.value!!)
-                if (v == 1) {
-                    if (before)
-                        _displayFavouriteChangeToast.value = Event("Removed from favourites")
-                    else
-                        _displayFavouriteChangeToast.value =
-                            Event("Added to Favourites Successfully")
-                } else
-                    _displayFavouriteChangeToast.value = Event("Something Went Wrong, Try again!")
+//                if (v == 1) {
+//                    if (before)
+//                        _displayFavouriteChangeToast.value = Event("Removed from favourites")
+//                    else
+//                        _displayFavouriteChangeToast.value =
+//                            Event("Added to Favourites Successfully")
+//                } else
+//                    _displayFavouriteChangeToast.value = Event("Something Went Wrong, Try again!")
             }
         }
 

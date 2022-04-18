@@ -78,7 +78,6 @@ class ContactDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.emailLayout.setOnClickListener {
-
             Log.i("ContactDetailFragment", "Email layout click listener")
             val i = Intent(Intent.ACTION_SENDTO)
             i.data = Uri.parse("mailto:${binding.displayEmail.text}")
@@ -272,12 +271,28 @@ fun setImageUri(imgView: ImageView, uri: String?) {
     Glide.with(imgView.context)
         .load(u)
         .centerCrop()
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .skipMemoryCache(true)
         .error(R.drawable.ic_baseline_person_24)
         .into(imgView)
 
 }
+
+@BindingAdapter("ImageUri3")
+fun setImageUri3(imgView: ImageView, uri: String?) {
+
+    if(uri?.isEmpty() == true)
+        return
+
+    val u = Uri.parse(uri)
+
+    Glide.with(imgView.context)
+        .load(u)
+        .centerCrop()
+        .error(R.drawable.ic_baseline_person_24)
+        .into(imgView)
+
+}
+
+
 
 @BindingAdapter("ImageUri2")
 fun setImageUri2(imgView: ImageView, uri: String) {

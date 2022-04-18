@@ -14,7 +14,7 @@
         android:id="@+id/parent_constrain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="56dp">
+        android:paddingBottom="80dp">
 
         <ScrollView
             android:id="@+id/scroll_view"
@@ -23,7 +23,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/dialer_cardView">
+            app:layout_constraintBottom_toTopOf="@id/dialer_cardView"
+            android:visibility="visible">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/scroll_view_layout"
@@ -32,6 +33,15 @@
                 android:orientation="vertical" />
 
         </ScrollView>
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/dialer_recyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/dialer_cardView"/>-->
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -328,10 +338,10 @@
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
                             android:id="@+id/call_btn"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_horizontal"
-                            android:elevation="100dp"
-                            android:src="@drawable/ic_baseline_call_24" />
+                            android:src="@drawable/ic_baseline_call_24"
+                            app:elevation="0dp"/>
 
 
                     </FrameLayout>

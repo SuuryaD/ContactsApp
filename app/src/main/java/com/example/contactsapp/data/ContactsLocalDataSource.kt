@@ -176,9 +176,13 @@ class ContactsLocalDataSource(
 
     }
 
-    override suspend fun getContactNames(ls: List<List<CallHistory>>): List<CallHistoryData> {
+    override fun getCallLog2(): LiveData<List<CallHistory>> {
+        return contactsDao.getCallLog2()
+    }
 
-        return withContext(Dispatchers.IO) {
+    override fun getContactNames(ls: List<List<CallHistory>>): List<CallHistoryData> {
+
+//        return withContext(Dispatchers.IO) {
             val ls2 = ArrayList<CallHistoryData>()
             for (i in ls) {
 
@@ -197,8 +201,8 @@ class ContactsLocalDataSource(
 
             }
             Log.i("ContactDetailsDao", ls2.toString())
-            ls2
-        }
+            return ls2
+//        }
     }
 
     override suspend fun deleteCallHistory(id: Long) {

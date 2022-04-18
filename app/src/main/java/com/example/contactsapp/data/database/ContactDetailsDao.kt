@@ -125,4 +125,7 @@ interface ContactDetailsDao {
 
     @Query("delete from contact_details")
     suspend fun nukeDb()
+
+    @Query("select * from call_logs")
+    fun getCallLog2(): LiveData<List<CallHistory>>
 }

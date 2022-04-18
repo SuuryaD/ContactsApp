@@ -18,11 +18,15 @@
         <action
             android:id="@+id/action_contactsFragment_to_favoritesFragment"
             app:destination="@id/favoritesFragment"
-            app:enterAnim="@android:anim/slide_out_right"
-            app:exitAnim="@android:anim/slide_in_left" />
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/slide_in_left" />
         <action
             android:id="@+id/action_contactsFragment_to_callHistoryFragment"
-            app:destination="@id/callHistoryFragment" />
+            app:destination="@id/callHistoryFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_contactsFragment_to_dialFragment"
             app:destination="@id/dialFragment" />

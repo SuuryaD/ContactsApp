@@ -72,6 +72,7 @@ class FavoritesAdapter(
 
             Glide.with(binding.root.context)
                 .load(Uri.parse(item.contactDetails.user_image))
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .error(v)
                 .into(binding.img)

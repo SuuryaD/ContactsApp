@@ -5,11 +5,9 @@ import android.content.*
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import com.example.contactsapp.data.ContactsDataSource
 import com.example.contactsapp.data.Result
@@ -395,7 +393,7 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, private 
                     contactsCursor.getLong(contactsCursor.getColumnIndex(ContactsContract.Contacts._ID))
 
 //                val accountId = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.Data.RAW_CONTACT_ID))
-                val selection = { "${ContactsContract.RawContacts.CONTACT_ID} = ?" }
+//                val selection = { "${ContactsContract.RawContacts.CONTACT_ID} = ?" }
                 val rawCursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     cres.query(
                         ContactsContract.RawContacts.CONTENT_URI,
@@ -408,6 +406,7 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, private 
                 } else {
                     null
                 }
+
                 var accountName = ""
                 var accountType = ""
                 if (rawCursor?.moveToNext() == true) {
@@ -425,7 +424,7 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, private 
                     contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
 //                Log.i(TAG, name ?: "null")
 
-                val ls = ArrayList<String>()
+                val phoneNumbers = ArrayList<String>()
 
                 if (contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))
                         .toInt() > 0
@@ -447,7 +446,9 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, private 
                         phoneNumber = phoneNumber.replace(")", "")
                         phoneNumber = phoneNumber.replace(" ", "")
                         phoneNumber = phoneNumber.replace("-", "")
-                        ls.add(phoneNumber)
+                        Log.i(TAG, "Inside phone cursor: phoneNumber: $phoneNumber, phoneId: $phoneId")
+                        if(!phoneNumbers.contains(phoneNumber))
+                            phoneNumbers.add(phoneNumber)
                     }
                 }
 
@@ -469,9 +470,9 @@ class ContactsListFragmentViewModel(val datasource: ContactsDataSource, private 
 //                Log.i(TAG, "PhoneNumbers: $ls")
                 val contact = datasource.getContactById2(id)
 
-                Log.i(TAG, "id: $id, name: $name, ls: ${ls}, contact: ${contact.toString()}")
+                Log.i(TAG, "id: $id, name: $name, ls: ${phoneNumbers}, contact: ${contact.toString()}")
                 if (name != null)
-                    addContact(id, name, email, accountName, accountType, ls, contact)
+                    addContact(id, name, email, accountName, accountType, phoneNumbers, contact)
             }
         }
 

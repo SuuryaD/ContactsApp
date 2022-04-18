@@ -56,6 +56,7 @@ class DialFragment : Fragment() {
     private val phonePermissionRequester = PhonePermissionRequester(this, { onGranted() }, {
         Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
     })
+
     var onGranted = {
         Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_LONG).show()
     }
@@ -70,6 +71,15 @@ class DialFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.dial_fragment, container, false)
+
+//        val adapter = DialAdapter(ContactListener {
+//            this.findNavController()
+//                .navigate(
+//                    DialFragmentDirections.actionDialFragmentToContactDetailFragment(
+//                        it.contactDetails.contactId
+//                    )
+//                )
+//        }, )
 
 //        viewModel.contacts.observe(viewLifecycleOwner, {
 //            Log.i("DialFragment", it.toString())
@@ -202,18 +212,16 @@ class DialFragment : Fragment() {
     }
 
     private fun sendMessage(phoneNumber: String) {
-
         val i = Intent(Intent.ACTION_SENDTO)
         i.data = Uri.parse("smsto:$phoneNumber")
         startActivity(i)
-
     }
 
     fun toggle(show: Boolean) {
         val transition: Transition = Slide(Gravity.BOTTOM)
         transition.duration = 600
         transition.addTarget(binding.dialerCardView)
-        TransitionManager.beginDelayedTransition(binding.parentConstrain, transition)
+        TransitionManager.beginDelayedTransition(binding.scrollView, transition)
         binding.dialerCardView.visibility = if (show) View.VISIBLE else View.GONE
     }
 

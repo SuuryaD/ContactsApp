@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-//TODO share contact vcard format not supported
 //TODO 2 way sync contacts
 
 //TODO call log paging

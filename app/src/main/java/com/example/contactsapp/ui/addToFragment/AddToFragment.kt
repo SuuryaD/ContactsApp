@@ -12,13 +12,11 @@ import androidx.navigation.fragment.navArgs
 import com.example.contactsapp.R
 import com.example.contactsapp.data.database.ContactWithPhone
 import com.example.contactsapp.databinding.FragmentAddToContactBinding
-import com.example.contactsapp.databinding.FragmentContactsListBinding
 import com.example.contactsapp.di.ServiceLocator
 import com.example.contactsapp.ui.contactsFragment.*
 import com.example.contactsapp.util.EventObserver
 
 class AddToFragment : Fragment() {
-
 
     private lateinit var binding: FragmentAddToContactBinding
     private val viewModel: ContactsListFragmentViewModel by viewModels {

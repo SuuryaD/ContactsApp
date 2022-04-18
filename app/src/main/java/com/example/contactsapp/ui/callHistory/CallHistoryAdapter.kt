@@ -133,16 +133,29 @@ class CallHistoryDiffUtil : DiffUtil.ItemCallback<RecyclerViewViewType>() {
         oldItem: RecyclerViewViewType,
         newItem: RecyclerViewViewType
     ): Boolean {
-        return oldItem == newItem
-//        return false
+
+        if(oldItem is CallHistoryData && newItem is CallHistoryData){
+            return oldItem.contactId == newItem.contactId
+        }
+        else
+//            return (oldItem as AlphabetHeaderType).title == (newItem as AlphabetHeaderType).title
+//        return oldItem == newItem
+        return false
     }
 
     override fun areContentsTheSame(
         oldItem: RecyclerViewViewType,
         newItem: RecyclerViewViewType
     ): Boolean {
-        return oldItem.equals(newItem)
-//        return false
+
+        if(oldItem is CallHistoryData && newItem is CallHistoryData){
+            return oldItem.equals(newItem)
+        }
+        else
+//            return (oldItem as AlphabetHeaderType).title == (newItem as AlphabetHeaderType).title
+
+//        return oldItem.equals(newItem)
+        return false
     }
 }
 

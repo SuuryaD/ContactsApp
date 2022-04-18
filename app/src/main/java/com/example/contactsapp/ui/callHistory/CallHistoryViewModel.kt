@@ -21,43 +21,107 @@ class CallHistoryViewModel(
     val callHistory: LiveData<List<RecyclerViewViewType>>
         get() = _data
 
+    val callHistory2: LiveData<List<CallHistory>> = dataSource.getCallLog2()
+
+    val _data2: LiveData<List<RecyclerViewViewType>> = dataSource.getCallLog2().switchMap {
+
+//         CoroutineScope(Dispatchers.IO).launch {
+
+            var ls3 = ArrayList<RecyclerViewViewType>()
+
+            val temp = ArrayList<ArrayList<CallHistory>>()
+
+//        CoroutineScope(Dispatchers.IO).launch {
+
+            if (it.isNotEmpty()) {
+                temp.add(arrayListOf(it[0]))
+            }
+
+            for (i in 1 until it.size) {
+
+                if (it[i].number != it[i - 1].number) {
+                    temp.add(arrayListOf(it[i]))
+                } else {
+                    temp.last().add(it[i])
+                }
+            }
+
+            val ls4 = dataSource.getContactNames(temp)
+            Log.i("CallHistoryViewModel", temp.toString())
+
+            if (ls4.isNotEmpty() && DateUtils.isToday(ls4[0].callHistoryApi.first().date)) {
+                ls3.add(AlphabetHeaderType("Today"))
+            }
+
+            var add = true
+            for (i in ls4) {
+
+                if (!DateUtils.isToday(i.callHistoryApi.first().date) && add) {
+                    ls3.add(AlphabetHeaderType("Older"))
+                    add = false
+                }
+                ls3.add(i)
+            }
+
+            Log.i("CallHistoryViewModel", ls3.toString())
+            Log.i("CallHistoryViewModel", ls4.toString())
+
+
+//            withContext(Dispatchers.Main){
+                 liveData {
+                    emit(ls3.toList())
+                }
+//                emit2(ls3)
+//                result = ls3
+//            }
+//        }
+
+//        liveData {
+//            emit2(result)
+//        }
+    }
+
+
     private val _navigateToCallHistoryDetail = MutableLiveData<Event<CallHistoryData>>()
     val navigateToCallHistoryDataDetail: LiveData<Event<CallHistoryData>>
         get() = _navigateToCallHistoryDetail
 
-
     @SuppressLint("Range")
     fun importCallLog() {
-        val cres = context.contentResolver
 
-        val cursor = cres?.query(
-            CallLog.Calls.CONTENT_URI,
-            null,
-            null,
-            null,
-            CallLog.Calls.DATE + " DESC"
-        )
+        CoroutineScope(Dispatchers.IO).launch {
 
-        val callHistoryList = ArrayList<CallHistoryTemp>()
+            val cres = context.contentResolver
 
-        while (cursor != null && cursor.moveToNext()) {
-
-            val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
-            val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
-            val duration = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION))
-            val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
-            val id = cursor.getString(cursor.getColumnIndex(CallLog.Calls._ID))
-            val name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME))
-//            CallLog.Calls.
-            callHistoryList.add(
-                CallHistoryTemp(
-                    id, number, date, duration, type
-                )
+            val cursor = cres?.query(
+                CallLog.Calls.CONTENT_URI,
+                null,
+                null,
+                null,
+                CallLog.Calls.DATE + " DESC"
             )
-        }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            dataSource.insertCallLog(callHistoryList)
+            val callHistoryList = ArrayList<CallHistoryTemp>()
+
+            while (cursor != null && cursor.moveToNext()) {
+
+                val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
+                val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
+                val duration = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION))
+                val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
+                val id = cursor.getString(cursor.getColumnIndex(CallLog.Calls._ID))
+                val name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME))
+                callHistoryList.add(
+                    CallHistoryTemp(
+                        id, number, date, duration, type
+                    )
+                )
+            }
+            cursor?.close()
+//            withContext(Dispatchers.IO) {
+                dataSource.insertCallLog(callHistoryList)
+//            }
+
         }
 
     }
@@ -117,6 +181,7 @@ class CallHistoryViewModel(
             }
         }
     }
+
 
     fun navigateToCallHistory(callHistoryData: CallHistoryData) {
         _navigateToCallHistoryDetail.value = Event(callHistoryData)

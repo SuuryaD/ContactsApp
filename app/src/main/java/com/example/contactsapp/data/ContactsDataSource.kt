@@ -27,7 +27,7 @@ interface ContactsDataSource {
 
     suspend fun updateContact2(contactWithPhone: ContactWithPhone, new: ContactWithPhone): Long
 
-    suspend fun getContactNames(ls: List<List<CallHistory>>): List<CallHistoryData>
+    fun getContactNames(ls: List<List<CallHistory>>): List<CallHistoryData>
 
     suspend fun deleteCallHistory(id: Long)
 
@@ -50,5 +50,7 @@ interface ContactsDataSource {
     suspend fun getUnsyncedContacts() : List<ContactWithPhone>
 
     suspend fun nukeDb()
+
+    fun getCallLog2(): LiveData<List<CallHistory>>
 
 }
